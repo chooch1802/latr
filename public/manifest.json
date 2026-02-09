@@ -1,0 +1,16 @@
+{
+  "name": "LATR - Rental Freedom",
+  "short_name": "LATR",
+  "description": "Move in today, pay over time. Instant deposit aid, smart applications, and household management.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#F97066",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

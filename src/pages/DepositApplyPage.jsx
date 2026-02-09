@@ -1,0 +1,540 @@
+import { useState, useEffect, forwardRef } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import { ArrowLeft, Check, ArrowRight, Loader2 } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
+import { useToast } from '../contexts/ToastContext'
+import { depositRecipientSchema } from '../lib/validations'
+import { calculateAllPlans, calculatePlan, SETUP_FEE } from '../lib/depositCalc'
+import { runCashFlowAssessment } from '../lib/mockApis'
+import PlanCard from '../components/deposit/PlanCard'
+
+const steps = [
+  { label: 'Application', number: 1 },
+  { label: 'Details', number: 2 },
+  { label: 'Plan', number: 3 },
+  { label: 'Assessment', number: 4 },
+]
+
+export default function DepositApplyPage() {
+  const navigate = useNavigate()
+  const { user } = useAuth()
+  const toast = useToast()
+  const [currentStep, setCurrentStep] = useState(1)
+
+  // Step 1: select an approved application
+  const [applications, setApplications] = useState([])
+  const [loadingApps, setLoadingApps] = useState(true)
+  const [selectedAppId, setSelectedAppId] = useState(null)
+
+  // Step 2: amount + recipient
+  const [depositAmount, setDepositAmount] = useState('')
+
+  // Step 3: plan selection
+  const [selectedWeeks, setSelectedWeeks] = useState(null)
+
+  // Step 4: credit assessment
+  const [assessing, setAssessing] = useState(false)
+  const [assessment, setAssessment] = useState(null)
+  const [submitting, setSubmitting] = useState(false)
+
+  const recipientForm = useForm({
+    resolver: zodResolver(depositRecipientSchema),
+    defaultValues: {
+      recipientType: '',
+      recipientName: '',
+      recipientBsb: '',
+      recipientAccount: '',
+      recipientEmail: '',
+      agentName: '',
+    },
+  })
+
+  // Fetch approved applications
+  useEffect(() => {
+    async function fetch() {
+      const { data } = await supabase
+        .from('applications')
+        .select('id, property_address_line_1, property_suburb, property_state, deposit_amount, status')
+        .eq('user_id', user.id)
+        .eq('status', 'approved')
+        .order('created_at', { ascending: false })
+      setApplications(data || [])
+      setLoadingApps(false)
+    }
+    fetch()
+  }, [user.id])
+
+  const selectedApp = applications.find((a) => a.id === selectedAppId)
+  const numAmount = Number(depositAmount) || 0
+  const plans = numAmount >= 1000 && numAmount <= 50000 ? calculateAllPlans(numAmount) : []
+  const selectedPlan = selectedWeeks ? calculatePlan(numAmount, selectedWeeks) : null
+
+  function handleSelectApplication(appId) {
+    setSelectedAppId(appId)
+    const app = applications.find((a) => a.id === appId)
+    if (app?.deposit_amount) {
+      setDepositAmount(String(app.deposit_amount))
+    }
+    setCurrentStep(2)
+  }
+
+  async function handleRecipientNext(data) {
+    // Validate amount range
+    if (numAmount < 1000 || numAmount > 50000) return
+    setCurrentStep(3)
+  }
+
+  function handlePlanNext() {
+    if (!selectedWeeks) return
+    setCurrentStep(4)
+    runAssessment()
+  }
+
+  async function runAssessment() {
+    setAssessing(true)
+    try {
+      // Fetch bank data for assessment
+      const { data: bankConn } = await supabase
+        .from('bank_connections')
+        .select('*')
+        .eq('user_id', user.id)
+        .limit(1)
+        .single()
+
+      const monthlyIncome = bankConn?.monthly_income || 6400
+      const monthlyExpenses = bankConn?.monthly_expenses || 3200
+      const bankBalance = bankConn?.account_balance || 12500
+
+      const result = await runCashFlowAssessment({ monthlyIncome, monthlyExpenses, bankBalance })
+      setAssessment(result)
+    } catch {
+      setAssessment({ approved: false, score: 0, creditLimit: 0, factors: [] })
+    } finally {
+      setAssessing(false)
+    }
+  }
+
+  async function handleSubmit() {
+    if (!assessment?.approved || !selectedPlan) return
+    setSubmitting(true)
+    try {
+      const recipientData = recipientForm.getValues()
+      const { data, error } = await supabase
+        .from('deposit_applications')
+        .insert({
+          user_id: user.id,
+          application_id: selectedAppId,
+          deposit_amount: numAmount,
+          plan_weeks: selectedWeeks,
+          weekly_payment: selectedPlan.weeklyPayment,
+          total_repayment: selectedPlan.totalRepayment,
+          setup_fee: SETUP_FEE,
+          interest_rate: selectedPlan.interestRate,
+          status: 'approved',
+          credit_score: assessment.score,
+          credit_limit: assessment.creditLimit,
+          recipient_type: recipientData.recipientType,
+          recipient_name: recipientData.recipientName,
+          recipient_bsb: recipientData.recipientBsb,
+          recipient_account: recipientData.recipientAccount,
+          recipient_email: recipientData.recipientEmail || null,
+          agent_name: recipientData.agentName || null,
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+      navigate(`/deposit-aid/confirm/${data.id}`)
+    } catch (err) {
+      toast.error('Failed to create deposit application. Please try again.')
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      <Link
+        to="/deposit-aid"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-coral-500 transition-colors mb-4"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back to Deposit Aid
+      </Link>
+
+      <h1 className="text-xl font-bold text-navy mb-6">Apply for Deposit Aid</h1>
+
+      {/* Progress stepper */}
+      <div className="flex items-center justify-between mb-8">
+        {steps.map((step, i) => (
+          <div key={step.number} className="flex items-center flex-1 last:flex-initial">
+            <div className="flex flex-col items-center">
+              <div
+                className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
+                  currentStep > step.number
+                    ? 'bg-emerald-500 text-white'
+                    : currentStep === step.number
+                      ? 'bg-coral-500 text-white shadow-coral'
+                      : 'bg-gray-200 text-gray-500'
+                }`}
+              >
+                {currentStep > step.number ? <Check className="w-4 h-4" /> : step.number}
+              </div>
+              <span className={`text-xs mt-1 font-medium ${currentStep >= step.number ? 'text-navy' : 'text-gray-400'}`}>
+                {step.label}
+              </span>
+            </div>
+            {i < steps.length - 1 && (
+              <div className={`flex-1 h-0.5 mx-2 mt-[-18px] ${currentStep > step.number ? 'bg-emerald-500' : 'bg-gray-200'}`} />
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-white rounded-2xl border border-gray-200 p-6">
+        {/* Step 1: Select approved application */}
+        {currentStep === 1 && (
+          <div>
+            <h2 className="text-lg font-semibold text-navy mb-1">Select Application</h2>
+            <p className="text-sm text-gray-500 mb-4">Choose the approved rental application you need deposit help for.</p>
+
+            {loadingApps ? (
+              <div className="space-y-3">
+                {[1, 2].map((i) => (
+                  <div key={i} className="h-20 bg-gray-100 rounded-xl animate-pulse" />
+                ))}
+              </div>
+            ) : applications.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-500 mb-3">No approved applications yet.</p>
+                <Link
+                  to="/apply"
+                  className="text-sm font-semibold text-coral-500 hover:text-coral-600"
+                >
+                  View my applications &rarr;
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {applications.map((app) => (
+                  <button
+                    key={app.id}
+                    type="button"
+                    onClick={() => handleSelectApplication(app.id)}
+                    className={`w-full text-left p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                      selectedAppId === app.id
+                        ? 'border-coral-500 bg-coral-50'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <p className="font-semibold text-navy">
+                      {app.property_address_line_1}
+                      {app.property_suburb ? `, ${app.property_suburb}` : ''}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Deposit: ${Number(app.deposit_amount).toLocaleString('en-AU')} · {app.property_state}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Step 2: Amount + recipient details */}
+        {currentStep === 2 && (
+          <form onSubmit={recipientForm.handleSubmit(handleRecipientNext)}>
+            <h2 className="text-lg font-semibold text-navy mb-1">Deposit Details</h2>
+            <p className="text-sm text-gray-500 mb-4">Enter the deposit amount and the landlord or agency LATR will pay directly.</p>
+
+            {/* Amount */}
+            <div className="mb-5">
+              <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
+                Deposit amount
+              </label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                <input
+                  id="amount"
+                  type="number"
+                  min="1000"
+                  max="50000"
+                  step="100"
+                  value={depositAmount}
+                  onChange={(e) => setDepositAmount(e.target.value)}
+                  className="w-full h-11 pl-8 pr-4 rounded-xl border border-gray-300 text-navy font-semibold focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+                />
+              </div>
+              {numAmount > 0 && (numAmount < 1000 || numAmount > 50000) && (
+                <p className="text-xs text-red-500 mt-1">Must be between $1,000 and $50,000</p>
+              )}
+            </div>
+
+            {/* Recipient type */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Payment recipient</label>
+              <div className="flex gap-3">
+                {['landlord', 'agency'].map((type) => (
+                  <label
+                    key={type}
+                    className={`flex-1 flex items-center justify-center h-11 rounded-xl border-2 text-sm font-medium cursor-pointer transition-all ${
+                      recipientForm.watch('recipientType') === type
+                        ? 'border-coral-500 bg-coral-50 text-coral-600'
+                        : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      value={type}
+                      {...recipientForm.register('recipientType')}
+                      className="sr-only"
+                    />
+                    <span className="capitalize">{type}</span>
+                  </label>
+                ))}
+              </div>
+              {recipientForm.formState.errors.recipientType && (
+                <p className="text-xs text-red-500 mt-1">{recipientForm.formState.errors.recipientType.message}</p>
+              )}
+            </div>
+
+            <Field
+              label="Recipient name"
+              error={recipientForm.formState.errors.recipientName}
+              {...recipientForm.register('recipientName')}
+            />
+
+            <div className="grid grid-cols-2 gap-3">
+              <Field
+                label="BSB"
+                placeholder="XXX-XXX"
+                error={recipientForm.formState.errors.recipientBsb}
+                {...recipientForm.register('recipientBsb')}
+              />
+              <Field
+                label="Account number"
+                placeholder="6-9 digits"
+                error={recipientForm.formState.errors.recipientAccount}
+                {...recipientForm.register('recipientAccount')}
+              />
+            </div>
+
+            <Field
+              label="Recipient email (optional)"
+              type="email"
+              error={recipientForm.formState.errors.recipientEmail}
+              {...recipientForm.register('recipientEmail')}
+            />
+
+            {recipientForm.watch('recipientType') === 'agency' && (
+              <Field
+                label="Agent name (optional)"
+                error={recipientForm.formState.errors.agentName}
+                {...recipientForm.register('agentName')}
+              />
+            )}
+
+            <div className="flex gap-3 mt-6">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(1)}
+                className="h-11 px-6 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
+              >
+                Back
+              </button>
+              <button
+                type="submit"
+                disabled={numAmount < 1000 || numAmount > 50000}
+                className="flex-1 h-11 bg-coral-500 text-white font-semibold rounded-xl hover:bg-coral-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              >
+                Continue
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* Step 3: Choose plan */}
+        {currentStep === 3 && (
+          <div>
+            <h2 className="text-lg font-semibold text-navy mb-1">Choose Your Plan</h2>
+            <p className="text-sm text-gray-500 mb-4">
+              Select a repayment plan for your ${numAmount.toLocaleString('en-AU')} deposit.
+            </p>
+
+            <div className="space-y-3 mb-6">
+              {plans.map((plan) => (
+                <PlanCard
+                  key={plan.weeks}
+                  plan={plan}
+                  selected={selectedWeeks}
+                  onSelect={setSelectedWeeks}
+                />
+              ))}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(2)}
+                className="h-11 px-6 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
+              >
+                Back
+              </button>
+              <button
+                type="button"
+                onClick={handlePlanNext}
+                disabled={!selectedWeeks}
+                className="flex-1 h-11 bg-coral-500 text-white font-semibold rounded-xl hover:bg-coral-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Cash flow assessment */}
+        {currentStep === 4 && (
+          <div>
+            <h2 className="text-lg font-semibold text-navy mb-1">Cash Flow Analysis</h2>
+            <p className="text-sm text-gray-500 mb-4">Based on your income and spending patterns.</p>
+
+            {assessing ? (
+              <div className="flex flex-col items-center py-12">
+                <Loader2 className="w-10 h-10 text-coral-500 animate-spin mb-4" />
+                <p className="text-gray-600 font-medium">Analyzing your cash flow...</p>
+                <p className="text-sm text-gray-400">This usually takes a few seconds</p>
+              </div>
+            ) : assessment ? (
+              <div>
+                {/* Score */}
+                <div className="bg-gray-50 rounded-xl p-5 mb-4 text-center">
+                  <p className="text-sm text-gray-500 mb-1">LATR Score</p>
+                  <p className={`text-4xl font-bold ${assessment.score >= 70 ? 'text-emerald-600' : assessment.score >= 40 ? 'text-amber-500' : 'text-red-500'}`}>
+                    {assessment.score}
+                  </p>
+                  <div className="w-full h-2 bg-gray-200 rounded-full mt-2 overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${assessment.score >= 70 ? 'bg-emerald-500' : assessment.score >= 40 ? 'bg-amber-500' : 'bg-red-500'}`}
+                      style={{ width: `${assessment.score}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-400 mt-1">
+                    <span>0</span>
+                    <span>100</span>
+                  </div>
+                </div>
+
+                {/* Factors */}
+                <div className="space-y-2 mb-4">
+                  {assessment.factors?.map((f) => (
+                    <div key={f.label} className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">{f.label}</span>
+                      <span className={`font-medium capitalize ${
+                        f.rating === 'good' ? 'text-emerald-600' : f.rating === 'fair' ? 'text-yellow-600' : f.rating === 'neutral' ? 'text-gray-500' : 'text-red-500'
+                      }`}>
+                        {f.rating}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {assessment.approved ? (
+                  <div className="bg-emerald-50 rounded-xl p-4 mb-4">
+                    <p className="font-semibold text-emerald-700 mb-1">Approved!</p>
+                    <p className="text-sm text-emerald-600">
+                      Based on your income and spending, you're approved for up to ${assessment.creditLimit?.toLocaleString('en-AU')}.
+                      Your ${numAmount.toLocaleString('en-AU')} deposit fits within your limit.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="bg-red-50 rounded-xl p-4 mb-4">
+                    <p className="font-semibold text-red-700 mb-1">Not Approved</p>
+                    <p className="text-sm text-red-600">
+                      {assessment.reason || 'Unfortunately, we\'re unable to approve your deposit aid application at this time.'}
+                      {' '}Consider a smaller deposit amount or a longer repayment term.
+                    </p>
+                  </div>
+                )}
+
+                {/* Summary */}
+                {assessment.approved && selectedPlan && (
+                  <div className="bg-white rounded-xl border border-gray-200 p-4 mb-4 space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Deposit amount</span>
+                      <span className="text-navy font-semibold">${numAmount.toLocaleString('en-AU')}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Plan</span>
+                      <span className="text-navy font-medium">{selectedWeeks} weeks</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Weekly payment</span>
+                      <span className="text-navy font-medium">${selectedPlan.weeklyPayment.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm border-t pt-2">
+                      <span className="text-gray-500">Total repayment</span>
+                      <span className="text-navy font-bold">${selectedPlan.totalRepayment.toFixed(2)}</span>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentStep(3)}
+                    className="h-11 px-6 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
+                  >
+                    Back
+                  </button>
+                  {assessment.approved ? (
+                    <button
+                      type="button"
+                      onClick={handleSubmit}
+                      disabled={submitting}
+                      className="flex-1 h-11 bg-coral-500 text-white font-semibold rounded-xl hover:bg-coral-600 transition-colors disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      {submitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          Confirm & Submit
+                          <ArrowRight className="w-4 h-4" />
+                        </>
+                      )}
+                    </button>
+                  ) : (
+                    <Link
+                      to="/deposit-aid"
+                      className="flex-1 h-11 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center"
+                    >
+                      Back to Deposit Aid
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ) : null}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+const Field = forwardRef(function Field({ label, error, ...props }, ref) {
+  return (
+    <div className="mb-4">
+      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <input
+        ref={ref}
+        {...props}
+        className="w-full h-11 px-4 rounded-xl border border-gray-300 text-navy focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+      />
+      {error && <p className="text-xs text-red-500 mt-1">{error.message}</p>}
+    </div>
+  )
+})

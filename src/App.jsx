@@ -1,0 +1,107 @@
+import { lazy, Suspense } from 'react'
+import { Routes, Route } from 'react-router-dom'
+import ProtectedRoute from './components/auth/ProtectedRoute'
+import AppShell from './components/layout/AppShell'
+
+// Loading spinner shown while lazy chunks load
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="w-8 h-8 border-3 border-coral-200 border-t-coral-500 rounded-full animate-spin" />
+    </div>
+  )
+}
+
+// Public pages
+const LandingPage = lazy(() => import('./pages/LandingPage'))
+const LoginPage = lazy(() => import('./pages/LoginPage'))
+const SignupPage = lazy(() => import('./pages/SignupPage'))
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'))
+const AuthCallbackPage = lazy(() => import('./pages/AuthCallbackPage'))
+const VerifyPage = lazy(() => import('./pages/VerifyPage'))
+const TermsPage = lazy(() => import('./pages/TermsPage'))
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage'))
+const CookiePolicyPage = lazy(() => import('./pages/CookiePolicyPage'))
+const FAQPage = lazy(() => import('./pages/FAQPage'))
+const ContactPage = lazy(() => import('./pages/ContactPage'))
+
+// Onboarding
+const OnboardingPage = lazy(() => import('./pages/OnboardingPage'))
+
+// App pages
+const DashboardPage = lazy(() => import('./pages/DashboardPage'))
+const PropertiesPage = lazy(() => import('./pages/PropertiesPage'))
+const PropertyDetailPage = lazy(() => import('./pages/PropertyDetailPage'))
+const ApplicationsPage = lazy(() => import('./pages/ApplicationsPage'))
+const ApplicationFormPage = lazy(() => import('./pages/ApplicationFormPage'))
+const ApplicationDetailPage = lazy(() => import('./pages/ApplicationDetailPage'))
+const DepositAidPage = lazy(() => import('./pages/DepositAidPage'))
+const DepositCalculatorPage = lazy(() => import('./pages/DepositCalculatorPage'))
+const DepositApplyPage = lazy(() => import('./pages/DepositApplyPage'))
+const DepositConfirmPage = lazy(() => import('./pages/DepositConfirmPage'))
+const DepositDetailPage = lazy(() => import('./pages/DepositDetailPage'))
+const HouseholdPage = lazy(() => import('./pages/HouseholdPage'))
+const CreateHouseholdPage = lazy(() => import('./pages/CreateHouseholdPage'))
+const ManageHouseholdPage = lazy(() => import('./pages/ManageHouseholdPage'))
+const BillsPage = lazy(() => import('./pages/BillsPage'))
+const AddBillPage = lazy(() => import('./pages/AddBillPage'))
+const BillDetailPage = lazy(() => import('./pages/BillDetailPage'))
+const SettingsPage = lazy(() => import('./pages/SettingsPage'))
+const NotificationsPage = lazy(() => import('./pages/NotificationsPage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
+
+function App() {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/auth/callback" element={<AuthCallbackPage />} />
+        <Route path="/verify" element={<VerifyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/cookies" element={<CookiePolicyPage />} />
+        <Route path="/faq" element={<FAQPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+
+        {/* Protected — onboarding (no AppShell, no onboarding requirement) */}
+        <Route element={<ProtectedRoute requireOnboarding={false} />}>
+          <Route path="/onboarding" element={<OnboardingPage />} />
+        </Route>
+
+        {/* Protected — main app (requires completed onboarding) */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppShell />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/properties" element={<PropertiesPage />} />
+            <Route path="/properties/:id" element={<PropertyDetailPage />} />
+            <Route path="/apply" element={<ApplicationsPage />} />
+            <Route path="/apply/new/:propertyId" element={<ApplicationFormPage />} />
+            <Route path="/apply/:id" element={<ApplicationDetailPage />} />
+            <Route path="/deposit-aid" element={<DepositAidPage />} />
+            <Route path="/deposit-calculator" element={<DepositCalculatorPage />} />
+            <Route path="/deposit-aid/apply" element={<DepositApplyPage />} />
+            <Route path="/deposit-aid/confirm/:id" element={<DepositConfirmPage />} />
+            <Route path="/deposit-aid/:id" element={<DepositDetailPage />} />
+            <Route path="/household" element={<HouseholdPage />} />
+            <Route path="/household/create" element={<CreateHouseholdPage />} />
+            <Route path="/household/:id/manage" element={<ManageHouseholdPage />} />
+            <Route path="/household/bills" element={<BillsPage />} />
+            <Route path="/household/bills/add" element={<AddBillPage />} />
+            <Route path="/household/bills/:id" element={<BillDetailPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
+          </Route>
+        </Route>
+
+        {/* 404 catch-all */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </Suspense>
+  )
+}
+
+export default App
