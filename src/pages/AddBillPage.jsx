@@ -185,7 +185,7 @@ export default function AddBillPage() {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full h-10 px-3 rounded-xl border border-gray-300 text-navy text-sm focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent bg-white"
+              className="w-full h-10 px-3 rounded-xl border border-gray-300 text-navy text-base focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent bg-white"
             >
               {categories.map((c) => (
                 <option key={c.value} value={c.value}>{c.label}</option>
@@ -198,7 +198,7 @@ export default function AddBillPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder={`e.g. ${category === 'rent' ? 'February Rent' : 'Q1 Bill'}`}
-              className="w-full h-10 px-3 rounded-xl border border-gray-300 text-navy text-sm focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+              className="w-full h-10 px-3 rounded-xl border border-gray-300 text-navy text-base focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -213,7 +213,7 @@ export default function AddBillPage() {
                   value={totalAmount}
                   onChange={(e) => setTotalAmount(e.target.value)}
                   placeholder="0.00"
-                  className="w-full h-10 pl-7 pr-3 rounded-xl border border-gray-300 text-navy text-sm focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+                  className="w-full h-10 pl-7 pr-3 rounded-xl border border-gray-300 text-navy text-base focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -223,7 +223,7 @@ export default function AddBillPage() {
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full h-10 px-3 rounded-xl border border-gray-300 text-navy text-sm focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+                className="w-full h-10 px-3 rounded-xl border border-gray-300 text-navy text-base focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -260,7 +260,7 @@ export default function AddBillPage() {
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
               placeholder="Any additional details..."
-              className="w-full px-3 py-2 rounded-xl border border-gray-300 text-navy text-sm focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent resize-none"
+              className="w-full px-3 py-2 rounded-xl border border-gray-300 text-navy text-base focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent resize-none"
             />
           </div>
         </div>

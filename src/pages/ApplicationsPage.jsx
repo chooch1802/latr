@@ -97,7 +97,7 @@ export default function ApplicationsPage() {
               placeholder="Search by property address..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full h-10 pl-10 pr-4 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:border-coral-500 focus:outline-none"
+              className="w-full h-10 pl-10 pr-4 rounded-xl border border-gray-200 text-base text-gray-900 placeholder-gray-400 focus:border-coral-500 focus:outline-none"
             />
           </div>
           <div className="flex gap-1 overflow-x-auto">
@@ -205,7 +205,7 @@ export default function ApplicationsPage() {
       {/* Mobile FAB */}
       <Link
         to="/properties"
-        className="sm:hidden fixed bottom-6 right-6 w-14 h-14 bg-coral-500 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-coral-600 transition-colors"
+        className="sm:hidden fixed bottom-24 right-6 w-14 h-14 bg-coral-500 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-coral-600 transition-colors"
       >
         <Plus className="w-6 h-6" />
       </Link>

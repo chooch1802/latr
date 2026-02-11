@@ -142,20 +142,20 @@ export default function ManageHouseholdPage() {
         <div className="space-y-3">
           <div>
             <label className="block text-sm text-gray-500 mb-1">Name</label>
-            <input value={name} onChange={(e) => setName(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-gray-300 text-navy text-sm focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent" />
+            <input value={name} onChange={(e) => setName(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-gray-300 text-navy text-base focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent" />
           </div>
           <div>
             <label className="block text-sm text-gray-500 mb-1">Address</label>
-            <input value={address} onChange={(e) => setAddress(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-gray-300 text-navy text-sm focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent" />
+            <input value={address} onChange={(e) => setAddress(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-gray-300 text-navy text-base focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm text-gray-500 mb-1">Monthly rent</label>
-              <input type="number" value={monthlyRent} onChange={(e) => setMonthlyRent(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-gray-300 text-navy text-sm focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent" />
+              <input type="number" value={monthlyRent} onChange={(e) => setMonthlyRent(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-gray-300 text-navy text-base focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent" />
             </div>
             <div>
               <label className="block text-sm text-gray-500 mb-1">Lease end date</label>
-              <input type="date" value={leaseEndDate} onChange={(e) => setLeaseEndDate(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-gray-300 text-navy text-sm focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent" />
+              <input type="date" value={leaseEndDate} onChange={(e) => setLeaseEndDate(e.target.value)} className="w-full h-10 px-3 rounded-xl border border-gray-300 text-navy text-base focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent" />
             </div>
           </div>
         </div>
@@ -207,7 +207,7 @@ export default function ManageHouseholdPage() {
                 placeholder="email@example.com"
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
-                className="flex-1 h-10 px-3 rounded-xl border border-gray-300 text-navy text-sm focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+                className="flex-1 h-10 px-3 rounded-xl border border-gray-300 text-navy text-base focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
               />
               <div className="relative w-20">
                 <input

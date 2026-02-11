@@ -126,7 +126,7 @@ export default function PersonalInfoStep({ data, onNext }) {
 }
 
 const inputClass =
-  'w-full h-11 px-4 rounded-xl border-2 border-gray-200 text-sm text-gray-900 placeholder-gray-400 transition-colors focus:border-coral-500 focus:outline-none bg-white'
+  'w-full h-11 px-4 rounded-xl border-2 border-gray-200 text-base text-gray-900 placeholder-gray-400 transition-colors focus:border-coral-500 focus:outline-none bg-white'
 
 function Field({ label, id, error, children }) {
   return (

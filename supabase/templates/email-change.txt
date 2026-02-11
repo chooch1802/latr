@@ -1,0 +1,9 @@
+LATR
+Confirm email change
+You requested to change your email address to {{ .NewEmail }}. Click below to confirm.
+Confirm email change
+If the button doesn't work, copy and paste this link into your browser:
+{{ .ConfirmationURL }}
+
+If you didn't request this change, please contact support immediately at support@latr.com.au.
+LATR - One App for Rental Freedom

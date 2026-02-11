@@ -19,7 +19,7 @@ export default function PropertyFilter({ filters, onChange }) {
             placeholder="Search by address or suburb..."
             value={filters.search}
             onChange={(e) => update('search', e.target.value)}
-            className="w-full h-10 pl-10 pr-4 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:border-coral-500 focus:outline-none"
+            className="w-full h-10 pl-10 pr-4 rounded-xl border border-gray-200 text-base text-gray-900 placeholder-gray-400 focus:border-coral-500 focus:outline-none"
           />
         </div>
 
@@ -27,7 +27,7 @@ export default function PropertyFilter({ filters, onChange }) {
         <select
           value={filters.city}
           onChange={(e) => update('city', e.target.value)}
-          className="h-10 px-3 rounded-xl border border-gray-200 text-sm text-gray-700 bg-white focus:border-coral-500 focus:outline-none"
+          className="h-10 px-3 rounded-xl border border-gray-200 text-base text-gray-700 bg-white focus:border-coral-500 focus:outline-none"
         >
           {CITIES.map((c) => (
             <option key={c} value={c === 'All Cities' ? '' : c}>{c}</option>
@@ -38,7 +38,7 @@ export default function PropertyFilter({ filters, onChange }) {
         <select
           value={filters.bedrooms}
           onChange={(e) => update('bedrooms', e.target.value)}
-          className="h-10 px-3 rounded-xl border border-gray-200 text-sm text-gray-700 bg-white focus:border-coral-500 focus:outline-none"
+          className="h-10 px-3 rounded-xl border border-gray-200 text-base text-gray-700 bg-white focus:border-coral-500 focus:outline-none"
         >
           {BEDROOMS.map((b) => (
             <option key={b} value={b === 'Any' ? '' : b === 'Studio' ? '0' : b === '3+' ? '3' : b}>
@@ -51,7 +51,7 @@ export default function PropertyFilter({ filters, onChange }) {
         <select
           value={filters.maxPrice}
           onChange={(e) => update('maxPrice', e.target.value)}
-          className="h-10 px-3 rounded-xl border border-gray-200 text-sm text-gray-700 bg-white focus:border-coral-500 focus:outline-none"
+          className="h-10 px-3 rounded-xl border border-gray-200 text-base text-gray-700 bg-white focus:border-coral-500 focus:outline-none"
         >
           <option value="">Any Price</option>
           <option value="400">Up to $400/wk</option>

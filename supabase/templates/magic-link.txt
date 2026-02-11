@@ -1,0 +1,9 @@
+LATR
+Sign in to LATR
+Click the button below to securely sign in to your account. This link expires in 10 minutes.
+Sign in to LATR
+If the button doesn't work, copy and paste this link into your browser:
+{{ .ConfirmationURL }}
+
+If you didn't request this email, you can safely ignore it. Only someone with access to your email can use this link.
+LATR - One App for Rental Freedom

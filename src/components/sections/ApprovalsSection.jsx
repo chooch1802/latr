@@ -1,55 +1,63 @@
 import { motion } from 'framer-motion'
-import { ArrowLeft, Lock, Building2 } from 'lucide-react'
+import { ChevronLeft, Check } from 'lucide-react'
 import { fadeInUp } from '../../utils/animations'
 import PhoneMockup from '../ui/PhoneMockup'
 import ProgressStepper from '../ui/ProgressStepper'
 
-function ReviewScreen() {
+const plans = [
+  { weeks: 52, rate: '$76.92/week', badge: 'Lowest', badgeColor: 'bg-navy text-white' },
+  { weeks: 36, rate: '$111.11/week', badge: 'Recommended', badgeColor: 'bg-coral-500 text-white', selected: true },
+  { weeks: 26, rate: '$153.85/week', badge: 'Fastest', badgeColor: 'bg-emerald-500 text-white' },
+]
+
+function DepositAidScreen() {
   return (
     <div className="bg-white h-full flex flex-col">
-      {/* Header */}
-      <div className="flex items-center gap-3 px-2 py-3">
-        <ArrowLeft className="w-5 h-5 text-gray-900" />
-        <span className="text-base font-semibold text-gray-900">Review & Add money</span>
+      {/* Back */}
+      <div className="flex items-center gap-1 px-1 pt-2 pb-2">
+        <ChevronLeft className="w-4 h-4 text-coral-500" />
+        <span className="text-xs font-medium text-coral-500">Back</span>
       </div>
 
-      <div className="flex-1 px-3 space-y-6 mt-4">
-        {/* Amount */}
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-gray-400">Amount</span>
-            <div className="w-5 h-5 rounded-full border-2 border-coral-500 flex items-center justify-center">
-              <div className="w-2.5 h-2.5 rounded-full bg-coral-500" />
+      {/* Approval Card */}
+      <div className="mx-1 bg-coral-50 rounded-2xl p-5 flex flex-col items-center mb-4">
+        <div className="w-10 h-10 rounded-full bg-coral-100 flex items-center justify-center mb-2">
+          <Check className="w-5 h-5 text-coral-500" />
+        </div>
+        <p className="text-xs font-medium text-coral-500 mb-1">Deposit Aid: Approved!</p>
+        <p className="text-3xl font-extrabold text-navy">$4,000</p>
+        <p className="text-xs text-gray-400 mt-0.5">Funded</p>
+      </div>
+
+      {/* Repayment Plans */}
+      <div className="px-1 flex-1">
+        <p className="text-sm font-bold text-navy mb-3">Choose your repayment plan</p>
+        <div className="space-y-2.5">
+          {plans.map((plan) => (
+            <div
+              key={plan.weeks}
+              className={`rounded-xl px-4 py-3 flex items-center gap-3 ${
+                plan.selected
+                  ? 'border-2 border-coral-500 bg-coral-50/50'
+                  : 'border border-gray-200 bg-white'
+              }`}
+            >
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="text-sm font-bold text-navy">{plan.weeks} weeks</span>
+                  <span className={`text-[9px] font-semibold px-2 py-0.5 rounded-full ${plan.badgeColor}`}>
+                    {plan.badge}
+                  </span>
+                </div>
+                <p className="text-[10px] text-gray-500">{plan.rate} &middot; 0% interest</p>
+              </div>
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                plan.selected ? 'border-coral-500' : 'border-gray-300'
+              }`}>
+                {plan.selected && <div className="w-2.5 h-2.5 rounded-full bg-coral-500" />}
+              </div>
             </div>
-          </div>
-          <div className="text-4xl font-extrabold text-gray-900">$4,000</div>
-        </div>
-
-        {/* Divider */}
-        <div className="border-t border-gray-100" />
-
-        {/* Method */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-            <Building2 className="w-5 h-5 text-blue-600" />
-          </div>
-          <div>
-            <p className="text-xs text-gray-400">Method</p>
-            <p className="text-sm font-semibold text-gray-900">Bank Transfer</p>
-          </div>
-        </div>
-
-        {/* Security Badge */}
-        <div className="flex items-center gap-2 text-gray-400 text-xs">
-          <Lock className="w-3.5 h-3.5" />
-          <span>Secure payment</span>
-        </div>
-      </div>
-
-      {/* Action Button */}
-      <div className="px-3 pb-6 mt-auto">
-        <div className="w-full bg-coral-500 text-white text-center py-4 rounded-xl font-semibold text-base">
-          Add money
+          ))}
         </div>
       </div>
     </div>
@@ -62,7 +70,7 @@ export default function ApprovalsSection() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] h-12 bg-gradient-to-b from-white/20 to-transparent" />
       <div className="absolute top-40 right-[-8%] w-[350px] h-[350px] rounded-full bg-white/[0.03] blur-2xl pointer-events-none animate-float-slower" />
       <div className="max-w-[1280px] mx-auto px-6 md:px-20 relative z-10">
-        <ProgressStepper activeStep={4} labels={{ 4: 'Review' }} />
+        <ProgressStepper activeStep={4} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
           {/* Phone Mockup */}
@@ -73,8 +81,8 @@ export default function ApprovalsSection() {
             transition={{ duration: 0.6 }}
             className="flex justify-center md:justify-end"
           >
-            <PhoneMockup variant="floating" size="md">
-              <ReviewScreen />
+            <PhoneMockup variant="floating" size="lg">
+              <DepositAidScreen />
             </PhoneMockup>
           </motion.div>
 

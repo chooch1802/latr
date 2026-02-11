@@ -145,8 +145,8 @@ export default function DepositDetailPage() {
               <Calendar className="w-4 h-4 text-coral-500" />
               <h2 className="text-sm font-semibold text-gray-700">Repayment Schedule</h2>
             </div>
-            <div className="max-h-80 overflow-y-auto">
-              <table className="w-full text-sm">
+            <div className="max-h-80 overflow-y-auto overflow-x-auto">
+              <table className="w-full text-sm min-w-[400px]">
                 <thead>
                   <tr className="text-gray-500 text-xs">
                     <th className="text-left pb-2 font-medium">Week</th>

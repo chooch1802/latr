@@ -1,88 +1,96 @@
 import { motion } from 'framer-motion'
-import { Plus, Home, Activity, User, Bell, ArrowRight, Calendar, CheckCircle, Zap } from 'lucide-react'
+import { ChevronLeft, Heart, MoreVertical, MapPin, Bed, Bath, Car, Ruler } from 'lucide-react'
 import { fadeInUp } from '../../utils/animations'
 import PhoneMockup from '../ui/PhoneMockup'
 import ProgressStepper from '../ui/ProgressStepper'
 
-function AppScreen() {
+const features = ['Air Conditioning', 'Balcony', 'Built-in Wardrobe', 'Dishwasher', 'Gym', 'Pool']
+
+function PropertyDetailScreen() {
   return (
-    <div className="bg-gray-50 h-full">
-      {/* App Header */}
-      <div className="flex items-center justify-between px-2 py-3">
-        <span className="text-lg font-bold text-gray-900">LATR</span>
-        <div className="w-8 h-8 rounded-full bg-coral-100 flex items-center justify-center">
-          <User className="w-4 h-4 text-coral-500" />
+    <div className="bg-navy h-full flex flex-col">
+      {/* Nav bar */}
+      <div className="flex items-center justify-between px-2 py-2">
+        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+          <ChevronLeft className="w-5 h-5 text-white" />
         </div>
-      </div>
-
-      {/* Balance Card */}
-      <div className="bg-gradient-to-br from-coral-500 to-coral-400 rounded-2xl p-4 mx-1 mb-4">
-        <div className="flex items-center gap-1 text-white/80 text-xs mb-1">
-          All accounts <span className="text-[10px]">▼</span>
-        </div>
-        <div className="text-white text-2xl font-extrabold mb-3">$4,224.47</div>
-        <div className="flex gap-2">
-          <button className="flex-1 bg-white/20 text-white text-xs font-semibold py-2 rounded-lg flex items-center justify-center gap-1">
-            <Plus className="w-3 h-3" /> Add money
-          </button>
-          <button className="flex-1 bg-white/20 text-white text-xs font-semibold py-2 rounded-lg flex items-center justify-center gap-1">
-            <ArrowRight className="w-3 h-3" /> Send
-          </button>
-        </div>
-      </div>
-
-      {/* Transactions */}
-      <div className="px-2">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-semibold text-gray-900">Transactions</span>
-          <span className="text-xs font-medium text-coral-500">See all</span>
-        </div>
-        <div className="space-y-3">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
-              <Calendar className="w-4 h-4 text-amber-600" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-gray-900 truncate">Rent Due in 5 Days</p>
-              <p className="text-[10px] text-gray-400">Pending</p>
-            </div>
-            <span className="text-xs font-semibold text-red-500">-$1,250</span>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+            <Heart className="w-4 h-4 text-white" />
           </div>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-              <CheckCircle className="w-4 h-4 text-green-600" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-gray-900 truncate">Deposit Approved</p>
-              <p className="text-[10px] text-gray-400">Completed</p>
-            </div>
-            <span className="text-xs font-semibold text-green-600">+$4,000</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center">
-              <Zap className="w-4 h-4 text-yellow-600" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-gray-900 truncate">Bill Split: Electricity</p>
-              <p className="text-[10px] text-gray-400">Completed</p>
-            </div>
-            <span className="text-xs font-semibold text-red-500">-$120</span>
+          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+            <MoreVertical className="w-4 h-4 text-white" />
           </div>
         </div>
       </div>
 
-      {/* Bottom Nav */}
-      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-around py-3 border-t border-gray-200 bg-white">
-        <Home className="w-5 h-5 text-coral-500" />
-        <Activity className="w-5 h-5 text-gray-400" />
-        <User className="w-5 h-5 text-gray-400" />
-        <Bell className="w-5 h-5 text-gray-400" />
+      {/* Image placeholder */}
+      <div className="relative mx-2 h-32 bg-white/10 rounded-2xl flex items-end justify-between px-3 pb-3">
+        <div className="flex gap-1.5">
+          <div className="w-2 h-2 rounded-full bg-white" />
+          <div className="w-2 h-2 rounded-full bg-white/40" />
+          <div className="w-2 h-2 rounded-full bg-white/40" />
+          <div className="w-2 h-2 rounded-full bg-white/40" />
+        </div>
+        <div className="bg-coral-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-md">
+          LATR
+        </div>
       </div>
 
-      {/* FAB */}
-      <div className="absolute bottom-16 right-4 w-12 h-12 bg-coral-500 rounded-full flex items-center justify-center shadow-large">
-        <Plus className="w-6 h-6 text-white" />
+      {/* Property details card */}
+      <div className="flex-1 bg-white rounded-t-3xl mt-3 px-4 pt-4 pb-2 overflow-hidden">
+        {/* Title + Price */}
+        <div className="flex gap-2 mb-2">
+          <div className="flex-1">
+            <h4 className="text-sm font-bold text-navy leading-tight">
+              Modern 2BR Apartment — Sydney CBD
+            </h4>
+          </div>
+          <div className="text-right shrink-0">
+            <span className="text-lg font-extrabold text-coral-500">$3,414</span>
+            <span className="text-[10px] text-gray-400 block">/month</span>
+          </div>
+        </div>
+
+        {/* Address */}
+        <div className="flex items-center gap-1 mb-4">
+          <MapPin className="w-3 h-3 text-gray-400" />
+          <span className="text-[10px] text-gray-500">42 Pitt St, Sydney NSW 2000</span>
+        </div>
+
+        {/* Stats */}
+        <div className="flex justify-between mb-4 border-t border-gray-100 pt-3">
+          <Stat icon="🛏️" value="2" label="Beds" />
+          <Stat icon="🛁" value="2" label="Bath" />
+          <Stat icon="🅿️" value="1" label="Park" />
+          <Stat icon="📐" value="85" label="m²" />
+        </div>
+
+        {/* Features */}
+        <div>
+          <p className="text-xs font-bold text-navy mb-2">Features</p>
+          <div className="flex flex-wrap gap-1.5">
+            {features.map((f) => (
+              <span
+                key={f}
+                className="text-[10px] font-medium text-coral-500 bg-coral-50 px-2.5 py-1 rounded-full"
+              >
+                {f}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
+    </div>
+  )
+}
+
+function Stat({ icon, value, label }) {
+  return (
+    <div className="flex flex-col items-center gap-0.5">
+      <span className="text-sm">{icon}</span>
+      <span className="text-sm font-bold text-navy">{value}</span>
+      <span className="text-[10px] text-gray-400">{label}</span>
     </div>
   )
 }
@@ -95,11 +103,11 @@ export default function AppMockupSection() {
       {/* Section divider line */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] h-12 bg-gradient-to-b from-white/20 to-transparent" />
       <div className="max-w-[1280px] mx-auto px-6 md:px-20 relative z-10">
-        <ProgressStepper activeStep={2} labels={{ 2: 'Add' }} />
+        <ProgressStepper activeStep={2} />
 
         <div className="flex flex-col items-center">
-          <PhoneMockup variant="floating" size="md">
-            <AppScreen />
+          <PhoneMockup variant="floating" size="lg">
+            <PropertyDetailScreen />
           </PhoneMockup>
 
           <motion.div {...fadeInUp} className="text-center mt-12 md:mt-16">

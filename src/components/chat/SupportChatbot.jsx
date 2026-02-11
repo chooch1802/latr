@@ -220,7 +220,8 @@ export default function SupportChatbot() {
       {/* Floating Action Button */}
       <motion.button
         onClick={() => setIsOpen((o) => !o)}
-        className="fixed right-5 bottom-20 md:bottom-6 z-40 w-14 h-14 rounded-full bg-coral-500 text-white shadow-coral flex items-center justify-center cursor-pointer"
+        className="fixed right-5 bottom-24 md:bottom-6 z-40 w-14 h-14 rounded-full bg-coral-500 text-white shadow-coral flex items-center justify-center cursor-pointer"
+        style={{ marginBottom: 'env(safe-area-inset-bottom, 0px)' }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         animate={
@@ -273,7 +274,7 @@ export default function SupportChatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2, ease: [0.215, 0.61, 0.355, 1] }}
-            className="fixed right-0 bottom-0 md:right-5 md:bottom-22 z-40 w-full h-full md:w-[380px] md:h-[520px] md:rounded-2xl bg-white shadow-xl flex flex-col overflow-hidden"
+            className="fixed inset-0 md:inset-auto md:right-5 md:bottom-22 z-40 w-full h-full md:w-[380px] md:h-[520px] md:rounded-2xl bg-white shadow-xl flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="bg-navy px-4 py-3 flex items-center justify-between flex-shrink-0">
@@ -355,7 +356,7 @@ export default function SupportChatbot() {
             {/* Input */}
             <form
               onSubmit={handleSubmit}
-              className="flex items-center gap-2 px-4 py-3 border-t border-gray-200 flex-shrink-0"
+              className="flex items-center gap-2 px-4 py-3 border-t border-gray-200 flex-shrink-0 safe-area-bottom"
             >
               <input
                 ref={inputRef}
@@ -364,7 +365,7 @@ export default function SupportChatbot() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Type a message..."
                 disabled={isTyping}
-                className="flex-1 text-sm bg-gray-100 rounded-full px-4 py-2.5 outline-none focus:ring-2 focus:ring-coral-300 placeholder:text-gray-400 disabled:opacity-50"
+                className="flex-1 text-base bg-gray-100 rounded-full px-4 py-2.5 outline-none focus:ring-2 focus:ring-coral-300 placeholder:text-gray-400 disabled:opacity-50"
               />
               <button
                 type="submit"

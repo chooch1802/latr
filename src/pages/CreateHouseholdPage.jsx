@@ -216,7 +216,7 @@ export default function CreateHouseholdPage() {
                   placeholder="roommate@email.com"
                   value={inv.email}
                   onChange={(e) => updateInvite(idx, 'email', e.target.value)}
-                  className="flex-1 h-11 px-4 rounded-xl border border-gray-300 text-navy text-sm focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+                  className="flex-1 h-11 px-4 rounded-xl border border-gray-300 text-navy text-base focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
                 />
                 <div className="relative w-20">
                   <input

@@ -182,7 +182,7 @@ export default function SettingsPage() {
   const KycIcon = kyc.icon
 
   const inputCls =
-    'w-full h-10 px-3 rounded-xl border border-gray-300 text-navy text-sm focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent'
+    'w-full h-10 px-3 rounded-xl border border-gray-300 text-navy text-base focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent'
   const labelCls = 'block text-sm text-gray-500 mb-1'
   const errorCls = 'text-xs text-red-500 mt-1'
 

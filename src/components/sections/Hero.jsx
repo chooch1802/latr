@@ -108,7 +108,7 @@ export default function Hero() {
           >
             <Apple className="w-6 h-6" />
             <div className="text-left">
-              <div className="text-[10px] font-normal text-gray-500 leading-tight">Download on the</div>
+              <div className="text-xs font-normal text-gray-500 leading-tight">Download on the</div>
               <div className="text-sm font-semibold leading-tight">App Store</div>
             </div>
           </motion.a>
@@ -120,7 +120,7 @@ export default function Hero() {
           >
             <Play className="w-6 h-6 fill-current" />
             <div className="text-left">
-              <div className="text-[10px] font-normal text-gray-500 leading-tight">Get it on</div>
+              <div className="text-xs font-normal text-gray-500 leading-tight">Get it on</div>
               <div className="text-sm font-semibold leading-tight">Google Play</div>
             </div>
           </motion.a>

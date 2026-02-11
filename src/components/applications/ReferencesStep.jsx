@@ -58,7 +58,7 @@ export default function ReferencesStep({ data, onNext, onBack }) {
 }
 
 const inputClass =
-  'w-full h-11 px-4 rounded-xl border-2 border-gray-200 text-sm text-gray-900 placeholder-gray-400 transition-colors focus:border-coral-500 focus:outline-none'
+  'w-full h-11 px-4 rounded-xl border-2 border-gray-200 text-base text-gray-900 placeholder-gray-400 transition-colors focus:border-coral-500 focus:outline-none'
 
 function ReferenceFields({ prefix, register, errors, optional }) {
   return (

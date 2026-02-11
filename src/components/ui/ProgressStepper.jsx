@@ -1,6 +1,8 @@
 import { clsx } from 'clsx'
 
-export default function ProgressStepper({ activeStep = 1, labels = {} }) {
+const STEP_LABELS = { 1: 'Type', 2: 'Property', 3: 'Apply', 4: 'Send', 5: 'Complete' }
+
+export default function ProgressStepper({ activeStep = 1 }) {
   const steps = [1, 2, 3, 4, 5]
   return (
     <div className="flex items-center justify-center gap-3 mb-12">
@@ -15,7 +17,7 @@ export default function ProgressStepper({ activeStep = 1, labels = {} }) {
           )}
         >
           <span>0{step}</span>
-          {labels[step] && <span>{labels[step]}</span>}
+          <span>{STEP_LABELS[step]}</span>
         </div>
       ))}
     </div>
