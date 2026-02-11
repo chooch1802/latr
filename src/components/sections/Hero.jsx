@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion'
-import { Apple, Play } from 'lucide-react'
 import GradientBackground from '../ui/GradientBackground'
 
 const letterVariants = {
@@ -93,36 +92,20 @@ export default function Hero() {
           Single solution for all your rental needs.
         </motion.p>
 
-        {/* App Store Buttons */}
+        {/* CTA Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 1.0 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          className="flex items-center justify-center"
         >
           <motion.a
             href="/signup"
             whileHover={{ scale: 1.05, boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}
             whileTap={{ scale: 0.98 }}
-            className="flex items-center gap-3 bg-white border-2 border-white/20 rounded-xl px-6 h-14 text-gray-900 font-semibold text-sm transition-all duration-300"
+            className="bg-white rounded-full px-10 h-14 text-coral-500 font-bold text-lg flex items-center justify-center transition-all duration-300"
           >
-            <Apple className="w-6 h-6" />
-            <div className="text-left">
-              <div className="text-xs font-normal text-gray-500 leading-tight">Download on the</div>
-              <div className="text-sm font-semibold leading-tight">App Store</div>
-            </div>
-          </motion.a>
-          <motion.a
-            href="/signup"
-            whileHover={{ scale: 1.05, boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}
-            whileTap={{ scale: 0.98 }}
-            className="flex items-center gap-3 bg-white border-2 border-white/20 rounded-xl px-6 h-14 text-gray-900 font-semibold text-sm transition-all duration-300"
-          >
-            <Play className="w-6 h-6 fill-current" />
-            <div className="text-left">
-              <div className="text-xs font-normal text-gray-500 leading-tight">Get it on</div>
-              <div className="text-sm font-semibold leading-tight">Google Play</div>
-            </div>
+            Start Now
           </motion.a>
         </motion.div>
       </div>
@@ -134,17 +117,6 @@ export default function Hero() {
         transition={{ duration: 0.5, delay: 1.2 }}
         className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-4 z-10"
       >
-        <motion.a
-          href="#simplify"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.97 }}
-          className="flex items-center gap-2 bg-coral-600/80 backdrop-blur-sm text-white px-6 py-3 rounded-full font-semibold text-sm hover:bg-coral-700 transition-colors"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-          </svg>
-          Menu
-        </motion.a>
         <motion.a
           href="/contact"
           whileHover={{ scale: 1.05 }}
