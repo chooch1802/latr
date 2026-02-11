@@ -25,8 +25,16 @@ export default function AuthCallbackPage() {
           return
         }
 
-        // Exchange the code/token — Supabase JS handles this automatically
-        // from the URL hash or query params when we call getSession
+        // PKCE flow: exchange the code from query params for a session
+        const code = queryParams.get('code')
+        if (code) {
+          const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
+          if (exchangeError) {
+            setError(exchangeError.message)
+            return
+          }
+        }
+
         const { data: { session }, error: sessionError } = await supabase.auth.getSession()
 
         if (sessionError) {
