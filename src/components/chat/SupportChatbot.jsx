@@ -74,9 +74,9 @@ const KNOWLEDGE_BASE = [
       'Your data is protected with bank-level encryption. We never share your personal information without your consent. You can review our full Privacy Policy in the app footer or at latr.com.au/privacy.',
   },
   {
-    keywords: ['magic link', 'login', 'sign in', 'password', 'cant login', "can't log in"],
+    keywords: ['otp', 'sms', 'code', 'login', 'sign in', 'password', 'cant login', "can't log in"],
     response:
-      'LATR uses passwordless magic links for sign-in. Enter your email and we\'ll send a secure link — just click it to log in. Check your spam folder if you don\'t see it within a minute.',
+      'LATR uses passwordless SMS verification for sign-in. Enter your Australian mobile number and we\'ll send a 6-digit code — just type it in to log in. Codes expire after a few minutes, so request a new one if needed.',
   },
 ]
 

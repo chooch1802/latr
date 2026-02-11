@@ -6,12 +6,22 @@ import { signupSchema } from '../lib/validations'
 import { useAuth } from '../contexts/AuthContext'
 import AuthLayout from '../components/auth/AuthLayout'
 import GoogleButton from '../components/auth/GoogleButton'
+import OTPInput from '../components/auth/OTPInput'
+
+function formatPhoneE164(phone) {
+  const cleaned = phone.replace(/\s/g, '')
+  return '+61' + cleaned.substring(1)
+}
 
 export default function SignupPage() {
-  const { session, loading, isOnboardingComplete, signUpWithEmail, signInWithGoogle } = useAuth()
+  const { session, loading, isOnboardingComplete, signInWithPhone, verifyOtp, signInWithGoogle } = useAuth()
   const navigate = useNavigate()
   const [error, setError] = useState(null)
+  const [otpError, setOtpError] = useState(null)
   const [googleLoading, setGoogleLoading] = useState(false)
+  const [phase, setPhase] = useState('form') // 'form' | 'otp'
+  const [phone, setPhone] = useState('')
+  const [metadata, setMetadata] = useState(null)
 
   const {
     register,
@@ -28,14 +38,32 @@ export default function SignupPage() {
   async function onSubmit(data) {
     try {
       setError(null)
-      await signUpWithEmail(data.email, {
-        first_name: data.firstName,
-        last_name: data.lastName,
-      })
-      navigate('/verify', { state: { email: data.email } })
-      return
+      const e164 = formatPhoneE164(data.phone)
+      await signInWithPhone(e164)
+      setPhone(e164)
+      setMetadata({ first_name: data.firstName, last_name: data.lastName })
+      setPhase('otp')
     } catch (err) {
       setError(err.message)
+    }
+  }
+
+  async function handleVerify(code) {
+    try {
+      setOtpError(null)
+      await verifyOtp(phone, code)
+      navigate('/onboarding', { replace: true })
+    } catch (err) {
+      setOtpError(err.message)
+    }
+  }
+
+  async function handleResend() {
+    try {
+      setOtpError(null)
+      await signInWithPhone(phone)
+    } catch (err) {
+      setOtpError(err.message)
     }
   }
 
@@ -48,6 +76,24 @@ export default function SignupPage() {
       setError(err.message)
       setGoogleLoading(false)
     }
+  }
+
+  if (phase === 'otp') {
+    return (
+      <AuthLayout>
+        <h1 className="text-2xl font-bold text-navy text-center mb-6">Enter verification code</h1>
+        <OTPInput
+          phone={phone}
+          onVerify={handleVerify}
+          onResend={handleResend}
+          onChangeNumber={() => {
+            setPhase('form')
+            setOtpError(null)
+          }}
+          error={otpError}
+        />
+      </AuthLayout>
+    )
   }
 
   return (
@@ -110,19 +156,25 @@ export default function SignupPage() {
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            Email address
+          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+            Mobile number
           </label>
-          <input
-            id="email"
-            type="email"
-            autoComplete="email"
-            placeholder="you@example.com"
-            {...register('email')}
-            className="w-full h-12 px-4 rounded-xl border-2 border-gray-200 text-gray-900 placeholder-gray-400 transition-colors focus:border-coral-500 focus:outline-none"
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+          <div className="flex">
+            <span className="inline-flex items-center px-3 h-12 rounded-l-xl border-2 border-r-0 border-gray-200 bg-gray-50 text-gray-500 text-sm">
+              +61
+            </span>
+            <input
+              id="phone"
+              type="tel"
+              inputMode="numeric"
+              autoComplete="tel"
+              placeholder="0412 345 678"
+              {...register('phone')}
+              className="flex-1 h-12 px-4 rounded-r-xl border-2 border-gray-200 text-gray-900 placeholder-gray-400 transition-colors focus:border-coral-500 focus:outline-none"
+            />
+          </div>
+          {errors.phone && (
+            <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
           )}
         </div>
 
@@ -153,7 +205,7 @@ export default function SignupPage() {
           disabled={isSubmitting}
           className="w-full h-12 bg-coral-500 text-white font-semibold rounded-xl transition-colors hover:bg-coral-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
-          {isSubmitting ? 'Creating account...' : 'Create account'}
+          {isSubmitting ? 'Sending code...' : 'Create account'}
         </button>
       </form>
 

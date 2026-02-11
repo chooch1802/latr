@@ -59,13 +59,13 @@ export function AuthProvider({ children }) {
     }
   }
 
-  async function signInWithMagicLink(email) {
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
+  async function signInWithPhone(phone) {
+    const { error } = await supabase.auth.signInWithOtp({ phone })
+    if (error) throw error
+  }
+
+  async function verifyOtp(phone, token) {
+    const { error } = await supabase.auth.verifyOtp({ phone, token, type: 'sms' })
     if (error) throw error
   }
 
@@ -74,17 +74,6 @@ export function AuthProvider({ children }) {
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
-    if (error) throw error
-  }
-
-  async function signUpWithEmail(email, metadata) {
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-        data: metadata,
       },
     })
     if (error) throw error
@@ -104,9 +93,9 @@ export function AuthProvider({ children }) {
     loading,
     isOnboardingComplete,
     refreshProfile,
-    signInWithMagicLink,
+    signInWithPhone,
+    verifyOtp,
     signInWithGoogle,
-    signUpWithEmail,
     signOut,
   }
 

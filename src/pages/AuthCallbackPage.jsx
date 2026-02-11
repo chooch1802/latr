@@ -60,7 +60,7 @@ export default function AuthCallbackPage() {
         // Timeout after 10 seconds
         const timeout = setTimeout(() => {
           subscription.unsubscribe()
-          setError('Sign-in timed out. Please request a new magic link.')
+          setError('Sign-in timed out. Please try signing in again.')
         }, 10000)
 
         return () => {

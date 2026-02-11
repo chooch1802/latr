@@ -1,10 +1,10 @@
 import { z } from 'zod'
 
 export const loginSchema = z.object({
-  email: z
+  phone: z
     .string()
-    .min(1, 'Email is required')
-    .email('Please enter a valid email address'),
+    .min(1, 'Phone number is required')
+    .regex(/^04\d{8}$/, 'Please enter a valid Australian mobile number (04XXXXXXXX)'),
 })
 
 export const signupSchema = z.object({
@@ -16,14 +16,21 @@ export const signupSchema = z.object({
     .string()
     .min(1, 'Last name is required')
     .max(50, 'Last name must be 50 characters or less'),
-  email: z
+  phone: z
     .string()
-    .min(1, 'Email is required')
-    .email('Please enter a valid email address'),
+    .min(1, 'Phone number is required')
+    .regex(/^04\d{8}$/, 'Please enter a valid Australian mobile number (04XXXXXXXX)'),
   terms: z
     .literal(true, {
       errorMap: () => ({ message: 'You must accept the terms and conditions' }),
     }),
+})
+
+export const otpSchema = z.object({
+  otp: z
+    .string()
+    .length(6, 'Code must be 6 digits')
+    .regex(/^\d{6}$/, 'Code must be 6 digits'),
 })
 
 export const profileSchema = z.object({
@@ -77,6 +84,17 @@ export const personalInfoSchema = z.object({
     errorMap: () => ({ message: 'Please select a state' }),
   }),
   postcode: z.string().regex(/^\d{4}$/, 'Must be a 4-digit postcode'),
+})
+
+export const rentalHistorySchema = z.object({
+  landlordName: z.string().min(1, 'Landlord/agent name is required'),
+  landlordPhone: z.string().min(1, 'Phone is required'),
+  currentRent: z.string().min(1, 'Current rent is required').regex(/^\d+$/, 'Must be a number'),
+  leaseStartDate: z.string().min(1, 'Lease start date is required'),
+  reasonForMoving: z.string().min(10, 'Please provide a reason (min 10 characters)'),
+})
+
+export const employmentSchema = z.object({
   employmentStatus: z.enum(['employed', 'self-employed', 'unemployed', 'student', 'retired'], {
     errorMap: () => ({ message: 'Please select your employment status' }),
   }),

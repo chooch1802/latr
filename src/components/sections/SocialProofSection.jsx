@@ -23,7 +23,7 @@ const accordionItems = [
     title: 'Sign up',
     content: (
       <p className="text-base text-gray-500">
-        Create your free LATR account in under 2 minutes. All you need is an email address and a valid Australian ID.
+        Create your free LATR account in under 2 minutes. All you need is an Australian mobile number and a valid ID.
       </p>
     ),
   },
@@ -31,7 +31,7 @@ const accordionItems = [
     title: 'Login',
     content: (
       <p className="text-base text-gray-500">
-        Already have an account? Log in with your email and magic link - no password needed.
+        Already have an account? Log in with your mobile number and a one-time SMS code — no password needed.
       </p>
     ),
   },
