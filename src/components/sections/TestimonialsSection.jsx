@@ -10,7 +10,7 @@ const testimonials = [
     avatar: 'SM',
     avatarColor: 'from-purple-400 to-pink-400',
     rating: 5,
-    text: "LATR completely changed my renting experience. I was dreading the $4,800 bond for my new place, but Deposit Aid let me spread it over 52 weeks. Moved in the same week I applied.",
+    text: "LATR completely changed my renting experience. I was dreading the $4,800 bond for my new place, but Deposit Aid let me spread it over 104 weeks. Moved in the same week I applied.",
   },
   {
     name: 'James T.',

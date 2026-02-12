@@ -42,6 +42,11 @@
   }
 }
 
+html,
+body {
+  overflow-x: hidden;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -53,6 +58,35 @@ body {
   background: #ffffff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Global overflow prevention */
+*,
+*::before,
+*::after {
+  min-width: 0;
+  min-height: 0;
+}
+
+p, h1, h2, h3, h4, h5, h6, span, a, li, td, th, label, dd, dt {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+pre, code {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+img, video, svg, canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+table {
+  max-width: 100%;
+  overflow-x: auto;
+  display: block;
 }
 
 .skip-link {

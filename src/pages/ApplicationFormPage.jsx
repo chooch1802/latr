@@ -5,15 +5,18 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { useToast } from '../contexts/ToastContext'
 import PersonalInfoStep from '../components/applications/PersonalInfoStep'
+import RentalHistoryStep from '../components/applications/RentalHistoryStep'
+import EmploymentStep from '../components/applications/EmploymentStep'
 import ReferencesStep from '../components/applications/ReferencesStep'
 import DocumentsStep from '../components/applications/DocumentsStep'
 import ReviewStep from '../components/applications/ReviewStep'
 
 const steps = [
   { label: 'Personal', number: 1 },
-  { label: 'References', number: 2 },
-  { label: 'Documents', number: 3 },
-  { label: 'Review', number: 4 },
+  { label: 'Rental', number: 2 },
+  { label: 'Employment', number: 3 },
+  { label: 'References', number: 4 },
+  { label: 'Documents', number: 5 },
 ]
 
 export default function ApplicationFormPage() {
@@ -31,6 +34,8 @@ export default function ApplicationFormPage() {
   // Accumulated form data across steps
   const [formData, setFormData] = useState({
     personalInfo: null,
+    rentalHistory: null,
+    employment: null,
     references: null,
     documents: null,
   })
@@ -57,14 +62,24 @@ export default function ApplicationFormPage() {
     setCurrentStep(2)
   }
 
+  function handleRentalHistory(data) {
+    setFormData((prev) => ({ ...prev, rentalHistory: data }))
+    setCurrentStep(3)
+  }
+
+  function handleEmployment(data) {
+    setFormData((prev) => ({ ...prev, employment: data }))
+    setCurrentStep(4)
+  }
+
   function handleReferences(data) {
     setFormData((prev) => ({ ...prev, references: data }))
-    setCurrentStep(3)
+    setCurrentStep(5)
   }
 
   function handleDocuments(data) {
     setFormData((prev) => ({ ...prev, documents: data }))
-    setCurrentStep(4)
+    setCurrentStep(6)
   }
 
   async function uploadFiles(files, folder) {
@@ -85,7 +100,7 @@ export default function ApplicationFormPage() {
   async function handleSubmit() {
     try {
       setSubmitting(true)
-      const { personalInfo, references, documents } = formData
+      const { personalInfo, rentalHistory, employment, references, documents } = formData
 
       // Create application
       const { data: app, error: appError } = await supabase
@@ -93,7 +108,7 @@ export default function ApplicationFormPage() {
         .insert({
           user_id: user.id,
           status: 'submitted',
-          current_step: 4,
+          current_step: 5,
           first_name: personalInfo.firstName,
           last_name: personalInfo.lastName,
           date_of_birth: personalInfo.dateOfBirth,
@@ -105,13 +120,14 @@ export default function ApplicationFormPage() {
           property_suburb: property.city,
           property_state: property.state,
           property_postcode: property.postcode,
-          employment_status: personalInfo.employmentStatus,
-          employer_name: personalInfo.employerName || null,
-          job_title: personalInfo.jobTitle || null,
-          annual_income: Number(personalInfo.annualIncome),
+          employment_status: employment.employmentStatus,
+          employer_name: employment.employerName || null,
+          job_title: employment.jobTitle || null,
+          annual_income: Number(employment.annualIncome),
           deposit_amount: Number(property.rent_amount) * 4,
           move_in_date: property.available_date,
           property_type: property.property_type,
+          rental_history: rentalHistory,
           refs: [references.employment, references.landlord, references.character].filter((r) => r?.name),
           submitted_at: new Date().toISOString(),
         })
@@ -267,24 +283,38 @@ export default function ApplicationFormPage() {
           <PersonalInfoStep data={formData.personalInfo} onNext={handlePersonalInfo} />
         )}
         {currentStep === 2 && (
-          <ReferencesStep
-            data={formData.references}
-            onNext={handleReferences}
+          <RentalHistoryStep
+            data={formData.rentalHistory}
+            onNext={handleRentalHistory}
             onBack={() => setCurrentStep(1)}
           />
         )}
         {currentStep === 3 && (
-          <DocumentsStep
-            data={formData.documents}
-            onNext={handleDocuments}
+          <EmploymentStep
+            data={formData.employment}
+            onNext={handleEmployment}
             onBack={() => setCurrentStep(2)}
           />
         )}
         {currentStep === 4 && (
+          <ReferencesStep
+            data={formData.references}
+            onNext={handleReferences}
+            onBack={() => setCurrentStep(3)}
+          />
+        )}
+        {currentStep === 5 && (
+          <DocumentsStep
+            data={formData.documents}
+            onNext={handleDocuments}
+            onBack={() => setCurrentStep(4)}
+          />
+        )}
+        {currentStep === 6 && (
           <ReviewStep
             formData={formData}
             property={property}
-            onBack={() => setCurrentStep(3)}
+            onBack={() => setCurrentStep(5)}
             onSubmit={handleSubmit}
             submitting={submitting}
           />

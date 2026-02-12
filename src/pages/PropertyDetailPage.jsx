@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Bed, Bath, Home, MapPin, Calendar, DollarSign } from 'lucide-react'
+import { ArrowLeft, Bed, Bath, Home, MapPin, Calendar, DollarSign, Heart, Share2 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
 export default function PropertyDetailPage() {
@@ -57,26 +57,59 @@ export default function PropertyDetailPage() {
 
   return (
     <div>
-      {/* Back button */}
-      <Link
-        to="/properties"
-        className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-coral-500 transition-colors mb-4"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Back to properties
-      </Link>
+      {/* Navy gradient header with image */}
+      <div className="bg-gradient-to-b from-navy to-navy/90 rounded-2xl overflow-hidden mb-6">
+        {/* Header row */}
+        <div className="flex items-center justify-between px-4 pt-4 pb-2">
+          <Link
+            to="/properties"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-white/80 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Link>
+          <div className="flex items-center gap-2">
+            <button type="button" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer">
+              <Heart className="w-4 h-4" />
+            </button>
+            <button type="button" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer">
+              <Share2 className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
 
-      {/* Image gallery */}
-      <div className="rounded-2xl overflow-hidden bg-gray-100 mb-6">
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={property.address}
-            className="w-full aspect-[16/9] object-cover"
-          />
-        ) : (
-          <div className="w-full aspect-[16/9] flex items-center justify-center text-gray-300">
-            <Home className="w-16 h-16" />
+        {/* Image with LATR badge */}
+        <div className="relative">
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt={property.address}
+              className="w-full aspect-[16/9] object-cover"
+            />
+          ) : (
+            <div className="w-full aspect-[16/9] flex items-center justify-center text-white/30">
+              <Home className="w-16 h-16" />
+            </div>
+          )}
+          {/* LATR badge */}
+          <div className="absolute top-3 right-3 bg-coral-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+            LATR
+          </div>
+        </div>
+
+        {/* Dot indicators */}
+        {images.length > 1 && (
+          <div className="flex items-center justify-center gap-1.5 py-3">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setSelectedImage(i)}
+                className={`h-2 rounded-full transition-all cursor-pointer ${
+                  i === selectedImage ? 'w-6 bg-white' : 'w-2 bg-white/60'
+                }`}
+              />
+            ))}
           </div>
         )}
       </div>
@@ -121,6 +154,20 @@ export default function PropertyDetailPage() {
               <p className="text-sm font-semibold text-navy">Available</p>
             </div>
           </div>
+
+          {/* Feature tags */}
+          {property.features?.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {property.features.map((feature) => (
+                <span
+                  key={feature}
+                  className="px-3 py-1 bg-coral-50 text-coral-500 text-sm font-medium rounded-full"
+                >
+                  {feature}
+                </span>
+              ))}
+            </div>
+          )}
 
           {/* Description */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6">

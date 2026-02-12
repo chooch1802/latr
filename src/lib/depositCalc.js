@@ -1,22 +1,22 @@
 const SETUP_FEE = 200
 
 const PLANS = [
-  { weeks: 52, label: '52 weeks', description: 'Lowest weekly payment' },
-  { weeks: 36, label: '36 weeks', description: 'Balanced option' },
-  { weeks: 26, label: '26 weeks', description: 'Pay off faster' },
+  { weeks: 104, label: '104 weeks', description: 'Lowest weekly payment', badge: 'Lowest', badgeColor: 'bg-navy text-white' },
+  { weeks: 78, label: '78 weeks', description: 'Balanced option', badge: 'Recommended', badgeColor: 'bg-coral-500 text-white' },
+  { weeks: 52, label: '52 weeks', description: 'Pay off faster', badge: 'Fastest', badgeColor: 'bg-emerald-500 text-white' },
 ]
 
 function getInterestRate(depositAmount, weeks) {
-  // Tiered base rates (52-week reference)
+  // Tiered base rates (104-week reference)
   let baseRate
   if (depositAmount <= 5000) baseRate = 0.25
   else if (depositAmount <= 10000) baseRate = 0.22
   else if (depositAmount <= 20000) baseRate = 0.20
   else baseRate = 0.17
 
-  // Plan duration adjustment: ±1.5% from 52-week base
-  if (weeks > 52) baseRate += 0.015
-  else if (weeks < 52) baseRate -= 0.015
+  // Plan duration adjustment: ±1.5% from 104-week base
+  if (weeks > 104) baseRate += 0.015
+  else if (weeks < 104) baseRate -= 0.015
 
   return baseRate
 }

@@ -4,6 +4,7 @@ import { ArrowLeft, Check, Plus, X, ArrowRight, Loader2, CheckCircle2 } from 'lu
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { useToast } from '../contexts/ToastContext'
+import AddressAutocomplete from '../components/ui/AddressAutocomplete'
 
 const steps = [
   { label: 'Details', number: 1 },
@@ -170,7 +171,19 @@ export default function CreateHouseholdPage() {
             <p className="text-sm text-gray-500 mb-4">Basic information about your shared home.</p>
 
             <Field label="Household name" value={name} onChange={setName} placeholder="e.g. My Sydney Apartment" required />
-            <Field label="Property address" value={address} onChange={setAddress} placeholder="123 George St, Sydney NSW 2000" />
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Property address</label>
+              <AddressAutocomplete
+                id="address"
+                value={address}
+                onChange={setAddress}
+                onSelect={({ formattedAddress }) => {
+                  setAddress(formattedAddress || address)
+                }}
+                placeholder="123 George St, Sydney NSW 2000"
+                className="w-full h-11 pl-4 pr-4 rounded-xl border border-gray-300 text-navy focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
+              />
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Move-in date" type="date" value={moveInDate} onChange={setMoveInDate} />
               <Field label="Lease end date" type="date" value={leaseEndDate} onChange={setLeaseEndDate} />

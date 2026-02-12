@@ -1,6 +1,7 @@
 import { Search, SlidersHorizontal } from 'lucide-react'
 
 const CITIES = ['All Cities', 'Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide']
+const PROPERTY_TYPES = ['All Types', 'House', 'Unit/Apartment', 'Townhouse', 'Warehouse', 'Office']
 const BEDROOMS = ['Any', 'Studio', '1', '2', '3+']
 
 export default function PropertyFilter({ filters, onChange }) {
@@ -31,6 +32,17 @@ export default function PropertyFilter({ filters, onChange }) {
         >
           {CITIES.map((c) => (
             <option key={c} value={c === 'All Cities' ? '' : c}>{c}</option>
+          ))}
+        </select>
+
+        {/* Property Type */}
+        <select
+          value={filters.propertyType}
+          onChange={(e) => update('propertyType', e.target.value)}
+          className="h-10 px-3 rounded-xl border border-gray-200 text-base text-gray-700 bg-white focus:border-coral-500 focus:outline-none"
+        >
+          {PROPERTY_TYPES.map((t) => (
+            <option key={t} value={t === 'All Types' ? '' : t}>{t}</option>
           ))}
         </select>
 

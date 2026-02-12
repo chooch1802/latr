@@ -13,6 +13,7 @@ export default function PropertiesPage() {
   const [filters, setFilters] = useState({
     search: '',
     city: '',
+    propertyType: '',
     bedrooms: '',
     maxPrice: '',
   })
@@ -46,6 +47,10 @@ export default function PropertiesPage() {
       if (!match.includes(q)) return false
     }
     if (filters.city && p.city !== filters.city) return false
+    if (filters.propertyType) {
+      const types = filters.propertyType === 'Unit/Apartment' ? ['unit', 'apartment'] : [filters.propertyType.toLowerCase()]
+      if (!types.includes(p.property_type?.toLowerCase())) return false
+    }
     if (filters.bedrooms) {
       const beds = parseInt(filters.bedrooms)
       if (beds === 3) {

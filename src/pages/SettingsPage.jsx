@@ -5,6 +5,7 @@ import { Loader2, Save, LogOut, ShieldCheck, ShieldAlert, Clock } from 'lucide-r
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { profileSchema, addressSchema } from '../lib/settingsValidations'
+import AddressAutocomplete from '../components/ui/AddressAutocomplete'
 
 const kycBadges = {
   verified: { label: 'Verified', icon: ShieldCheck, cls: 'bg-emerald-50 text-emerald-700' },
@@ -46,6 +47,8 @@ export default function SettingsPage() {
     handleSubmit: handleAddressSubmit,
     formState: { errors: addressErrors },
     reset: resetAddress,
+    setValue: setAddressValue,
+    watch: watchAddress,
   } = useForm({
     resolver: zodResolver(addressSchema),
     defaultValues: {
@@ -239,7 +242,20 @@ export default function SettingsPage() {
           <div className="space-y-3">
             <div>
               <label className={labelCls}>Address line 1</label>
-              <input {...regAddress('addressLine1')} className={inputCls} />
+              <AddressAutocomplete
+                id="addressLine1"
+                value={watchAddress('addressLine1', '')}
+                onChange={(val) => setAddressValue('addressLine1', val, { shouldValidate: true })}
+                onSelect={({ addressLine1, city, state, postcode }) => {
+                  setAddressValue('addressLine1', addressLine1, { shouldValidate: true })
+                  setAddressValue('city', city, { shouldValidate: true })
+                  setAddressValue('state', state, { shouldValidate: true })
+                  setAddressValue('postcode', postcode, { shouldValidate: true })
+                }}
+                placeholder="Start typing an address..."
+                error={addressErrors.addressLine1}
+                className={inputCls}
+              />
               {addressErrors.addressLine1 && <p className={errorCls}>{addressErrors.addressLine1.message}</p>}
             </div>
             <div>

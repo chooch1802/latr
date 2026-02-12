@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FileText, User, Users, Paperclip, CheckCircle2 } from 'lucide-react'
+import { FileText, User, Users, Paperclip, CheckCircle2, Home, Briefcase } from 'lucide-react'
 
 export default function ReviewStep({ formData, property, onBack, onSubmit, submitting }) {
   const [termsAccepted, setTermsAccepted] = useState(false)
@@ -14,7 +14,7 @@ export default function ReviewStep({ formData, property, onBack, onSubmit, submi
     onSubmit()
   }
 
-  const { personalInfo, references, documents } = formData
+  const { personalInfo, rentalHistory, employment, references, documents } = formData
   const totalDocs = (documents?.idDocs?.length || 0) +
     (documents?.payslips?.length || 0) +
     (documents?.bankStatements?.length || 0) +
@@ -47,9 +47,29 @@ export default function ReviewStep({ formData, property, onBack, onSubmit, submi
           <Row label="Phone" value={personalInfo?.phone} />
           <Row label="DOB" value={personalInfo?.dateOfBirth} />
           <Row label="Address" value={`${personalInfo?.addressLine1}, ${personalInfo?.suburb} ${personalInfo?.state}`} />
-          <Row label="Employment" value={personalInfo?.employmentStatus} />
-          {personalInfo?.employerName && <Row label="Employer" value={personalInfo.employerName} />}
-          <Row label="Annual Income" value={`$${Number(personalInfo?.annualIncome || 0).toLocaleString('en-AU')}`} />
+        </div>
+      </Section>
+
+      {/* Rental History */}
+      <Section icon={Home} title="Rental History">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+          <Row label="Landlord/Agent" value={rentalHistory?.landlordName} />
+          <Row label="Phone" value={rentalHistory?.landlordPhone} />
+          <Row label="Current Rent" value={rentalHistory?.currentRent ? `$${rentalHistory.currentRent}/wk` : null} />
+          <Row label="Lease Start" value={rentalHistory?.leaseStartDate} />
+        </div>
+        {rentalHistory?.reasonForMoving && (
+          <p className="text-sm text-gray-600 mt-2">{rentalHistory.reasonForMoving}</p>
+        )}
+      </Section>
+
+      {/* Employment */}
+      <Section icon={Briefcase} title="Employment">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+          <Row label="Status" value={employment?.employmentStatus} />
+          {employment?.employerName && <Row label="Employer" value={employment.employerName} />}
+          {employment?.jobTitle && <Row label="Job Title" value={employment.jobTitle} />}
+          <Row label="Annual Income" value={`$${Number(employment?.annualIncome || 0).toLocaleString('en-AU')}`} />
         </div>
       </Section>
 

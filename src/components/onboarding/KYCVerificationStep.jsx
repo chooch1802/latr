@@ -6,6 +6,7 @@ import { addressSchema } from '../../lib/validations'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../contexts/AuthContext'
 import { submitKYCVerification, checkKYCStatus } from '../../lib/mockApis'
+import AddressAutocomplete from '../ui/AddressAutocomplete'
 
 const STATES = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT']
 
@@ -21,10 +22,14 @@ export default function KYCVerificationStep({ onComplete }) {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(addressSchema),
   })
+
+  const addressLine1Value = watch('addressLine1', '')
 
   const handleFileDrop = useCallback((e, setter) => {
     e.preventDefault()
@@ -227,12 +232,18 @@ export default function KYCVerificationStep({ onComplete }) {
 
           <div className="space-y-3">
             <div>
-              <input
-                type="text"
+              <AddressAutocomplete
+                id="addressLine1"
+                value={addressLine1Value}
+                onChange={(val) => setValue('addressLine1', val, { shouldValidate: true })}
+                onSelect={({ addressLine1, city, state, postcode }) => {
+                  setValue('addressLine1', addressLine1, { shouldValidate: true })
+                  setValue('city', city, { shouldValidate: true })
+                  setValue('state', state, { shouldValidate: true })
+                  setValue('postcode', postcode, { shouldValidate: true })
+                }}
                 placeholder="Address line 1"
-                autoComplete="address-line1"
-                {...register('addressLine1')}
-                className="w-full h-12 px-4 rounded-xl border-2 border-gray-200 text-gray-900 placeholder-gray-400 transition-colors focus:border-coral-500 focus:outline-none"
+                error={errors.addressLine1}
               />
               {errors.addressLine1 && (
                 <p className="text-red-500 text-sm mt-1">{errors.addressLine1.message}</p>

@@ -42,16 +42,16 @@ export const sampleProperties = [
 ]
 
 export const calculateRepayment = (depositAmount, weeks) => {
-  // Tiered base rates (52-week reference)
+  // Tiered base rates (104-week reference)
   let baseRate
   if (depositAmount <= 5000) baseRate = 0.25
   else if (depositAmount <= 10000) baseRate = 0.22
   else if (depositAmount <= 20000) baseRate = 0.20
   else baseRate = 0.17
 
-  // Plan duration adjustment: ±1.5% from 52-week base
-  if (weeks > 52) baseRate += 0.015
-  else if (weeks < 52) baseRate -= 0.015
+  // Plan duration adjustment: ±1.5% from 104-week base
+  if (weeks > 104) baseRate += 0.015
+  else if (weeks < 104) baseRate -= 0.015
 
   const totalInterest = depositAmount * baseRate
   const totalWithInterest = depositAmount + totalInterest
@@ -67,9 +67,9 @@ export const calculateRepayment = (depositAmount, weeks) => {
 }
 
 export const paymentPlans = [
+  { weeks: 104, label: 'Lowest' },
+  { weeks: 78, label: 'Balanced' },
   { weeks: 52, label: 'Most Popular', badge: true },
-  { weeks: 36, label: 'Balanced' },
-  { weeks: 26, label: 'Fastest' },
 ]
 
 export const sampleTransactions = [

@@ -1,6 +1,6 @@
 import { useState, useEffect, forwardRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { ArrowLeft, Check, ArrowRight, Loader2 } from 'lucide-react'
+import { ArrowLeft, Check, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { supabase } from '../lib/supabase'
@@ -441,12 +441,13 @@ export default function DepositApplyPage() {
                 </div>
 
                 {assessment.approved ? (
-                  <div className="bg-emerald-50 rounded-xl p-4 mb-4">
-                    <p className="font-semibold text-emerald-700 mb-1">Approved!</p>
-                    <p className="text-sm text-emerald-600">
-                      Based on your income and spending, you're approved for up to ${assessment.creditLimit?.toLocaleString('en-AU')}.
-                      Your ${numAmount.toLocaleString('en-AU')} deposit fits within your limit.
-                    </p>
+                  <div className="bg-coral-50 rounded-xl p-5 mb-4 text-center">
+                    <div className="w-12 h-12 bg-coral-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <CheckCircle2 className="w-6 h-6 text-white" />
+                    </div>
+                    <p className="font-semibold text-coral-600 mb-1">Deposit Aid: Approved!</p>
+                    <p className="text-3xl font-bold text-navy mb-1">${numAmount.toLocaleString('en-AU')}</p>
+                    <span className="text-sm font-medium text-coral-500 bg-coral-100 px-3 py-0.5 rounded-full">Funded</span>
                   </div>
                 ) : (
                   <div className="bg-red-50 rounded-xl p-4 mb-4">

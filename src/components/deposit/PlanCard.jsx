@@ -1,5 +1,3 @@
-import { Check } from 'lucide-react'
-
 export default function PlanCard({ plan, selected, onSelect }) {
   const isSelected = selected === plan.weeks
 
@@ -7,43 +5,31 @@ export default function PlanCard({ plan, selected, onSelect }) {
     <button
       type="button"
       onClick={() => onSelect(plan.weeks)}
-      className={`w-full text-left rounded-xl border-2 p-5 transition-all cursor-pointer ${
+      className={`w-full flex items-center justify-between rounded-xl border-2 p-4 transition-all cursor-pointer ${
         isSelected
           ? 'border-coral-500 bg-coral-50 shadow-coral'
           : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
       }`}
     >
-      <div className="flex items-start justify-between mb-3">
-        <div>
+      <div className="flex-1 text-left">
+        <div className="flex items-center gap-2 mb-0.5">
           <p className="text-lg font-bold text-navy">{plan.label}</p>
-          <p className="text-sm text-gray-500">{plan.description}</p>
+          {plan.badge && (
+            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${plan.badgeColor}`}>
+              {plan.badge}
+            </span>
+          )}
         </div>
-        {isSelected && (
-          <div className="w-6 h-6 rounded-full bg-coral-500 text-white flex items-center justify-center shrink-0">
-            <Check className="w-4 h-4" />
-          </div>
-        )}
+        <p className="text-sm text-gray-500">
+          ${plan.weeklyPayment?.toFixed(2)}/week · {(plan.interestRate * 100).toFixed(1)}% interest
+        </p>
       </div>
 
-      <div className="space-y-1.5">
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-500">Weekly payment</span>
-          <span className="text-navy font-bold text-base">
-            ${plan.weeklyPayment?.toFixed(2)}
-          </span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-500">Total repayment</span>
-          <span className="text-gray-700">${plan.totalRepayment?.toFixed(2)}</span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-500">Interest ({(plan.interestRate * 100).toFixed(1)}%)</span>
-          <span className="text-gray-700">${plan.totalInterest?.toFixed(2)}</span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-500">Setup fee</span>
-          <span className="text-gray-700">${plan.setupFee}</span>
-        </div>
+      {/* Radio circle */}
+      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ml-4 ${
+        isSelected ? 'border-coral-500' : 'border-gray-300'
+      }`}>
+        {isSelected && <div className="w-3 h-3 rounded-full bg-coral-500" />}
       </div>
     </button>
   )

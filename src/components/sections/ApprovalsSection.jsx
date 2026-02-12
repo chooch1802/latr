@@ -5,9 +5,9 @@ import PhoneMockup from '../ui/PhoneMockup'
 import ProgressStepper from '../ui/ProgressStepper'
 
 const plans = [
-  { weeks: 52, rate: '$76.92/week', badge: 'Lowest', badgeColor: 'bg-navy text-white' },
-  { weeks: 36, rate: '$111.11/week', badge: 'Recommended', badgeColor: 'bg-coral-500 text-white', selected: true },
-  { weeks: 26, rate: '$153.85/week', badge: 'Fastest', badgeColor: 'bg-emerald-500 text-white' },
+  { weeks: 104, rate: '$48.08/week', badge: 'Lowest', badgeColor: 'bg-navy text-white' },
+  { weeks: 78, rate: '$64.11/week', badge: 'Recommended', badgeColor: 'bg-coral-500 text-white', selected: true },
+  { weeks: 52, rate: '$96.16/week', badge: 'Fastest', badgeColor: 'bg-emerald-500 text-white' },
 ]
 
 function DepositAidScreen() {
