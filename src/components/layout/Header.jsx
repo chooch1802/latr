@@ -10,7 +10,6 @@ const navLinks = [
   { label: 'Features', href: '#features' },
   { label: 'How It Works', href: '#simplify' },
   { label: 'Calculator', href: '#calculator' },
-  { label: 'Apply Now', href: '#social-proof' },
 ]
 
 export default function Header() {
@@ -62,6 +61,12 @@ export default function Header() {
                 {link.label}
               </a>
             ))}
+            <Link
+              to="/properties"
+              className="text-base font-medium text-gray-900 transition-colors duration-200 hover:text-coral-500"
+            >
+              Apply Now
+            </Link>
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
@@ -118,6 +123,13 @@ export default function Header() {
                 {link.label}
               </a>
             ))}
+            <Link
+              to="/properties"
+              onClick={() => setMenuOpen(false)}
+              className="text-3xl font-bold text-white hover:text-white/80 transition-colors"
+            >
+              Apply Now
+            </Link>
             {session ? (
               <Link to="/dashboard" onClick={() => setMenuOpen(false)}>
                 <Button variant="secondary" size="lg">Dashboard</Button>
