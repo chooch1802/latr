@@ -62,23 +62,23 @@ export default function DepositAidPage() {
     <div className="max-w-3xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <div>
+        <div className="min-w-0 mr-3">
           <h1 className="text-2xl font-bold text-navy mb-1">Deposit Aid</h1>
           <p className="text-gray-500 text-sm">Manage your deposit financing</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-2 shrink-0">
           <Link
             to="/deposit-calculator"
-            className="h-10 px-4 border-2 border-gray-200 text-gray-700 font-medium rounded-xl inline-flex items-center gap-2 text-sm hover:bg-gray-50 transition-colors"
+            className="h-10 px-3 border-2 border-gray-200 text-gray-700 font-medium rounded-xl inline-flex items-center gap-1.5 text-xs sm:text-sm whitespace-nowrap hover:bg-gray-50 transition-colors"
           >
-            <Calculator className="w-4 h-4" />
+            <Calculator className="w-4 h-4 shrink-0" />
             Calculator
           </Link>
           <Link
             to="/deposit-aid/apply"
-            className="h-10 px-4 bg-coral-500 text-white font-medium rounded-xl inline-flex items-center gap-2 text-sm hover:bg-coral-600 transition-colors"
+            className="h-10 px-3 bg-coral-500 text-white font-medium rounded-xl inline-flex items-center gap-1.5 text-xs sm:text-sm whitespace-nowrap hover:bg-coral-600 transition-colors"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 shrink-0" />
             Apply
           </Link>
         </div>
