@@ -26,7 +26,7 @@ const testimonials = [
     avatar: 'PK',
     avatarColor: 'from-coral-400 to-orange-400',
     rating: 5,
-    text: "The Household Hub is amazing. My three roommates and I split everything automatically. No more awkward conversations about who owes what. Bills are sorted every month.",
+    text: "The Hub is amazing. My three roommates and I split everything automatically. No more awkward conversations about who owes what. Bills are sorted every month.",
   },
   {
     name: 'Daniel R.',

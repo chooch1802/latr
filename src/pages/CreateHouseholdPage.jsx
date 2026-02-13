@@ -137,7 +137,7 @@ export default function CreateHouseholdPage() {
         className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-coral-500 transition-colors mb-4"
       >
         <ArrowLeft className="w-4 h-4" />
-        Back to Household Hub
+        Back to Hub
       </Link>
 
       <h1 className="text-xl font-bold text-navy mb-6">Create Household</h1>

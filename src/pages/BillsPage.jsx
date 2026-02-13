@@ -73,7 +73,7 @@ export default function BillsPage() {
         className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-coral-500 transition-colors mb-4"
       >
         <ArrowLeft className="w-4 h-4" />
-        Back to Household Hub
+        Back to Hub
       </Link>
 
       <div className="flex items-center justify-between mb-6">

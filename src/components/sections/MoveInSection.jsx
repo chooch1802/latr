@@ -128,7 +128,7 @@ export default function MoveInSection() {
             {...fadeInUp}
             className="text-lg md:text-xl text-white/80 font-normal max-w-[500px] mb-12"
           >
-            Your Household Hub keeps all your rental finances in one place.
+            Your Hub keeps all your rental finances in one place.
           </motion.p>
 
           {/* Feature Grid */}

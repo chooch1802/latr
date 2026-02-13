@@ -96,7 +96,7 @@ export default function ManageHouseholdPage() {
         invitee.id,
         'household_invite',
         `You've been invited to ${name || 'a household'}`,
-        `You've been invited to join a household. Check your Household Hub for details.`,
+        `You've been invited to join a household. Check your Hub for details.`,
         { link: '/household' }
       )
     }
@@ -131,7 +131,7 @@ export default function ManageHouseholdPage() {
         className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-coral-500 transition-colors mb-4"
       >
         <ArrowLeft className="w-4 h-4" />
-        Back to Household Hub
+        Back to Hub
       </Link>
 
       <h1 className="text-xl font-bold text-navy mb-6">Manage Household</h1>

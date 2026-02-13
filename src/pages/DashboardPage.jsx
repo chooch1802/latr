@@ -27,7 +27,7 @@ const quickActions = [
     color: 'bg-blue-50 text-blue-500',
   },
   {
-    title: 'Household Hub',
+    title: 'Hub',
     description: 'Manage your household.',
     icon: Users,
     href: '/household',

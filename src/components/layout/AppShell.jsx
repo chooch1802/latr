@@ -10,7 +10,7 @@ const navItems = [
   { label: 'Properties', href: '/properties', icon: Home },
   { label: 'Applications', href: '/apply', icon: FileText },
   { label: 'Deposit Aid', href: '/deposit-aid', icon: Landmark },
-  { label: 'Household', href: '/household', icon: Users },
+  { label: 'Hub', href: '/household', icon: Users },
   { label: 'Settings', href: '/settings', icon: Settings },
 ]
 

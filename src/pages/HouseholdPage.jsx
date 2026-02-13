@@ -66,7 +66,7 @@ export default function HouseholdPage() {
         <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <Users className="w-8 h-8 text-emerald-500" />
         </div>
-        <h1 className="text-2xl font-bold text-navy mb-2">Household Hub</h1>
+        <h1 className="text-2xl font-bold text-navy mb-2">Hub</h1>
         <p className="text-gray-500 mb-6">
           Create a household to manage roommates, split bills, and track shared expenses.
         </p>
@@ -92,7 +92,7 @@ export default function HouseholdPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-navy mb-1">Household Hub</h1>
+          <h1 className="text-2xl font-bold text-navy mb-1">Hub</h1>
           <p className="text-gray-500 text-sm">{household.name}</p>
         </div>
         <div className="flex gap-2">
