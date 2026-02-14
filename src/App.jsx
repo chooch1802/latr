@@ -2,7 +2,15 @@ import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import AppShell from './components/layout/AppShell'
-import LoadingSpinner from './components/ui/LoadingSpinner'
+
+// Loading spinner shown while lazy chunks load
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="w-8 h-8 border-3 border-coral-200 border-t-coral-500 rounded-full animate-spin" />
+    </div>
+  )
+}
 
 // Public pages
 const LandingPage = lazy(() => import('./pages/LandingPage'))
@@ -44,7 +52,7 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 function App() {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<PageLoader />}>
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<LandingPage />} />
