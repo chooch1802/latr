@@ -9,8 +9,8 @@ const benefits = [
   },
   {
     icon: Shield,
-    label: 'No Credit Score',
-    sublabel: 'Credit history not required',
+    label: 'Soft Credit Check',
+    sublabel: 'No impact on your score',
   },
   {
     icon: Zap,
