@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import {
   ArrowLeft, Landmark, DollarSign, Calendar, BarChart3,
-  CheckCircle2, Clock, User, Building2
+  CheckCircle2, Clock, User, Building2, TrendingUp
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
@@ -14,6 +14,7 @@ export default function DepositDetailPage() {
   const { user } = useAuth()
   const [deposit, setDeposit] = useState(null)
   const [repayments, setRepayments] = useState([])
+  const [roundupData, setRoundupData] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -26,6 +27,27 @@ export default function DepositDetailPage() {
         if (depErr) throw depErr
         setDeposit(dep)
         setRepayments(reps || [])
+
+        // Fetch round-up data for this deposit
+        const { data: roundupSettings } = await supabase
+          .from('roundup_settings')
+          .select('id, total_contributed')
+          .eq('deposit_application_id', id)
+          .eq('user_id', user.id)
+          .limit(1)
+          .single()
+
+        if (roundupSettings) {
+          const { count } = await supabase
+            .from('roundup_transactions')
+            .select('id', { count: 'exact', head: true })
+            .eq('roundup_setting_id', roundupSettings.id)
+
+          setRoundupData({
+            total: Number(roundupSettings.total_contributed || 0),
+            count: count || 0,
+          })
+        }
       } catch {
         navigate('/deposit-aid', { replace: true })
       } finally {
@@ -108,6 +130,31 @@ export default function DepositDetailPage() {
           <Row label="Interest rate" value={`${((deposit.interest_rate || 0.20) * 100).toFixed(1)}%`} />
           <Row label="Plan duration" value={`${deposit.plan_weeks} weeks`} />
         </Section>
+
+        {roundupData && (
+          <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <TrendingUp className="w-4 h-4 text-coral-500" />
+              <h2 className="text-sm font-semibold text-gray-700">Round-Up Contributions</h2>
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500">Total contributed</span>
+                <span className="text-emerald-600 font-semibold">${roundupData.total.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500">Transactions</span>
+                <span className="text-navy font-medium">{roundupData.count}</span>
+              </div>
+            </div>
+            <Link
+              to="/round-up"
+              className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-coral-500 hover:text-coral-600 transition-colors"
+            >
+              View Round-Up dashboard &rarr;
+            </Link>
+          </div>
+        )}
 
         {deposit.credit_score && (
           <Section icon={BarChart3} title="Cash Flow Assessment">

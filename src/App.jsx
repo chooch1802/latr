@@ -40,6 +40,8 @@ const DepositCalculatorPage = lazy(() => import('./pages/DepositCalculatorPage')
 const DepositApplyPage = lazy(() => import('./pages/DepositApplyPage'))
 const DepositConfirmPage = lazy(() => import('./pages/DepositConfirmPage'))
 const DepositDetailPage = lazy(() => import('./pages/DepositDetailPage'))
+const RoundUpPage = lazy(() => import('./pages/RoundUpPage'))
+const RoundUpSetupPage = lazy(() => import('./pages/RoundUpSetupPage'))
 const HouseholdPage = lazy(() => import('./pages/HouseholdPage'))
 const CreateHouseholdPage = lazy(() => import('./pages/CreateHouseholdPage'))
 const ManageHouseholdPage = lazy(() => import('./pages/ManageHouseholdPage'))
@@ -86,6 +88,8 @@ function App() {
             <Route path="/deposit-aid/apply" element={<DepositApplyPage />} />
             <Route path="/deposit-aid/confirm/:id" element={<DepositConfirmPage />} />
             <Route path="/deposit-aid/:id" element={<DepositDetailPage />} />
+            <Route path="/round-up" element={<RoundUpPage />} />
+            <Route path="/round-up/setup" element={<RoundUpSetupPage />} />
             <Route path="/household" element={<HouseholdPage />} />
             <Route path="/household/create" element={<CreateHouseholdPage />} />
             <Route path="/household/:id/manage" element={<ManageHouseholdPage />} />

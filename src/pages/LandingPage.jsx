@@ -10,6 +10,7 @@ import SmartApplySection from '../components/sections/SmartApplySection'
 import ApprovalsSection from '../components/sections/ApprovalsSection'
 import MoveInSection from '../components/sections/MoveInSection'
 import CalculatorSection from '../components/sections/CalculatorSection'
+import RoundUpSection from '../components/sections/RoundUpSection'
 import SocialProofSection from '../components/sections/SocialProofSection'
 import TestimonialsSection from '../components/sections/TestimonialsSection'
 
@@ -29,6 +30,7 @@ export default function LandingPage() {
         <ApprovalsSection />
         <MoveInSection />
         <CalculatorSection />
+        <RoundUpSection />
         <SocialProofSection />
         <TestimonialsSection />
       </main>

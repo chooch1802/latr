@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Home, FileText, Landmark, Users, LogOut, Settings } from 'lucide-react'
+import { LayoutDashboard, Home, FileText, Landmark, TrendingUp, Users, LogOut, Settings } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import NotificationBell from './NotificationBell'
 import PageTransition from './PageTransition'
@@ -10,6 +10,7 @@ const navItems = [
   { label: 'Properties', href: '/properties', icon: Home },
   { label: 'Applications', href: '/apply', icon: FileText },
   { label: 'Deposit Aid', href: '/deposit-aid', icon: Landmark },
+  { label: 'Round-Up', href: '/round-up', icon: TrendingUp },
   { label: 'Hub', href: '/household', icon: Users },
   { label: 'Settings', href: '/settings', icon: Settings },
 ]

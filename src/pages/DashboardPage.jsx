@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Home, FileText, Landmark, Users, Plus, Send, CheckCircle2, DollarSign } from 'lucide-react'
+import { Home, FileText, Landmark, Users, Plus, Send, CheckCircle2, DollarSign, TrendingUp } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -25,6 +25,13 @@ const quickActions = [
     icon: Landmark,
     href: '/deposit-aid',
     color: 'bg-blue-50 text-blue-500',
+  },
+  {
+    title: 'Round-Up',
+    description: 'Spare change to your deposit.',
+    icon: TrendingUp,
+    href: '/round-up',
+    color: 'bg-amber-50 text-amber-500',
   },
   {
     title: 'Hub',
