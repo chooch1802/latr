@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Bed, Bath, Home, MapPin, Calendar, DollarSign, Heart, Share2 } from 'lucide-react'
+import { ArrowLeft, Bed, Bath, Home, MapPin, Calendar, DollarSign, Heart, Share2, Car } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
 export default function PropertyDetailPage() {
@@ -91,9 +91,11 @@ export default function PropertyDetailPage() {
               <Home className="w-16 h-16" />
             </div>
           )}
-          {/* LATR badge */}
-          <div className="absolute top-3 right-3 bg-coral-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-            LATR
+          {/* Source badge */}
+          <div className={`absolute top-3 right-3 text-white text-xs font-bold px-3 py-1 rounded-full ${
+            property.source === 'domain' ? 'bg-navy/80 backdrop-blur-sm' : 'bg-coral-500'
+          }`}>
+            {property.source === 'domain' ? 'Domain.com.au' : 'LATR'}
           </div>
         </div>
 
@@ -134,7 +136,7 @@ export default function PropertyDetailPage() {
           </div>
 
           {/* Features grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className={`grid grid-cols-2 gap-4 ${property.parking != null ? 'sm:grid-cols-5' : 'sm:grid-cols-4'}`}>
             <div className="p-4 bg-gray-50 rounded-xl text-center">
               <Bed className="w-5 h-5 text-gray-400 mx-auto mb-1" />
               <p className="text-sm font-semibold text-navy">
@@ -145,6 +147,12 @@ export default function PropertyDetailPage() {
               <Bath className="w-5 h-5 text-gray-400 mx-auto mb-1" />
               <p className="text-sm font-semibold text-navy">{property.bathrooms} Bath</p>
             </div>
+            {property.parking != null && (
+              <div className="p-4 bg-gray-50 rounded-xl text-center">
+                <Car className="w-5 h-5 text-gray-400 mx-auto mb-1" />
+                <p className="text-sm font-semibold text-navy">{property.parking} Parking</p>
+              </div>
+            )}
             <div className="p-4 bg-gray-50 rounded-xl text-center">
               <Home className="w-5 h-5 text-gray-400 mx-auto mb-1" />
               <p className="text-sm font-semibold text-navy capitalize">{property.property_type}</p>
@@ -172,11 +180,15 @@ export default function PropertyDetailPage() {
           {/* Description */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-navy mb-3">About this property</h2>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              {property.bedrooms === 0 ? 'A modern studio' : `A spacious ${property.bedrooms}-bedroom ${property.property_type}`} located
-              in the heart of {property.city}. This property features {property.bathrooms} bathroom{property.bathrooms > 1 ? 's' : ''}
-              {' '}and is available from {availableDate}. Perfect for professionals or small families looking for
-              comfortable living in a prime location.
+            <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">
+              {property.description || (
+                <>
+                  {property.bedrooms === 0 ? 'A modern studio' : `A spacious ${property.bedrooms}-bedroom ${property.property_type}`} located
+                  in the heart of {property.city}. This property features {property.bathrooms} bathroom{property.bathrooms > 1 ? 's' : ''}
+                  {' '}and is available from {availableDate}. Perfect for professionals or small families looking for
+                  comfortable living in a prime location.
+                </>
+              )}
             </p>
           </div>
 
@@ -184,11 +196,17 @@ export default function PropertyDetailPage() {
           <div className="bg-white rounded-2xl border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-navy mb-3">Listing Details</h2>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-coral-100 text-coral-500 flex items-center justify-center text-sm font-bold">
-                L
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
+                property.source === 'domain'
+                  ? 'bg-navy/10 text-navy'
+                  : 'bg-coral-100 text-coral-500'
+              }`}>
+                {property.source === 'domain' ? 'D' : 'L'}
               </div>
               <div>
-                <p className="font-medium text-navy">Listed on LATR</p>
+                <p className="font-medium text-navy">
+                  {property.source === 'domain' ? 'Listed on Domain.com.au' : 'Listed on LATR'}
+                </p>
                 <p className="text-sm text-gray-500">{property.city}, {property.state}</p>
               </div>
             </div>
