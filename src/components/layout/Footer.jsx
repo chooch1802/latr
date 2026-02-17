@@ -129,7 +129,7 @@ export default function Footer() {
                 </span>
               ))}
             </div>
-            <p className="text-sm text-white/60">&copy; 2026 LATR. All rights reserved.</p>
+            <p className="text-sm text-white/60">&copy; 2026 LATR Payments Pty Ltd. All rights reserved.</p>
           </div>
         </div>
       </div>
