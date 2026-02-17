@@ -6,7 +6,7 @@ export default function TermsPage() {
       <p>
         Welcome to LATR. These Terms of Service ("Terms") govern your use of the LATR
         platform, website, and services (collectively, the "Service") operated by LATR
-        Payments Pty Ltd (ABN pending) ("we", "us", or "our").
+        Payments Pty Ltd (ABN 36 695 396 386, ACN 695 396 386) ("we", "us", or "our").
       </p>
       <p>
         By accessing or using the Service, you agree to be bound by these Terms. If you

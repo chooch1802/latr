@@ -4,7 +4,7 @@ export default function PrivacyPage() {
   return (
     <StaticPageLayout title="Privacy Policy" lastUpdated="9 February 2026">
       <p>
-        LATR Payments Pty Ltd ("LATR", "we", "us", or "our") is committed to protecting
+        LATR Payments Pty Ltd (ABN 36 695 396 386, ACN 695 396 386) ("LATR", "we", "us", or "our") is committed to protecting
         your privacy. This Privacy Policy explains how we collect, use, disclose, and
         safeguard your personal information when you use the LATR platform and services.
       </p>

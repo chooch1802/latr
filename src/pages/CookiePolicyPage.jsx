@@ -4,7 +4,7 @@ export default function CookiePolicyPage() {
   return (
     <StaticPageLayout title="Cookie Policy" lastUpdated="9 February 2026">
       <p>
-        This Cookie Policy explains how LATR Payments Pty Ltd ("LATR", "we", "us") uses
+        This Cookie Policy explains how LATR Payments Pty Ltd (ABN 36 695 396 386, ACN 695 396 386) ("LATR", "we", "us") uses
         cookies and similar technologies when you visit or use our platform.
       </p>
 

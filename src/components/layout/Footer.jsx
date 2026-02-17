@@ -129,7 +129,10 @@ export default function Footer() {
                 </span>
               ))}
             </div>
-            <p className="text-sm text-white/60">&copy; 2026 LATR Payments Pty Ltd. All rights reserved.</p>
+            <div className="text-sm text-white/60 text-center md:text-right">
+              <p>&copy; 2026 LATR Payments Pty Ltd. All rights reserved.</p>
+              <p className="text-xs text-white/40 mt-1">ABN 36 695 396 386 · ACN 695 396 386</p>
+            </div>
           </div>
         </div>
       </div>
