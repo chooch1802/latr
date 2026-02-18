@@ -1,196 +1,274 @@
-import { motion } from 'framer-motion'
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, TrendingUp, Coins, ShieldCheck } from 'lucide-react'
 import { fadeInUp, staggerContainer, staggerItem } from '../../utils/animations'
+import { useEffect, useRef } from 'react'
 
-const flowSteps = [
-  {
-    label: 'You spend',
-    value: '$4.50',
-    sub: 'Morning coffee',
-    bg: 'bg-white/10',
-    border: 'border-white/20',
-  },
-  {
-    label: 'We round to',
-    value: '$5.00',
-    sub: 'Nearest dollar',
-    bg: 'bg-white/15',
-    border: 'border-white/25',
-  },
-  {
-    label: 'Your deposit gets',
-    value: '+$0.50',
-    sub: 'Automatically',
-    bg: 'bg-coral-500/80',
-    border: 'border-coral-400/50',
-    highlight: true,
-  },
+function AnimatedCounter({ target, prefix = '$', duration = 2 }) {
+  const ref = useRef(null)
+  const motionVal = useMotionValue(0)
+  const rounded = useTransform(motionVal, (v) => `${prefix}${Math.round(v).toLocaleString()}`)
+
+  useEffect(() => {
+    const node = ref.current
+    if (!node) return
+    const unsub = rounded.on('change', (v) => { node.textContent = v })
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          animate(motionVal, target, { duration, ease: 'easeOut' })
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.5 }
+    )
+    observer.observe(node)
+    return () => { unsub(); observer.disconnect() }
+  }, [motionVal, rounded, target, duration])
+
+  return <span ref={ref}>{prefix}0</span>
+}
+
+const metrics = [
+  { label: 'Avg. monthly savings', value: 52, prefix: '$', icon: Coins },
+  { label: 'Avg. yearly impact', value: 624, prefix: '$', icon: TrendingUp },
+  { label: 'Zero impact to credit', value: null, icon: ShieldCheck },
 ]
 
 export default function RoundUpSection() {
   return (
     <section
-      className="relative bg-gradient-to-b from-[#0B1A2B] to-[#0B1A2B]/95 py-20 md:py-28 overflow-hidden"
+      className="relative bg-[#060D1B] py-24 md:py-32 overflow-hidden"
       aria-labelledby="roundup-heading"
     >
-      {/* Decorative blurs */}
-      <div className="absolute top-20 right-[-10%] w-[300px] h-[300px] rounded-full bg-coral-500/10 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 left-[-5%] w-[200px] h-[200px] rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
+      {/* Ambient glow effects */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full bg-coral-500/[0.04] blur-[120px] pointer-events-none" />
+      <div className="absolute top-40 right-[-15%] w-[500px] h-[500px] rounded-full bg-coral-500/[0.06] blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-20 left-[-10%] w-[400px] h-[400px] rounded-full bg-blue-500/[0.03] blur-[100px] pointer-events-none" />
+
+      {/* Subtle grid overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
+          backgroundSize: '60px 60px',
+        }}
+      />
 
       <div className="max-w-[1280px] mx-auto px-6 md:px-20 relative z-10">
         {/* Badge */}
-        <motion.div {...fadeInUp} className="flex justify-center mb-6">
-          <span className="inline-block border-2 border-coral-500 text-coral-500 text-sm font-semibold uppercase tracking-widest px-5 py-2 rounded-full">
+        <motion.div {...fadeInUp} className="flex justify-center mb-8">
+          <span className="inline-flex items-center gap-2 bg-coral-500/10 border border-coral-500/20 text-coral-400 text-xs font-semibold uppercase tracking-[0.2em] px-5 py-2.5 rounded-full backdrop-blur-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-coral-500 animate-pulse" />
             Round-Up
           </span>
         </motion.div>
 
-        {/* Two-column: copy left, mockup right */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-12 md:mb-16">
-          {/* Left: headline + description */}
+        {/* Two-column hero: copy left, mockup right */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center mb-20 md:mb-28">
+          {/* Left */}
           <div>
             <motion.h2
               {...fadeInUp}
               id="roundup-heading"
-              className="text-3xl sm:text-4xl md:text-[48px] font-bold text-white leading-tight tracking-tight mb-4"
+              className="text-4xl sm:text-5xl md:text-[56px] font-bold text-white leading-[1.08] tracking-tight mb-5"
             >
-              Hit your goals with Round-Up
+              Every cent counts.{' '}
+              <span className="bg-gradient-to-r from-coral-400 to-coral-500 bg-clip-text text-transparent">
+                Make them work.
+              </span>
             </motion.h2>
 
             <motion.p
               {...fadeInUp}
-              className="text-lg md:text-xl text-white/60 mb-8 max-w-[480px]"
+              className="text-lg md:text-xl text-white/50 mb-10 max-w-[480px] leading-relaxed"
             >
-              Whether you&apos;re paying off your deposit faster or building a savings buffer, use Round-Up to reach your goals without even thinking about it.
+              Round-Up turns your everyday spending into automatic deposit repayments. Set it once, and every purchase chips away at your bond.
             </motion.p>
 
-            <motion.div {...fadeInUp} className="space-y-4 mb-8">
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-coral-500/20 flex items-center justify-center mt-0.5 shrink-0">
-                  <div className="w-2 h-2 rounded-full bg-coral-500" />
+            {/* Feature pills */}
+            <motion.div {...fadeInUp} className="space-y-3 mb-10">
+              {[
+                { text: 'Choose your rounding', detail: '$1, $2 or $5 — you decide how much spare change goes toward your deposit' },
+                { text: 'Fully automatic', detail: 'Once enabled, every transaction is rounded up without lifting a finger' },
+                { text: 'Set a weekly cap', detail: 'Stay in control with a spending limit that suits your budget' },
+              ].map((item) => (
+                <div key={item.text} className="group flex items-start gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-coral-500/20 transition-all duration-300">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-coral-500/20 to-coral-500/5 flex items-center justify-center mt-0.5 shrink-0 border border-coral-500/10">
+                    <div className="w-2 h-2 rounded-full bg-coral-500 group-hover:scale-125 transition-transform" />
+                  </div>
+                  <div>
+                    <p className="text-white font-semibold text-sm mb-0.5">{item.text}</p>
+                    <p className="text-white/40 text-sm leading-relaxed">{item.detail}</p>
+                  </div>
                 </div>
-                <p className="text-white/70 text-sm md:text-base">
-                  Automatically rounds up your everyday transactions to the nearest <span className="text-white font-semibold">$1, $2 or $5</span>
-                </p>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-coral-500/20 flex items-center justify-center mt-0.5 shrink-0">
-                  <div className="w-2 h-2 rounded-full bg-coral-500" />
-                </div>
-                <p className="text-white/70 text-sm md:text-base">
-                  Spare change goes straight toward your <span className="text-white font-semibold">deposit repayments</span>
-                </p>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-coral-500/20 flex items-center justify-center mt-0.5 shrink-0">
-                  <div className="w-2 h-2 rounded-full bg-coral-500" />
-                </div>
-                <p className="text-white/70 text-sm md:text-base">
-                  Set a <span className="text-white font-semibold">weekly cap</span> so you&apos;re always in control
-                </p>
-              </div>
+              ))}
             </motion.div>
 
             {/* CTA */}
-            <motion.div {...fadeInUp}>
+            <motion.div {...fadeInUp} className="flex items-center gap-4">
               <Link
                 to="/signup"
-                className="inline-flex items-center gap-2 h-12 px-8 bg-coral-500 text-white font-semibold rounded-full hover:bg-coral-600 transition-colors shadow-lg shadow-coral-500/25"
+                className="group inline-flex items-center gap-2.5 h-13 px-8 bg-gradient-to-r from-coral-500 to-coral-600 text-white font-semibold rounded-full hover:from-coral-600 hover:to-coral-700 transition-all shadow-lg shadow-coral-500/20 hover:shadow-coral-500/30"
               >
                 Start rounding up
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
+              <span className="text-white/30 text-sm">No credit impact</span>
             </motion.div>
           </div>
 
-          {/* Right: iPhone mockup */}
+          {/* Right: iPhone mockup with premium presentation */}
           <motion.div
-            {...fadeInUp}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
             className="flex justify-center lg:justify-end"
           >
             <div className="relative">
-              {/* Coral glow circle behind phone */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] md:w-[400px] md:h-[400px] rounded-full bg-coral-500/15 blur-2xl pointer-events-none" />
-              <img
+              {/* Layered glow rings */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[360px] md:h-[360px] rounded-full border border-coral-500/10 pointer-events-none" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] md:w-[440px] md:h-[440px] rounded-full border border-coral-500/[0.05] pointer-events-none" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[240px] md:w-[300px] md:h-[300px] rounded-full bg-coral-500/10 blur-[80px] pointer-events-none" />
+              <motion.img
                 src="/images/roundup-mockup.svg"
-                alt="LATR Round-Up feature showing $545 in total round-ups with recent transactions from Woolworths, 7-Eleven, and The Coffee Club"
-                className="relative z-10 w-[300px] md:w-[380px] drop-shadow-2xl"
+                alt="LATR Round-Up feature showing $545 in total round-ups with recent transactions"
+                className="relative z-10 w-[280px] md:w-[340px]"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
               />
             </div>
           </motion.div>
         </div>
 
-        {/* How Round-Up Works — stepped explainer */}
-        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 lg:gap-16 items-start mb-16 md:mb-20">
-          {/* Left: heading */}
-          <motion.div {...fadeInUp}>
-            <h3 className="text-2xl sm:text-3xl md:text-[40px] font-bold text-white leading-tight tracking-tight mb-3">
-              How Round-Up works
+        {/* Metrics bar */}
+        <motion.div
+          {...fadeInUp}
+          className="grid grid-cols-1 sm:grid-cols-3 gap-px mb-20 md:mb-28 rounded-2xl overflow-hidden border border-white/[0.06] bg-white/[0.03]"
+        >
+          {metrics.map((m) => (
+            <div key={m.label} className="flex items-center gap-4 px-6 py-6 md:py-8 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-coral-500/15 to-transparent flex items-center justify-center shrink-0 border border-coral-500/10">
+                <m.icon className="w-5 h-5 text-coral-400" />
+              </div>
+              <div>
+                <p className="text-2xl md:text-3xl font-bold text-white tracking-tight">
+                  {m.value !== null ? <AnimatedCounter target={m.value} prefix={m.prefix} /> : <span className="text-xl md:text-2xl">Soft check only</span>}
+                </p>
+                <p className="text-white/40 text-sm">{m.label}</p>
+              </div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* How it works — premium stepped layout */}
+        <div className="mb-20 md:mb-28">
+          <motion.div {...fadeInUp} className="text-center mb-12">
+            <h3 className="text-3xl sm:text-4xl md:text-[44px] font-bold text-white tracking-tight mb-3">
+              How it works
             </h3>
-            <p className="text-white/50 text-base">Small decisions add up quick.</p>
+            <p className="text-white/40 text-lg">Three steps. Completely automatic.</p>
           </motion.div>
 
-          {/* Right: 3 steps with staggered colored bars */}
-          <motion.div {...staggerContainer} className="space-y-4">
+          <motion.div {...staggerContainer} className="max-w-[800px] mx-auto">
             {[
-              { num: '01', text: 'Buy something.', bg: 'bg-coral-500/20', circle: 'bg-coral-500/30 text-coral-300' },
-              { num: '02', text: 'We round it up to the nearest $1, $2 or $5 — you choose.', bg: 'bg-coral-500/30', circle: 'bg-coral-500/40 text-coral-200' },
-              { num: '03', text: 'The difference goes straight toward your deposit repayments.', bg: 'bg-coral-500/40', circle: 'bg-coral-500/50 text-white' },
+              { num: '01', title: 'Buy something', desc: 'Use your linked bank account for any everyday purchase.', accent: 'from-coral-500/20 to-coral-500/5' },
+              { num: '02', title: 'We round it up', desc: 'To the nearest $1, $2 or $5 — you choose the amount.', accent: 'from-coral-500/30 to-coral-500/10' },
+              { num: '03', title: 'Deposit gets paid', desc: 'The spare change goes straight toward your deposit repayments.', accent: 'from-coral-500/40 to-coral-500/15' },
             ].map((step, i) => (
               <motion.div
                 key={step.num}
                 {...staggerItem}
-                className={`flex items-center gap-5 rounded-2xl px-6 py-5 ${step.bg}`}
-                style={{ marginLeft: `${i * 40}px` }}
+                className="relative flex items-stretch"
               >
-                <div className={`w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${step.circle}`}>
-                  {step.num}
+                {/* Timeline line */}
+                {i < 2 && (
+                  <div className="absolute left-[27px] top-[56px] bottom-0 w-px bg-gradient-to-b from-coral-500/30 to-transparent" />
+                )}
+
+                {/* Number circle */}
+                <div className="relative z-10 shrink-0 mr-6">
+                  <div className={`w-[55px] h-[55px] rounded-2xl bg-gradient-to-br ${step.accent} border border-coral-500/20 flex items-center justify-center`}>
+                    <span className="text-coral-400 text-sm font-bold tracking-wider">{step.num}</span>
+                  </div>
                 </div>
-                <p className="text-white text-base md:text-lg font-medium">{step.text}</p>
+
+                {/* Content */}
+                <div className="flex-1 pb-10">
+                  <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.05] hover:border-coral-500/15 transition-all duration-300">
+                    <h4 className="text-white font-semibold text-lg mb-1">{step.title}</h4>
+                    <p className="text-white/45 text-sm leading-relaxed">{step.desc}</p>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </motion.div>
         </div>
 
-        {/* 3-card visual flow */}
-        <motion.div
-          {...staggerContainer}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-[900px] mx-auto mb-12"
-        >
-          {flowSteps.map((step, i) => (
-            <motion.div
-              key={i}
-              {...staggerItem}
-              className={`relative rounded-2xl border p-6 md:p-8 text-center ${step.bg} ${step.border} backdrop-blur-sm`}
-            >
-              <p className="text-white/60 text-sm font-medium mb-2">{step.label}</p>
-              <p className={`text-3xl md:text-4xl font-extrabold mb-1 ${step.highlight ? 'text-coral-400' : 'text-white'}`}>
-                {step.value}
-              </p>
-              <p className="text-white/40 text-sm">{step.sub}</p>
-
-              {/* Arrow between cards (desktop only) */}
-              {i < flowSteps.length - 1 && (
-                <div className="hidden md:flex absolute -right-5 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/10 items-center justify-center">
-                  <ArrowRight className="w-4 h-4 text-white/60" />
-                </div>
-              )}
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Impact stat */}
+        {/* Live transaction feed — glass card */}
         <motion.div
           {...fadeInUp}
-          className="text-center"
+          className="max-w-[700px] mx-auto mb-16"
         >
-          <div className="inline-flex items-center gap-3 bg-white/5 border border-white/10 rounded-full px-6 py-3">
-            <div className="w-2 h-2 rounded-full bg-coral-500 animate-pulse" />
-            <span className="text-white/80 text-sm md:text-base font-medium">
-              The average user saves <span className="text-coral-400 font-bold">$52/month</span> with Round-Up
-            </span>
+          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-white/60 text-sm font-medium tracking-wide">Live round-up preview</span>
+              </div>
+              <span className="text-white/30 text-xs font-mono">Today</span>
+            </div>
+
+            {[
+              { merchant: 'Woolworths', category: 'Groceries', original: '$47.85', rounded: '$50.00', saved: '+$2.15' },
+              { merchant: '7-Eleven', category: 'Fuel', original: '$63.60', rounded: '$65.00', saved: '+$1.40' },
+              { merchant: 'The Coffee Club', category: 'Cafe', original: '$4.60', rounded: '$5.00', saved: '+$0.40' },
+            ].map((tx, i) => (
+              <motion.div
+                key={tx.merchant}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 * i, duration: 0.5 }}
+                className="flex items-center justify-between px-6 py-4 border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/10 flex items-center justify-center">
+                    <span className="text-emerald-400 text-xs font-bold">+</span>
+                  </div>
+                  <div>
+                    <p className="text-white text-sm font-medium">{tx.merchant}</p>
+                    <p className="text-white/30 text-xs">{tx.category}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-emerald-400 text-sm font-semibold">{tx.saved}</p>
+                  <p className="text-white/25 text-xs font-mono">{tx.original} → {tx.rounded}</p>
+                </div>
+              </motion.div>
+            ))}
+
+            <div className="px-6 py-4 bg-gradient-to-r from-coral-500/10 to-transparent border-t border-white/[0.06]">
+              <div className="flex items-center justify-between">
+                <span className="text-white/50 text-sm">Today&apos;s round-ups</span>
+                <span className="text-coral-400 font-bold text-lg">+$3.95</span>
+              </div>
+            </div>
           </div>
+        </motion.div>
+
+        {/* Bottom CTA */}
+        <motion.div {...fadeInUp} className="text-center">
+          <Link
+            to="/signup"
+            className="group inline-flex items-center gap-2.5 h-13 px-10 bg-gradient-to-r from-coral-500 to-coral-600 text-white font-semibold rounded-full hover:from-coral-600 hover:to-coral-700 transition-all shadow-lg shadow-coral-500/20 hover:shadow-coral-500/30 mb-4"
+          >
+            Get started with Round-Up
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+          <p className="text-white/30 text-sm">Free to enable. Cancel anytime.</p>
         </motion.div>
       </div>
     </section>
