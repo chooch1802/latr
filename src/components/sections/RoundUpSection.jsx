@@ -46,21 +46,112 @@ export default function RoundUpSection() {
           </span>
         </motion.div>
 
-        {/* Headline */}
-        <motion.h2
-          {...fadeInUp}
-          id="roundup-heading"
-          className="text-3xl sm:text-4xl md:text-[48px] font-bold text-white text-center leading-tight tracking-tight mb-4"
-        >
-          Every purchase helps<br />pay off your deposit
-        </motion.h2>
+        {/* Two-column: copy left, mockup right */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-12 md:mb-16">
+          {/* Left: headline + description */}
+          <div>
+            <motion.h2
+              {...fadeInUp}
+              id="roundup-heading"
+              className="text-3xl sm:text-4xl md:text-[48px] font-bold text-white leading-tight tracking-tight mb-4"
+            >
+              Hit your goals with Round-Up
+            </motion.h2>
 
-        <motion.p
-          {...fadeInUp}
-          className="text-lg md:text-xl text-white/60 text-center mb-12 md:mb-16 max-w-[550px] mx-auto"
-        >
-          Round up your everyday spending and put the spare change toward your deposit. It adds up fast.
-        </motion.p>
+            <motion.p
+              {...fadeInUp}
+              className="text-lg md:text-xl text-white/60 mb-8 max-w-[480px]"
+            >
+              Whether you&apos;re paying off your deposit faster or building a savings buffer, use Round-Up to reach your goals without even thinking about it.
+            </motion.p>
+
+            <motion.div {...fadeInUp} className="space-y-4 mb-8">
+              <div className="flex items-start gap-3">
+                <div className="w-6 h-6 rounded-full bg-coral-500/20 flex items-center justify-center mt-0.5 shrink-0">
+                  <div className="w-2 h-2 rounded-full bg-coral-500" />
+                </div>
+                <p className="text-white/70 text-sm md:text-base">
+                  Automatically rounds up your everyday transactions to the nearest <span className="text-white font-semibold">$1, $2 or $5</span>
+                </p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-6 h-6 rounded-full bg-coral-500/20 flex items-center justify-center mt-0.5 shrink-0">
+                  <div className="w-2 h-2 rounded-full bg-coral-500" />
+                </div>
+                <p className="text-white/70 text-sm md:text-base">
+                  Spare change goes straight toward your <span className="text-white font-semibold">deposit repayments</span>
+                </p>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-6 h-6 rounded-full bg-coral-500/20 flex items-center justify-center mt-0.5 shrink-0">
+                  <div className="w-2 h-2 rounded-full bg-coral-500" />
+                </div>
+                <p className="text-white/70 text-sm md:text-base">
+                  Set a <span className="text-white font-semibold">weekly cap</span> so you&apos;re always in control
+                </p>
+              </div>
+            </motion.div>
+
+            {/* CTA */}
+            <motion.div {...fadeInUp}>
+              <Link
+                to="/signup"
+                className="inline-flex items-center gap-2 h-12 px-8 bg-coral-500 text-white font-semibold rounded-full hover:bg-coral-600 transition-colors shadow-lg shadow-coral-500/25"
+              >
+                Start rounding up
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </motion.div>
+          </div>
+
+          {/* Right: iPhone mockup */}
+          <motion.div
+            {...fadeInUp}
+            className="flex justify-center lg:justify-end"
+          >
+            <div className="relative">
+              {/* Coral glow circle behind phone */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] md:w-[400px] md:h-[400px] rounded-full bg-coral-500/15 blur-2xl pointer-events-none" />
+              <img
+                src="/images/roundup-mockup.svg"
+                alt="LATR Round-Up feature showing $545 in total round-ups with recent transactions from Woolworths, 7-Eleven, and The Coffee Club"
+                className="relative z-10 w-[300px] md:w-[380px] drop-shadow-2xl"
+              />
+            </div>
+          </motion.div>
+        </div>
+
+        {/* How Round-Up Works — stepped explainer */}
+        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 lg:gap-16 items-start mb-16 md:mb-20">
+          {/* Left: heading */}
+          <motion.div {...fadeInUp}>
+            <h3 className="text-2xl sm:text-3xl md:text-[40px] font-bold text-white leading-tight tracking-tight mb-3">
+              How Round-Up works
+            </h3>
+            <p className="text-white/50 text-base">Small decisions add up quick.</p>
+          </motion.div>
+
+          {/* Right: 3 steps with staggered colored bars */}
+          <motion.div {...staggerContainer} className="space-y-4">
+            {[
+              { num: '01', text: 'Buy something.', bg: 'bg-coral-500/20', circle: 'bg-coral-500/30 text-coral-300' },
+              { num: '02', text: 'We round it up to the nearest $1, $2 or $5 — you choose.', bg: 'bg-coral-500/30', circle: 'bg-coral-500/40 text-coral-200' },
+              { num: '03', text: 'The difference goes straight toward your deposit repayments.', bg: 'bg-coral-500/40', circle: 'bg-coral-500/50 text-white' },
+            ].map((step, i) => (
+              <motion.div
+                key={step.num}
+                {...staggerItem}
+                className={`flex items-center gap-5 rounded-2xl px-6 py-5 ${step.bg}`}
+                style={{ marginLeft: `${i * 40}px` }}
+              >
+                <div className={`w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${step.circle}`}>
+                  {step.num}
+                </div>
+                <p className="text-white text-base md:text-lg font-medium">{step.text}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
 
         {/* 3-card visual flow */}
         <motion.div
@@ -92,7 +183,7 @@ export default function RoundUpSection() {
         {/* Impact stat */}
         <motion.div
           {...fadeInUp}
-          className="text-center mb-10"
+          className="text-center"
         >
           <div className="inline-flex items-center gap-3 bg-white/5 border border-white/10 rounded-full px-6 py-3">
             <div className="w-2 h-2 rounded-full bg-coral-500 animate-pulse" />
@@ -100,17 +191,6 @@ export default function RoundUpSection() {
               The average user saves <span className="text-coral-400 font-bold">$52/month</span> with Round-Up
             </span>
           </div>
-        </motion.div>
-
-        {/* CTA */}
-        <motion.div {...fadeInUp} className="flex justify-center">
-          <Link
-            to="/signup"
-            className="inline-flex items-center gap-2 h-12 px-8 bg-coral-500 text-white font-semibold rounded-full hover:bg-coral-600 transition-colors shadow-lg shadow-coral-500/25"
-          >
-            Start rounding up
-            <ArrowRight className="w-4 h-4" />
-          </Link>
         </motion.div>
       </div>
     </section>

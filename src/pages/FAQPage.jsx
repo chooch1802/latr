@@ -56,6 +56,23 @@ const faqs = [
     ],
   },
   {
+    category: 'Round Up',
+    items: [
+      {
+        q: 'What is Round Up?',
+        a: 'Just like you might toss coins into a money jar, Round Up automatically rounds up your everyday transactions to the nearest $1, $2 or $5 (it\'s up to you) and puts the spare change towards your deposit repayments. For instance, if you buy a coffee for $3.60, your round-up would be $0.40.',
+      },
+      {
+        q: 'How does Round Up work?',
+        a: 'LATR allows you to connect a spending account (the one you use for everyday purchases) and a funding account (the one your Round Up savings are deducted from). Round-ups are automatically calculated and applied to your deposit aid repayments, helping you pay off your deposit faster without even thinking about it.',
+      },
+      {
+        q: 'What can I use Round Up for?',
+        a: 'Round Up is designed to help you get ahead on your deposit aid repayments. By turning your digital spare change into extra repayments, many of our users pay off their deposit faster than expected. Every little bit counts!',
+      },
+    ],
+  },
+  {
     category: 'Account & Security',
     items: [
       {

@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 900" width="800" height="900">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
+    </style>
+    <clipPath id="screenClip">
+      <rect x="247" y="78" width="306" height="662" rx="4" ry="4"/>
+    </clipPath>
+    <linearGradient id="coralGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF5A3D"/>
+      <stop offset="100%" stop-color="#E64A2E"/>
+    </linearGradient>
+    <linearGradient id="navyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1B2340"/>
+      <stop offset="100%" stop-color="#0A0F1F"/>
+    </linearGradient>
+    <filter id="phoneShadow" x="-10%" y="-5%" width="120%" height="115%">
+      <feDropShadow dx="0" dy="8" stdDeviation="20" flood-color="#000" flood-opacity="0.2"/>
+    </filter>
+    <filter id="cardShadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.06"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="900" fill="#FFF5F2"/>
+
+  <!-- Large coral circle accent -->
+  <circle cx="400" cy="430" r="320" fill="#FF5A3D" opacity="0.08"/>
+
+  <!-- iPhone Frame -->
+  <g filter="url(#phoneShadow)">
+    <!-- Phone body -->
+    <rect x="230" y="55" width="340" height="700" rx="48" ry="48" fill="#1B2340"/>
+    <!-- Screen bezel (inner) -->
+    <rect x="243" y="72" width="314" height="668" rx="38" ry="38" fill="#000"/>
+    <!-- Screen -->
+    <rect x="247" y="78" width="306" height="662" rx="34" ry="34" fill="#F9FAFB"/>
+  </g>
+
+  <!-- Screen content (clipped) -->
+  <g clip-path="url(#screenClip)">
+
+    <!-- Status bar -->
+    <rect x="247" y="78" width="306" height="44" fill="#1B2340"/>
+    <text x="272" y="104" fill="white" font-size="13" font-weight="600">9:41</text>
+    <!-- Battery icon -->
+    <rect x="510" y="93" width="22" height="11" rx="2" fill="none" stroke="white" stroke-width="1.2"/>
+    <rect x="532" y="96" width="2" height="5" rx="1" fill="white" opacity="0.5"/>
+    <rect x="512" y="95" width="16" height="7" rx="1" fill="white"/>
+    <!-- Signal dots -->
+    <circle cx="490" cy="99" r="2" fill="white"/>
+    <circle cx="497" cy="99" r="2" fill="white"/>
+    <circle cx="504" cy="99" r="2" fill="white" opacity="0.4"/>
+
+    <!-- Dynamic Island -->
+    <rect x="360" y="83" width="80" height="24" rx="12" fill="#000"/>
+
+    <!-- Header bar -->
+    <rect x="247" y="122" width="306" height="48" fill="white"/>
+    <text x="356" y="151" fill="#1B2340" font-size="15" font-weight="700" text-anchor="middle">Round-Up</text>
+    <!-- Back arrow -->
+    <path d="M268 146 L275 139 M268 146 L275 153" stroke="#1B2340" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <!-- Settings gear -->
+    <circle cx="524" cy="146" r="8" fill="none" stroke="#FF5A3D" stroke-width="1.5"/>
+    <circle cx="524" cy="146" r="2.5" fill="#FF5A3D"/>
+
+    <!-- Hero stat area (coral gradient) -->
+    <rect x="247" y="170" width="306" height="130" fill="url(#coralGrad)"/>
+    <text x="400" y="215" fill="white" font-size="11" font-weight="500" text-anchor="middle" letter-spacing="2" opacity="0.85">TOTAL ROUND-UPS</text>
+    <text x="400" y="258" fill="white" font-size="40" font-weight="700" text-anchor="middle">$545.00</text>
+    <text x="400" y="280" fill="white" font-size="12" font-weight="400" text-anchor="middle" opacity="0.75">Towards your deposit</text>
+
+    <!-- This week card -->
+    <g filter="url(#cardShadow)">
+      <rect x="267" y="318" width="266" height="82" rx="14" fill="white"/>
+      <text x="287" y="341" fill="#6B7280" font-size="11" font-weight="600" letter-spacing="1">THIS WEEK</text>
+      <text x="287" y="370" fill="#1B2340" font-size="26" font-weight="700">$43.85</text>
+      <text x="287" y="389" fill="#9CA3AF" font-size="11" font-weight="400">Next debit: Mon, 24 Feb</text>
+      <!-- View transactions link -->
+      <text x="480" y="389" fill="#FF5A3D" font-size="11" font-weight="600" text-anchor="end">View all</text>
+      <circle cx="494" cy="386" r="8" fill="#FF5A3D"/>
+      <path d="M491 386 L496 386 M494 383 L497 386 L494 389" stroke="white" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Settings rows -->
+    <g filter="url(#cardShadow)">
+      <rect x="267" y="416" width="266" height="88" rx="14" fill="white"/>
+
+      <!-- Round ups row -->
+      <circle cx="291" cy="444" r="10" fill="#FFF5F2"/>
+      <text x="295" y="441" fill="#FF5A3D" font-size="10" font-weight="700" text-anchor="middle">$</text>
+      <text x="310" y="448" fill="#1B2340" font-size="13" font-weight="500">Round ups</text>
+      <!-- Pill -->
+      <rect x="452" y="434" width="68" height="22" rx="11" fill="#FFF5F2"/>
+      <text x="486" y="449" fill="#FF5A3D" font-size="11" font-weight="600" text-anchor="middle">Nearest $5</text>
+
+      <!-- Divider -->
+      <line x1="287" y1="466" x2="513" y2="466" stroke="#F3F4F6" stroke-width="1"/>
+
+      <!-- Weekly limit row -->
+      <circle cx="291" cy="486" r="10" fill="#FFF5F2"/>
+      <text x="291" y="490" fill="#FF5A3D" font-size="9" font-weight="700" text-anchor="middle">&#8734;</text>
+      <text x="310" y="490" fill="#1B2340" font-size="13" font-weight="500">Weekly limit</text>
+      <!-- Pill -->
+      <rect x="458" y="476" width="62" height="22" rx="11" fill="#FFF5F2"/>
+      <text x="489" y="491" fill="#FF5A3D" font-size="11" font-weight="600" text-anchor="middle">No limit</text>
+    </g>
+
+    <!-- Recent transactions -->
+    <g filter="url(#cardShadow)">
+      <rect x="267" y="520" width="266" height="180" rx="14" fill="white"/>
+      <text x="287" y="545" fill="#1B2340" font-size="12" font-weight="700">Recent Round-Ups</text>
+
+      <!-- Transaction 1 -->
+      <circle cx="291" cy="572" r="10" fill="#ECFDF5"/>
+      <text x="291" y="576" fill="#059669" font-size="9" font-weight="700" text-anchor="middle">+</text>
+      <text x="310" y="569" fill="#1B2340" font-size="12" font-weight="500">Woolworths</text>
+      <text x="310" y="582" fill="#9CA3AF" font-size="10">Groceries</text>
+      <text x="520" y="569" fill="#059669" font-size="12" font-weight="600" text-anchor="end">+$2.15</text>
+      <text x="520" y="582" fill="#9CA3AF" font-size="10" text-anchor="end">$47.85 → $50</text>
+
+      <!-- Divider -->
+      <line x1="287" y1="594" x2="513" y2="594" stroke="#F3F4F6" stroke-width="1"/>
+
+      <!-- Transaction 2 -->
+      <circle cx="291" cy="614" r="10" fill="#ECFDF5"/>
+      <text x="291" y="618" fill="#059669" font-size="9" font-weight="700" text-anchor="middle">+</text>
+      <text x="310" y="611" fill="#1B2340" font-size="12" font-weight="500">7-Eleven</text>
+      <text x="310" y="624" fill="#9CA3AF" font-size="10">Fuel</text>
+      <text x="520" y="611" fill="#059669" font-size="12" font-weight="600" text-anchor="end">+$1.40</text>
+      <text x="520" y="624" fill="#9CA3AF" font-size="10" text-anchor="end">$63.60 → $65</text>
+
+      <!-- Divider -->
+      <line x1="287" y1="636" x2="513" y2="636" stroke="#F3F4F6" stroke-width="1"/>
+
+      <!-- Transaction 3 -->
+      <circle cx="291" cy="656" r="10" fill="#ECFDF5"/>
+      <text x="291" y="660" fill="#059669" font-size="9" font-weight="700" text-anchor="middle">+</text>
+      <text x="310" y="653" fill="#1B2340" font-size="12" font-weight="500">The Coffee Club</text>
+      <text x="310" y="666" fill="#9CA3AF" font-size="10">Cafe</text>
+      <text x="520" y="653" fill="#059669" font-size="12" font-weight="600" text-anchor="end">+$0.40</text>
+      <text x="520" y="666" fill="#9CA3AF" font-size="10" text-anchor="end">$4.60 → $5</text>
+
+      <!-- Divider -->
+      <line x1="287" y1="678" x2="513" y2="678" stroke="#F3F4F6" stroke-width="1"/>
+
+      <!-- Transaction 4 -->
+      <circle cx="291" cy="698" r="10" fill="#ECFDF5"/>
+      <text x="291" y="702" fill="#059669" font-size="9" font-weight="700" text-anchor="middle">+</text>
+      <text x="310" y="695" fill="#1B2340" font-size="12" font-weight="500">Uber Eats</text>
+      <text x="310" y="708" fill="#9CA3AF" font-size="10">Food delivery</text>
+      <text x="520" y="695" fill="#059669" font-size="12" font-weight="600" text-anchor="end">+$3.70</text>
+      <text x="520" y="708" fill="#9CA3AF" font-size="10" text-anchor="end">$31.30 → $35</text>
+    </g>
+
+    <!-- Bottom nav bar -->
+    <rect x="247" y="695" width="306" height="45" fill="white"/>
+    <line x1="247" y1="695" x2="553" y2="695" stroke="#F3F4F6" stroke-width="1"/>
+
+    <!-- Nav items: Dashboard, Properties, Applications, Deposit Aid, Round-Up -->
+    <!-- Dashboard -->
+    <g opacity="0.4">
+      <!-- 4-square grid icon -->
+      <rect x="278" y="704" width="6" height="6" rx="1" fill="#9CA3AF"/>
+      <rect x="286" y="704" width="6" height="6" rx="1" fill="#9CA3AF"/>
+      <rect x="278" y="712" width="6" height="6" rx="1" fill="#9CA3AF"/>
+      <rect x="286" y="712" width="6" height="6" rx="1" fill="#9CA3AF"/>
+      <text x="285" y="730" fill="#9CA3AF" font-size="7" text-anchor="middle">Dashboard</text>
+    </g>
+    <!-- Properties -->
+    <g opacity="0.4">
+      <!-- House icon -->
+      <path d="M335 713 L340 707 L345 713" stroke="#9CA3AF" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M337 712 L337 718 L343 718 L343 712" stroke="#9CA3AF" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="340" y="730" fill="#9CA3AF" font-size="7" text-anchor="middle">Properties</text>
+    </g>
+    <!-- Applications -->
+    <g opacity="0.4">
+      <!-- Document icon -->
+      <rect x="393" y="705" width="10" height="13" rx="1.5" fill="none" stroke="#9CA3AF" stroke-width="1.3"/>
+      <line x1="396" y1="709" x2="400" y2="709" stroke="#9CA3AF" stroke-width="1"/>
+      <line x1="396" y1="712" x2="400" y2="712" stroke="#9CA3AF" stroke-width="1"/>
+      <line x1="396" y1="715" x2="399" y2="715" stroke="#9CA3AF" stroke-width="1"/>
+      <text x="398" y="730" fill="#9CA3AF" font-size="7" text-anchor="middle">Applications</text>
+    </g>
+    <!-- Deposit Aid -->
+    <g opacity="0.4">
+      <!-- Bank/temple icon -->
+      <path d="M452 711 L458 706 L464 711" stroke="#9CA3AF" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="454" y1="711" x2="454" y2="717" stroke="#9CA3AF" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="458" y1="711" x2="458" y2="717" stroke="#9CA3AF" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="462" y1="711" x2="462" y2="717" stroke="#9CA3AF" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="451" y1="718" x2="465" y2="718" stroke="#9CA3AF" stroke-width="1.3" stroke-linecap="round"/>
+      <text x="458" y="730" fill="#9CA3AF" font-size="7" text-anchor="middle">Deposit Aid</text>
+    </g>
+    <!-- Round-Up (active) -->
+    <g>
+      <!-- Trending up icon -->
+      <path d="M510 716 L514 710 L518 713 L524 706" stroke="#FF5A3D" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M520 706 L524 706 L524 710" stroke="#FF5A3D" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="517" y="730" fill="#FF5A3D" font-size="7" font-weight="600" text-anchor="middle">Round-Up</text>
+    </g>
+
+  </g>
+
+  <!-- Home indicator -->
+  <rect x="360" y="730" width="80" height="4" rx="2" fill="#1B2340" opacity="0.2"/>
+
+</svg>
