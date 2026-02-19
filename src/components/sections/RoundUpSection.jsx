@@ -25,13 +25,13 @@ export default function RoundUpSection() {
       />
 
       <div className="max-w-[1280px] mx-auto px-6 md:px-20 relative z-10">
-        {/* Badge */}
-        <motion.div {...fadeInUp} className="flex justify-center mb-8">
-          <span className="inline-flex items-center gap-2 bg-coral-500/10 border border-coral-500/20 text-coral-400 text-xs font-semibold uppercase tracking-[0.2em] px-5 py-2.5 rounded-full backdrop-blur-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-coral-500 animate-pulse" />
-            Round Up
-          </span>
-        </motion.div>
+        {/* Section heading */}
+        <motion.p
+          {...fadeInUp}
+          className="text-center text-sm font-semibold uppercase tracking-[0.2em] text-coral-400 mb-8"
+        >
+          Round Up
+        </motion.p>
 
         {/* Two-column hero: copy left, mockup right */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center mb-20 md:mb-28">
