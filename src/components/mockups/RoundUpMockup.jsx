@@ -402,17 +402,19 @@ const RoundUpScreen = () => {
                 alignItems: "center",
                 gap: 3,
                 cursor: "pointer",
-                padding: "2px 6px",
-                minWidth: 48,
+                padding: "2px 2px",
+                minWidth: 0,
+                flex: 1,
               }}
             >
               {tab.icon(isActive)}
               <span style={{
-                fontSize: 9.5,
+                fontSize: 8.5,
                 fontWeight: isActive ? 600 : 500,
                 color: isActive ? CORAL : GRAY,
                 fontFamily: fontText,
-                letterSpacing: -0.1,
+                letterSpacing: -0.2,
+                whiteSpace: "nowrap",
               }}>{tab.label}</span>
             </div>
           );
