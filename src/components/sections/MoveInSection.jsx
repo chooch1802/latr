@@ -162,17 +162,7 @@ export default function MoveInSection() {
             <DashboardScreen />
           </PhoneMockup>
 
-          {/* Animated tagline */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.8, duration: 0.5 }}
-            className="mt-12 glass rounded-full px-8 py-3 inline-flex items-center gap-2"
-          >
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-white/80 text-sm font-medium">You&apos;re all set. Welcome home.</span>
-          </motion.div>
+
         </div>
       </div>
     </section>
