@@ -22,7 +22,14 @@ export default function CalculatorSection() {
   return (
     <section id="calculator" className="bg-white py-20 md:py-30" aria-labelledby="calculator-heading">
       <div className="max-w-[1280px] mx-auto px-6 md:px-20">
-        {/* Headline */}
+        {/* Section heading */}
+        <motion.p
+          {...fadeInUp}
+          className="text-center text-sm font-semibold uppercase tracking-[0.2em] text-coral-400 mb-4"
+        >
+          Deposit Aid
+        </motion.p>
+
         <motion.h2
           {...fadeInUp}
           id="calculator-heading"
