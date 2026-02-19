@@ -134,7 +134,6 @@ export default function RoundUpSection() {
             Get started with Round Up
             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </Link>
-          <p className="text-white/30 text-sm">Free to enable. Cancel anytime.</p>
         </motion.div>
       </div>
     </section>
