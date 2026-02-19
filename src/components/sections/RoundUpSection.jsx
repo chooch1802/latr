@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, TrendingUp, Coins, ShieldCheck } from 'lucide-react'
 import { fadeInUp, staggerContainer, staggerItem } from '../../utils/animations'
 import { useEffect, useRef } from 'react'
+import RoundUpMockup from '../mockups/RoundUpMockup'
 
 function AnimatedCounter({ target, prefix = '$', duration = 2 }) {
   const ref = useRef(null)
@@ -132,13 +133,13 @@ export default function RoundUpSection() {
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[360px] md:h-[360px] rounded-full border border-coral-500/10 pointer-events-none" />
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] md:w-[440px] md:h-[440px] rounded-full border border-coral-500/[0.05] pointer-events-none" />
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[240px] md:w-[300px] md:h-[300px] rounded-full bg-coral-500/10 blur-[80px] pointer-events-none" />
-              <motion.img
-                src="/images/roundup-mockup.svg"
-                alt="LATR Round-Up feature showing $545 in total round-ups with recent transactions"
-                className="relative z-10 w-[280px] md:w-[340px]"
+              <motion.div
+                className="relative z-10"
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-              />
+              >
+                <RoundUpMockup />
+              </motion.div>
             </div>
           </motion.div>
         </div>
