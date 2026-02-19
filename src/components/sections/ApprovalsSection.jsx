@@ -49,7 +49,7 @@ function DepositAidScreen() {
                     {plan.badge}
                   </span>
                 </div>
-                <p className="text-[10px] text-gray-500">{plan.rate} &middot; 0% interest</p>
+                <p className="text-[10px] text-gray-500">{plan.rate}</p>
               </div>
               <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                 plan.selected ? 'border-coral-500' : 'border-gray-300'
