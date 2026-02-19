@@ -1,41 +1,8 @@
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ArrowRight, TrendingUp, Coins, ShieldCheck } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { fadeInUp, staggerContainer, staggerItem } from '../../utils/animations'
-import { useEffect, useRef } from 'react'
 import RoundUpMockup from '../mockups/RoundUpMockup'
-
-function AnimatedCounter({ target, prefix = '$', duration = 2 }) {
-  const ref = useRef(null)
-  const motionVal = useMotionValue(0)
-  const rounded = useTransform(motionVal, (v) => `${prefix}${Math.round(v).toLocaleString()}`)
-
-  useEffect(() => {
-    const node = ref.current
-    if (!node) return
-    const unsub = rounded.on('change', (v) => { node.textContent = v })
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          animate(motionVal, target, { duration, ease: 'easeOut' })
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.5 }
-    )
-    observer.observe(node)
-    return () => { unsub(); observer.disconnect() }
-  }, [motionVal, rounded, target, duration])
-
-  return <span ref={ref}>{prefix}0</span>
-}
-
-const metrics = [
-  { label: 'Avg. monthly savings', value: 52, prefix: '$', icon: Coins },
-  { label: 'Avg. yearly impact', value: 624, prefix: '$', icon: TrendingUp },
-  { label: 'Zero impact to credit', value: null, icon: ShieldCheck },
-]
 
 export default function RoundUpSection() {
   return (
@@ -88,36 +55,6 @@ export default function RoundUpSection() {
               Round-Up turns your everyday spending into automatic deposit repayments. Set it once, and every purchase chips away at your bond.
             </motion.p>
 
-            {/* Feature pills */}
-            <motion.div {...fadeInUp} className="space-y-3 mb-10">
-              {[
-                { text: 'Choose your rounding', detail: '$1, $2 or $5 — you decide how much spare change goes toward your deposit' },
-                { text: 'Fully automatic', detail: 'Once enabled, every transaction is rounded up without lifting a finger' },
-                { text: 'Set a weekly cap', detail: 'Stay in control with a spending limit that suits your budget' },
-              ].map((item) => (
-                <div key={item.text} className="group flex items-start gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-coral-500/20 transition-all duration-300">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-coral-500/20 to-coral-500/5 flex items-center justify-center mt-0.5 shrink-0 border border-coral-500/10">
-                    <div className="w-2 h-2 rounded-full bg-coral-500 group-hover:scale-125 transition-transform" />
-                  </div>
-                  <div>
-                    <p className="text-white font-semibold text-sm mb-0.5">{item.text}</p>
-                    <p className="text-white/40 text-sm leading-relaxed">{item.detail}</p>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-
-            {/* CTA */}
-            <motion.div {...fadeInUp} className="flex items-center gap-4">
-              <Link
-                to="/signup"
-                className="group inline-flex items-center gap-2.5 h-13 px-8 bg-gradient-to-r from-coral-500 to-coral-600 text-white font-semibold rounded-full hover:from-coral-600 hover:to-coral-700 transition-all shadow-lg shadow-coral-500/20 hover:shadow-coral-500/30"
-              >
-                Start rounding up
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-              <span className="text-white/30 text-sm">No credit impact</span>
-            </motion.div>
           </div>
 
           {/* Right: iPhone mockup with premium presentation */}
@@ -143,26 +80,6 @@ export default function RoundUpSection() {
             </div>
           </motion.div>
         </div>
-
-        {/* Metrics bar */}
-        <motion.div
-          {...fadeInUp}
-          className="grid grid-cols-1 sm:grid-cols-3 gap-px mb-20 md:mb-28 rounded-2xl overflow-hidden border border-white/[0.06] bg-white/[0.03]"
-        >
-          {metrics.map((m) => (
-            <div key={m.label} className="flex items-center gap-4 px-6 py-6 md:py-8 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-coral-500/15 to-transparent flex items-center justify-center shrink-0 border border-coral-500/10">
-                <m.icon className="w-5 h-5 text-coral-400" />
-              </div>
-              <div>
-                <p className="text-2xl md:text-3xl font-bold text-white tracking-tight">
-                  {m.value !== null ? <AnimatedCounter target={m.value} prefix={m.prefix} /> : <span className="text-xl md:text-2xl">Soft check only</span>}
-                </p>
-                <p className="text-white/40 text-sm">{m.label}</p>
-              </div>
-            </div>
-          ))}
-        </motion.div>
 
         {/* How it works — premium stepped layout */}
         <div className="mb-20 md:mb-28">
