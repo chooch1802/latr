@@ -27,7 +27,7 @@ const quickActions = [
     color: 'bg-blue-50 text-blue-500',
   },
   {
-    title: 'Round-Up',
+    title: 'Round Up',
     description: 'Spare change to your deposit.',
     icon: TrendingUp,
     href: '/round-up',

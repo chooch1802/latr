@@ -89,9 +89,9 @@ export default function RoundUpPage() {
 
       if (error) throw error
       setSettings((s) => ({ ...s, enabled: newEnabled }))
-      toast.success(newEnabled ? 'Round-Up enabled' : 'Round-Up paused')
+      toast.success(newEnabled ? 'Round Up enabled' : 'Round Up paused')
     } catch {
-      toast.error('Failed to update Round-Up')
+      toast.error('Failed to update Round Up')
     } finally {
       setToggling(false)
     }
@@ -147,7 +147,7 @@ export default function RoundUpPage() {
   if (!settings) {
     return (
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold text-navy mb-6">Round-Up</h1>
+        <h1 className="text-2xl font-bold text-navy mb-6">Round Up</h1>
         <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center">
           <div className="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <TrendingUp className="w-8 h-8 text-amber-500" />
@@ -160,7 +160,7 @@ export default function RoundUpPage() {
             to="/round-up/setup"
             className="inline-flex items-center gap-2 h-11 px-6 bg-coral-500 text-white font-semibold rounded-xl hover:bg-coral-600 transition-colors"
           >
-            Set Up Round-Up
+            Set Up Round Up
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -172,14 +172,14 @@ export default function RoundUpPage() {
     <div className="max-w-2xl mx-auto">
       {/* Header with toggle */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-navy">Round-Up</h1>
+        <h1 className="text-2xl font-bold text-navy">Round Up</h1>
         <button
           type="button"
           onClick={handleToggle}
           disabled={toggling}
           className="relative inline-flex h-7 w-12 items-center rounded-full transition-colors cursor-pointer disabled:opacity-50"
           style={{ backgroundColor: settings.enabled ? '#FF5A3D' : '#D1D5DB' }}
-          aria-label={settings.enabled ? 'Disable Round-Up' : 'Enable Round-Up'}
+          aria-label={settings.enabled ? 'Disable Round Up' : 'Enable Round Up'}
         >
           <span
             className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
@@ -262,7 +262,7 @@ export default function RoundUpPage() {
       <div className="bg-white rounded-xl border border-gray-200">
         <div className="flex items-center gap-2 p-4 border-b border-gray-100">
           <DollarSign className="w-4 h-4 text-coral-500" />
-          <h2 className="text-sm font-semibold text-gray-700">Recent Round-Ups</h2>
+          <h2 className="text-sm font-semibold text-gray-700">Recent Round Ups</h2>
           <span className="text-xs text-gray-400 ml-auto">{transactions.length} transactions</span>
         </div>
 

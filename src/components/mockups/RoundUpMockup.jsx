@@ -89,7 +89,7 @@ const IPhoneFrame = ({ children }) => (
   </div>
 );
 
-/* ───── Round-Up Screen Content ───── */
+/* ───── Round Up Screen Content ───── */
 const RoundUpScreen = () => {
   const [activeTab, setActiveTab] = useState("roundup");
 
@@ -131,7 +131,7 @@ const RoundUpScreen = () => {
         <path d="M10 9V14M10 14L7.5 11.5M10 14L12.5 11.5" stroke={active ? CORAL : GRAY} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     )},
-    { id: "roundup", label: "Round-Up", icon: (active) => (
+    { id: "roundup", label: "Round Up", icon: (active) => (
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
         <path d="M3 14L7 8L11 11L17 4" stroke={active ? CORAL : GRAY} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
         <path d="M14 4H17V7" stroke={active ? CORAL : GRAY} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
@@ -161,7 +161,7 @@ const RoundUpScreen = () => {
             <path d="M9 1L1 9L9 17" stroke={NAVY} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
-        <span style={{ fontSize: 17, fontWeight: 600, color: NAVY, fontFamily: font }}>Round-Up</span>
+        <span style={{ fontSize: 17, fontWeight: 600, color: NAVY, fontFamily: font }}>Round Up</span>
         <div style={{
           width: 32,
           height: 32,
@@ -178,7 +178,7 @@ const RoundUpScreen = () => {
       {/* Scrollable Content */}
       <div style={{ flex: 1, overflowY: "auto", background: LIGHT_BG }}>
 
-        {/* Total Round-Ups Hero Banner */}
+        {/* Total Round Ups Hero Banner */}
         <div style={{
           margin: "14px 16px 0",
           background: `linear-gradient(145deg, ${CORAL} 0%, ${CORAL_GRADIENT_END} 100%)`,
@@ -200,7 +200,7 @@ const RoundUpScreen = () => {
             letterSpacing: 1.8,
             margin: "0 0 6px",
             textTransform: "uppercase",
-          }}>Total Round-Ups</p>
+          }}>Total Round Ups</p>
           <p style={{
             fontSize: 42,
             fontWeight: 800,
@@ -326,7 +326,7 @@ const RoundUpScreen = () => {
           </div>
         </div>
 
-        {/* Recent Round-Ups */}
+        {/* Recent Round Ups */}
         <div style={{
           margin: "12px 16px 14px",
           background: CARD_BG,
@@ -335,7 +335,7 @@ const RoundUpScreen = () => {
           boxShadow: "0 2px 10px rgba(0,0,0,0.04)",
         }}>
           <div style={{ padding: "14px 18px 8px" }}>
-            <p style={{ fontSize: 14, fontWeight: 700, color: NAVY, fontFamily: font, margin: 0 }}>Recent Round-Ups</p>
+            <p style={{ fontSize: 14, fontWeight: 700, color: NAVY, fontFamily: font, margin: 0 }}>Recent Round Ups</p>
           </div>
 
           {recentTransactions.map((tx, i) => (

@@ -29,7 +29,7 @@ export default function RoundUpSection() {
         <motion.div {...fadeInUp} className="flex justify-center mb-8">
           <span className="inline-flex items-center gap-2 bg-coral-500/10 border border-coral-500/20 text-coral-400 text-xs font-semibold uppercase tracking-[0.2em] px-5 py-2.5 rounded-full backdrop-blur-sm">
             <span className="w-1.5 h-1.5 rounded-full bg-coral-500 animate-pulse" />
-            Round-Up
+            Round Up
           </span>
         </motion.div>
 
@@ -52,7 +52,7 @@ export default function RoundUpSection() {
               {...fadeInUp}
               className="text-lg md:text-xl text-white/50 mb-10 max-w-[480px] leading-relaxed"
             >
-              Round-Up turns your everyday spending into automatic deposit repayments. Set it once, and every purchase chips away at your bond.
+              Round Up turns your everyday spending into automatic deposit repayments. Set it once, and every purchase chips away at your bond.
             </motion.p>
 
           </div>
@@ -125,65 +125,13 @@ export default function RoundUpSection() {
           </motion.div>
         </div>
 
-        {/* Live transaction feed — glass card */}
-        <motion.div
-          {...fadeInUp}
-          className="max-w-[700px] mx-auto mb-16"
-        >
-          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-white/60 text-sm font-medium tracking-wide">Live round-up preview</span>
-              </div>
-              <span className="text-white/30 text-xs font-mono">Today</span>
-            </div>
-
-            {[
-              { merchant: 'Woolworths', category: 'Groceries', original: '$47.85', rounded: '$50.00', saved: '+$2.15' },
-              { merchant: '7-Eleven', category: 'Fuel', original: '$63.60', rounded: '$65.00', saved: '+$1.40' },
-              { merchant: 'The Coffee Club', category: 'Cafe', original: '$4.60', rounded: '$5.00', saved: '+$0.40' },
-            ].map((tx, i) => (
-              <motion.div
-                key={tx.merchant}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 * i, duration: 0.5 }}
-                className="flex items-center justify-between px-6 py-4 border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/10 flex items-center justify-center">
-                    <span className="text-emerald-400 text-xs font-bold">+</span>
-                  </div>
-                  <div>
-                    <p className="text-white text-sm font-medium">{tx.merchant}</p>
-                    <p className="text-white/30 text-xs">{tx.category}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-emerald-400 text-sm font-semibold">{tx.saved}</p>
-                  <p className="text-white/25 text-xs font-mono">{tx.original} → {tx.rounded}</p>
-                </div>
-              </motion.div>
-            ))}
-
-            <div className="px-6 py-4 bg-gradient-to-r from-coral-500/10 to-transparent border-t border-white/[0.06]">
-              <div className="flex items-center justify-between">
-                <span className="text-white/50 text-sm">Today&apos;s round-ups</span>
-                <span className="text-coral-400 font-bold text-lg">+$3.95</span>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
         {/* Bottom CTA */}
         <motion.div {...fadeInUp} className="text-center">
           <Link
             to="/signup"
             className="group inline-flex items-center gap-2.5 h-13 px-10 bg-gradient-to-r from-coral-500 to-coral-600 text-white font-semibold rounded-full hover:from-coral-600 hover:to-coral-700 transition-all shadow-lg shadow-coral-500/20 hover:shadow-coral-500/30 mb-4"
           >
-            Get started with Round-Up
+            Get started with Round Up
             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </Link>
           <p className="text-white/30 text-sm">Free to enable. Cancel anytime.</p>

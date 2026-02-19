@@ -126,7 +126,6 @@ export default function DepositDetailPage() {
           <Row label="Deposit amount" value={`$${Number(deposit.deposit_amount).toLocaleString('en-AU')}`} />
           <Row label="Weekly payment" value={`$${Number(deposit.weekly_payment).toFixed(2)}`} />
           <Row label="Total repayment" value={`$${Number(deposit.total_repayment).toFixed(2)}`} />
-          <Row label="Setup fee" value={`$${Number(deposit.setup_fee || 200)}`} />
           <Row label="Interest rate" value={`${((deposit.interest_rate || 0.20) * 100).toFixed(1)}%`} />
           <Row label="Plan duration" value={`${deposit.plan_weeks} weeks`} />
         </Section>
@@ -135,7 +134,7 @@ export default function DepositDetailPage() {
           <div className="bg-white rounded-xl border border-gray-200 p-4">
             <div className="flex items-center gap-2 mb-3">
               <TrendingUp className="w-4 h-4 text-coral-500" />
-              <h2 className="text-sm font-semibold text-gray-700">Round-Up Contributions</h2>
+              <h2 className="text-sm font-semibold text-gray-700">Round Up Contributions</h2>
             </div>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
@@ -151,7 +150,7 @@ export default function DepositDetailPage() {
               to="/round-up"
               className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-coral-500 hover:text-coral-600 transition-colors"
             >
-              View Round-Up dashboard &rarr;
+              View Round Up dashboard &rarr;
             </Link>
           </div>
         )}

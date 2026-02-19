@@ -1,5 +1,5 @@
 /**
- * Round-Up calculation and simulation utilities.
+ * Round Up calculation and simulation utilities.
  * Generates mock Australian merchant transactions for MVP demo.
  * Structured for easy swap-in of real bank data (Basiq) later.
  */

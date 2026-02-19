@@ -93,10 +93,10 @@ export default function RoundUpSetupPage() {
       })
 
       if (error) throw error
-      toast.success('Round-Up activated! Your spare change now works for you.')
+      toast.success('Round Up activated! Your spare change now works for you.')
       navigate('/round-up')
     } catch {
-      toast.error('Failed to activate Round-Up. Please try again.')
+      toast.error('Failed to activate Round Up. Please try again.')
       setSubmitting(false)
     }
   }
@@ -108,10 +108,10 @@ export default function RoundUpSetupPage() {
         className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-coral-500 transition-colors mb-4"
       >
         <ArrowLeft className="w-4 h-4" />
-        Back to Round-Up
+        Back to Round Up
       </Link>
 
-      <h1 className="text-xl font-bold text-navy mb-6">Set Up Round-Up</h1>
+      <h1 className="text-xl font-bold text-navy mb-6">Set Up Round Up</h1>
 
       {/* Progress stepper */}
       <div className="flex items-center justify-between mb-8">
@@ -270,7 +270,7 @@ export default function RoundUpSetupPage() {
         {/* Step 3: Confirm */}
         {currentStep === 3 && (
           <div>
-            <h2 className="text-lg font-semibold text-navy mb-1">Confirm Round-Up</h2>
+            <h2 className="text-lg font-semibold text-navy mb-1">Confirm Round Up</h2>
             <p className="text-sm text-gray-500 mb-4">Review your settings before activating.</p>
 
             {/* Summary */}
@@ -316,7 +316,7 @@ export default function RoundUpSetupPage() {
             <div className="space-y-2 mb-6">
               <Feature icon={TrendingUp} text="Round-ups are applied to your deposit automatically" />
               <Feature icon={DollarSign} text="You can change your rounding amount anytime" />
-              <Feature icon={Shield} text="Disable or pause Round-Up at any time" />
+              <Feature icon={Shield} text="Disable or pause Round Up at any time" />
             </div>
 
             <div className="flex gap-3">
@@ -340,7 +340,7 @@ export default function RoundUpSetupPage() {
                   </>
                 ) : (
                   <>
-                    Activate Round-Up
+                    Activate Round Up
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
