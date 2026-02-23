@@ -16,7 +16,7 @@ const KNOWLEDGE_BASE = [
   {
     keywords: ['interest', 'rate', 'fees', 'cost', 'how much', 'pricing', 'price'],
     response:
-      'LATR Deposit Aid has a simple flat service fee — no hidden charges or compounding interest. The exact fee depends on your deposit amount and repayment term. You can see a full breakdown before you commit, right in the app.',
+      'LATR Deposit Aid has no setup fees — you only pay interest on your deposit amount (22–30% depending on plan duration). No hidden charges or compounding interest. You can see a full breakdown before you commit, right in the app.',
   },
   {
     keywords: ['repay', 'repayment', 'pay back', 'instalments', 'installments', 'payment plan'],

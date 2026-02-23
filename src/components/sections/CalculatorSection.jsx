@@ -136,7 +136,7 @@ export default function CalculatorSection() {
             aria-live="polite"
             aria-atomic="true"
           >
-            Interest rates from 17–25% depending on deposit amount. No setup fees. LATR pays your landlord or agency directly. Max $50,000.
+            Interest rates from 22–30% depending on deposit amount. No setup fees. LATR pays your landlord or agency directly. Max $50,000.
           </p>
         </motion.div>
       </div>

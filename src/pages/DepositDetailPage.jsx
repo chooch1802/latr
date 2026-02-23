@@ -126,7 +126,7 @@ export default function DepositDetailPage() {
           <Row label="Deposit amount" value={`$${Number(deposit.deposit_amount).toLocaleString('en-AU')}`} />
           <Row label="Weekly payment" value={`$${Number(deposit.weekly_payment).toFixed(2)}`} />
           <Row label="Total repayment" value={`$${Number(deposit.total_repayment).toFixed(2)}`} />
-          <Row label="Interest rate" value={`${((deposit.interest_rate || 0.20) * 100).toFixed(1)}%`} />
+          <Row label="Interest rate" value={`${((deposit.interest_rate || 0.25) * 100).toFixed(1)}%`} />
           <Row label="Plan duration" value={`${deposit.plan_weeks} weeks`} />
         </Section>
 

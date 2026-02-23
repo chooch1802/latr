@@ -5,6 +5,8 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { useToast } from '../contexts/ToastContext'
 import { generateRepaymentSchedule } from '../lib/depositCalc'
+import { createPayout } from '../lib/airwallexApi'
+import BECSSetupForm from '../components/deposit/BECSSetupForm'
 
 export default function DepositConfirmPage() {
   const { id } = useParams()
@@ -15,20 +17,29 @@ export default function DepositConfirmPage() {
   const [loading, setLoading] = useState(true)
   const [activating, setActivating] = useState(false)
   const [activated, setActivated] = useState(false)
+  const [mandateActive, setMandateActive] = useState(false)
 
   useEffect(() => {
     async function fetch() {
-      const { data, error } = await supabase
-        .from('deposit_applications')
-        .select('*')
-        .eq('id', id)
-        .eq('user_id', user.id)
-        .single()
-      if (error) {
+      const [depositRes, userRes] = await Promise.all([
+        supabase
+          .from('deposit_applications')
+          .select('*')
+          .eq('id', id)
+          .eq('user_id', user.id)
+          .single(),
+        supabase
+          .from('users')
+          .select('stripe_mandate_status')
+          .eq('id', user.id)
+          .single(),
+      ])
+      if (depositRes.error) {
         navigate('/deposit-aid', { replace: true })
         return
       }
-      setDeposit(data)
+      setDeposit(depositRes.data)
+      setMandateActive(userRes.data?.stripe_mandate_status === 'active')
       setLoading(false)
     }
     fetch()
@@ -67,6 +78,13 @@ export default function DepositConfirmPage() {
           transfer_status: 'processing',
         })
         .eq('id', deposit.id)
+
+      // Trigger real payout to landlord/agency via Airwallex
+      try {
+        await createPayout(deposit.id)
+      } catch {
+        // Payout will be retried — don't block activation
+      }
 
       setActivated(true)
     } catch (err) {
@@ -134,8 +152,7 @@ export default function DepositConfirmPage() {
         <Row label="Repayment plan" value={`${deposit.plan_weeks} weeks`} />
         <Row label="Weekly payment" value={`$${Number(deposit.weekly_payment).toFixed(2)}`} />
         <Row label="Total repayment" value={`$${Number(deposit.total_repayment).toFixed(2)}`} />
-        <Row label="Setup fee (included)" value={`$${Number(deposit.setup_fee || 200)}`} />
-        <Row label="Interest rate" value={`${((deposit.interest_rate || 0.20) * 100).toFixed(1)}%`} />
+        <Row label="Interest rate" value={`${((deposit.interest_rate || 0.25) * 100).toFixed(1)}%`} />
         <div className="border-t pt-3">
           <Row label="Recipient" value={deposit.recipient_name} />
           <Row label="BSB" value={deposit.recipient_bsb} />
@@ -144,6 +161,16 @@ export default function DepositConfirmPage() {
         </div>
       </div>
 
+      {/* BECS Direct Debit setup — required before activation */}
+      {!mandateActive && (
+        <div className="mb-6">
+          <BECSSetupForm
+            onComplete={() => setMandateActive(true)}
+            onError={(msg) => toast.error(msg)}
+          />
+        </div>
+      )}
+
       <div className="bg-blue-50 rounded-xl p-4 text-sm text-blue-700 mb-6">
         By activating, you agree to the repayment terms above. LATR will transfer ${Number(deposit.deposit_amount).toLocaleString('en-AU')} to {deposit.recipient_name} and you'll repay ${Number(deposit.weekly_payment).toFixed(2)}/week for {deposit.plan_weeks} weeks.
       </div>
@@ -151,7 +178,7 @@ export default function DepositConfirmPage() {
       <button
         type="button"
         onClick={handleActivate}
-        disabled={activating}
+        disabled={activating || !mandateActive}
         className="w-full h-12 bg-coral-500 text-white font-semibold rounded-xl hover:bg-coral-600 transition-colors disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
       >
         {activating ? (
@@ -159,6 +186,8 @@ export default function DepositConfirmPage() {
             <Loader2 className="w-4 h-4 animate-spin" />
             Activating...
           </>
+        ) : !mandateActive ? (
+          'Set up direct debit to activate'
         ) : (
           <>
             Activate Deposit Aid

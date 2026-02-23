@@ -76,8 +76,7 @@ export default function DepositCalculatorPage() {
 
           <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-500 mb-6">
             <p>
-              All plans include a one-time $200 setup fee. Interest rates range from 17–25% depending on
-              deposit amount, with shorter plans receiving a 1.5% discount. No hidden fees. No early repayment penalties.
+              Interest rates range from 22–30% depending on deposit amount, with shorter plans receiving a 1.5% discount. No hidden fees. No setup fees. No early repayment penalties.
             </p>
           </div>
 

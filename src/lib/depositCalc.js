@@ -1,4 +1,4 @@
-const SETUP_FEE = 200
+const SETUP_FEE = 0
 
 const PLANS = [
   { weeks: 104, label: '104 weeks', description: 'Lowest weekly payment', badge: 'Lowest', badgeColor: 'bg-navy text-white' },
@@ -9,10 +9,10 @@ const PLANS = [
 function getInterestRate(depositAmount, weeks) {
   // Tiered base rates (104-week reference)
   let baseRate
-  if (depositAmount <= 5000) baseRate = 0.25
-  else if (depositAmount <= 10000) baseRate = 0.22
-  else if (depositAmount <= 20000) baseRate = 0.20
-  else baseRate = 0.17
+  if (depositAmount <= 5000) baseRate = 0.30
+  else if (depositAmount <= 10000) baseRate = 0.27
+  else if (depositAmount <= 20000) baseRate = 0.25
+  else baseRate = 0.22
 
   // Plan duration adjustment: ±1.5% from 104-week base
   if (weeks > 104) baseRate += 0.015

@@ -17,7 +17,7 @@ const faqs = [
       },
       {
         q: 'How much does Deposit Aid cost?',
-        a: 'A one-time service fee is applied to your deposit amount. The exact fee is shown before you confirm your application, so there are no surprises. There are no hidden charges.',
+        a: 'There are no setup fees. You only pay interest on your deposit amount, which varies by plan duration (22–30%). The exact cost is shown before you confirm, so there are no surprises. No hidden charges.',
       },
       {
         q: 'What happens if I miss a repayment?',
