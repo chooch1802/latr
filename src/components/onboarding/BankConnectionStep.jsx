@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Landmark, CheckCircle2, ArrowRight, DollarSign, TrendingUp } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../contexts/AuthContext'
-import { initiateBankConnection, fetchBankAccounts, fetchTransactions } from '../../lib/mockApis'
+import { createBankConnection, fetchBankData } from '../../lib/basiqApi'
 
 export default function BankConnectionStep({ onComplete }) {
   const { user } = useAuth()
@@ -18,31 +18,28 @@ export default function BankConnectionStep({ onComplete }) {
       setError(null)
       setConnecting(true)
 
-      // Initiate bank connection (mock)
-      const connection = await initiateBankConnection(user.id)
+      // Create Basiq connection and get consent URL
+      const { basiqUserId, consentUrl } = await createBankConnection()
 
-      // Fetch accounts
-      const { accounts: accts } = await fetchBankAccounts(connection.connectionId)
-      setAccounts(accts)
+      if (consentUrl) {
+        // Open Basiq consent flow in new window
+        const consentWindow = window.open(consentUrl, '_blank', 'width=500,height=700')
 
-      // Fetch transactions for first account
-      if (accts.length > 0) {
-        const { transactions: txns } = await fetchTransactions(accts[0].id)
-        setTransactions(txns)
+        // Poll for window close (user completed consent)
+        await new Promise((resolve) => {
+          const interval = setInterval(() => {
+            if (!consentWindow || consentWindow.closed) {
+              clearInterval(interval)
+              resolve()
+            }
+          }, 1000)
+        })
       }
 
-      // Save connection to database
-      const { error: dbError } = await supabase
-        .from('bank_connections')
-        .insert({
-          user_id: user.id,
-          basiq_connection_id: connection.connectionId,
-          institution_name: accts[0]?.institution || 'Unknown',
-          account_name: accts[0]?.name || 'Primary Account',
-          account_number: accts[0]?.accountNumber || '',
-          status: 'active',
-        })
-      if (dbError) throw dbError
+      // Fetch real bank data after consent
+      const { accounts: accts, transactions: txns } = await fetchBankData(basiqUserId)
+      setAccounts(accts)
+      setTransactions(txns || [])
 
       setConnected(true)
       setConnecting(false)

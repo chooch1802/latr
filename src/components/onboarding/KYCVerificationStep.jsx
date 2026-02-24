@@ -5,7 +5,7 @@ import { ShieldCheck, Upload, Camera, MapPin, X, FileText, CheckCircle2 } from '
 import { addressSchema } from '../../lib/validations'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../contexts/AuthContext'
-import { submitKYCVerification, checkKYCStatus } from '../../lib/mockApis'
+import { createOnfidoCheck, pollKYCStatus } from '../../lib/onfidoApi'
 import AddressAutocomplete from '../ui/AddressAutocomplete'
 
 const STATES = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT']
@@ -79,32 +79,36 @@ export default function KYCVerificationStep({ onComplete }) {
         })
       if (profileError) throw profileError
 
-      // Submit KYC verification (mock)
-      const result = await submitKYCVerification({
-        userId: user.id,
-        idDocumentUrl: idPath,
-        selfieUrl: selfiePath,
-        address: addressData,
+      // Submit KYC verification via Onfido
+      await createOnfidoCheck({
+        idDocumentPath: idPath,
+        selfiePath: selfiePath,
       })
 
-      // Check status (mock auto-approves)
-      const statusResult = await checkKYCStatus(result.verificationId)
+      // Poll for KYC result from webhook
+      const kycResult = await pollKYCStatus(user.id, { maxAttempts: 60, intervalMs: 3000 })
 
-      // Update user KYC status
-      const kycStatus = statusResult.status === 'approved' ? 'verified' : 'pending'
+      const kycStatus = kycResult === 'verified' ? 'verified' : 'pending'
       const { error: updateError } = await supabase
         .from('users')
         .update({
-          kyc_status: kycStatus,
-          kyc_verified_at: statusResult.status === 'approved' ? statusResult.verifiedAt : null,
           onboarding_step: 2,
           updated_at: new Date().toISOString(),
         })
         .eq('id', user.id)
       if (updateError) throw updateError
 
-      setVerified(true)
-      setTimeout(() => onComplete(), 1500)
+      if (kycResult === 'verified') {
+        setVerified(true)
+        setTimeout(() => onComplete(), 1500)
+      } else if (kycResult === 'rejected') {
+        setError('Identity verification failed. Please try again with clearer documents.')
+        setVerifying(false)
+      } else {
+        // Timeout — still processing, let them continue
+        setVerified(true)
+        setTimeout(() => onComplete(), 1500)
+      }
     } catch (err) {
       setError(err.message)
       setUploading(false)

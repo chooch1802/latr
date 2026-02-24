@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { BarChart3, CheckCircle2, XCircle, ArrowRight } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../contexts/AuthContext'
-import { fetchBankAccounts, fetchTransactions, runCashFlowAssessment } from '../../lib/mockApis'
+import { runAssessment as runServerAssessment } from '../../lib/basiqApi'
 
 export default function CreditAssessmentStep({ onComplete }) {
   const { user } = useAuth()
@@ -16,28 +16,7 @@ export default function CreditAssessmentStep({ onComplete }) {
 
   async function runAssessment() {
     try {
-      // Fetch bank data for analysis
-      const { accounts } = await fetchBankAccounts('mock')
-      const { transactions } = await fetchTransactions('mock')
-
-      const totalBalance = accounts.reduce((sum, a) => sum + a.balance, 0)
-      const income = transactions
-        .filter((t) => t.amount > 0)
-        .reduce((sum, t) => sum + t.amount, 0)
-      const expenses = transactions
-        .filter((t) => t.amount < 0)
-        .reduce((sum, t) => sum + Math.abs(t.amount), 0)
-
-      // Extrapolate to monthly (mock data is ~2 weeks)
-      const monthlyIncome = income * 2
-      const monthlyExpenses = expenses * 2
-
-      const assessment = await runCashFlowAssessment({
-        monthlyIncome,
-        monthlyExpenses,
-        bankBalance: totalBalance,
-      })
-
+      const assessment = await runServerAssessment()
       setResult(assessment)
       setPhase('result')
     } catch (err) {

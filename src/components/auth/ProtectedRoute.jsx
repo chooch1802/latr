@@ -1,8 +1,8 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 
-export default function ProtectedRoute({ requireOnboarding = true }) {
-  const { session, loading, isOnboardingComplete } = useAuth()
+export default function ProtectedRoute({ requireOnboarding = true, requireAdmin = false }) {
+  const { session, loading, isOnboardingComplete, isAdmin } = useAuth()
   const location = useLocation()
 
   if (loading) {
@@ -15,6 +15,10 @@ export default function ProtectedRoute({ requireOnboarding = true }) {
 
   if (!session) {
     return <Navigate to="/login" replace />
+  }
+
+  if (requireAdmin && !isAdmin) {
+    return <Navigate to="/dashboard" replace />
   }
 
   // If onboarding is required and not complete, redirect to onboarding

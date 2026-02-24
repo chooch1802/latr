@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import AppShell from './components/layout/AppShell'
+import AdminShell from './components/admin/AdminShell'
 
 // Loading spinner shown while lazy chunks load
 function PageLoader() {
@@ -52,6 +53,13 @@ const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 const NotificationsPage = lazy(() => import('./pages/NotificationsPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
+// Admin pages
+const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage'))
+const AdminApplicationsPage = lazy(() => import('./pages/admin/AdminApplicationsPage'))
+const AdminApplicationDetailPage = lazy(() => import('./pages/admin/AdminApplicationDetailPage'))
+const AdminDepositsPage = lazy(() => import('./pages/admin/AdminDepositsPage'))
+const AdminUsersPage = lazy(() => import('./pages/admin/AdminUsersPage'))
+
 function App() {
   return (
     <Suspense fallback={<PageLoader />}>
@@ -98,6 +106,17 @@ function App() {
             <Route path="/household/bills/:id" element={<BillDetailPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
+          </Route>
+        </Route>
+
+        {/* Admin routes */}
+        <Route element={<ProtectedRoute requireAdmin />}>
+          <Route element={<AdminShell />}>
+            <Route path="/admin" element={<AdminDashboardPage />} />
+            <Route path="/admin/applications" element={<AdminApplicationsPage />} />
+            <Route path="/admin/applications/:id" element={<AdminApplicationDetailPage />} />
+            <Route path="/admin/deposits" element={<AdminDepositsPage />} />
+            <Route path="/admin/users" element={<AdminUsersPage />} />
           </Route>
         </Route>
 

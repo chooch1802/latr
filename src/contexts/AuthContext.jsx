@@ -85,6 +85,7 @@ export function AuthProvider({ children }) {
   }
 
   const isOnboardingComplete = profile?.onboarding_step >= 5
+  const isAdmin = profile?.role === 'admin'
 
   const value = {
     session,
@@ -92,6 +93,7 @@ export function AuthProvider({ children }) {
     profile,
     loading,
     isOnboardingComplete,
+    isAdmin,
     refreshProfile,
     signInWithPhone,
     verifyOtp,

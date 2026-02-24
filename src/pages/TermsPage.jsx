@@ -35,7 +35,7 @@ export default function TermsPage() {
       </p>
       <ul>
         <li>Approval is subject to eligibility assessment and identity verification (KYC).</li>
-        <li>A service fee applies as disclosed before you confirm your application.</li>
+        <li>Interest applies to your deposit amount as disclosed before you confirm your application. There are no setup fees.</li>
         <li>Missed repayments may result in additional fees and suspension of your account.</li>
         <li>LATR does not provide credit, financial advice, or act as a credit provider under the National Consumer Credit Protection Act 2009 (Cth).</li>
       </ul>

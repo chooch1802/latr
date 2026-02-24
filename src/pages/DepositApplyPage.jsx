@@ -8,7 +8,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useToast } from '../contexts/ToastContext'
 import { depositRecipientSchema } from '../lib/validations'
 import { calculateAllPlans, calculatePlan, SETUP_FEE } from '../lib/depositCalc'
-import { runCashFlowAssessment } from '../lib/mockApis'
+import { runAssessment as runServerAssessment } from '../lib/basiqApi'
 import PlanCard from '../components/deposit/PlanCard'
 
 const steps = [
@@ -96,19 +96,7 @@ export default function DepositApplyPage() {
   async function runAssessment() {
     setAssessing(true)
     try {
-      // Fetch bank data for assessment
-      const { data: bankConn } = await supabase
-        .from('bank_connections')
-        .select('*')
-        .eq('user_id', user.id)
-        .limit(1)
-        .single()
-
-      const monthlyIncome = bankConn?.monthly_income || 6400
-      const monthlyExpenses = bankConn?.monthly_expenses || 3200
-      const bankBalance = bankConn?.account_balance || 12500
-
-      const result = await runCashFlowAssessment({ monthlyIncome, monthlyExpenses, bankBalance })
+      const result = await runServerAssessment()
       setAssessment(result)
     } catch {
       setAssessment({ approved: false, score: 0, creditLimit: 0, factors: [] })
@@ -142,6 +130,7 @@ export default function DepositApplyPage() {
           recipient_account: recipientData.recipientAccount,
           recipient_email: recipientData.recipientEmail || null,
           agent_name: recipientData.agentName || null,
+          equifax_score: assessment.equifaxScore || null,
         })
         .select()
         .single()
