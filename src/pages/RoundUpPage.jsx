@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { TrendingUp, Loader2, Zap, Calendar, Clock, DollarSign, Settings, ArrowRight } from 'lucide-react'
+import { TrendingUp, Loader2, Zap, RefreshCw, Calendar, Clock, DollarSign, Settings, ArrowRight } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { useToast } from '../contexts/ToastContext'
 import { simulateAndSaveRoundups } from '../lib/roundupCalc'
+import { syncRoundupTransactions } from '../lib/roundupApi'
 
 const roundingLabels = { 1: '$1', 2: '$2', 5: '$5' }
 
@@ -15,6 +16,7 @@ export default function RoundUpPage() {
   const [transactions, setTransactions] = useState([])
   const [loading, setLoading] = useState(true)
   const [simulating, setSimulating] = useState(false)
+  const [syncing, setSyncing] = useState(false)
   const [toggling, setToggling] = useState(false)
 
   // Stats
@@ -94,6 +96,24 @@ export default function RoundUpPage() {
       toast.error('Failed to update Round Up')
     } finally {
       setToggling(false)
+    }
+  }
+
+  async function handleSync() {
+    if (!settings) return
+    setSyncing(true)
+    try {
+      const result = await syncRoundupTransactions()
+      if (result.synced > 0) {
+        toast.success(`Synced ${result.synced} transactions (+$${result.totalRoundup.toFixed(2)})`)
+      } else {
+        toast.success('Already up to date — no new transactions')
+      }
+      await fetchData()
+    } catch (err) {
+      toast.error(err.message || 'Failed to sync transactions')
+    } finally {
+      setSyncing(false)
     }
   }
 
@@ -238,22 +258,42 @@ export default function RoundUpPage() {
         </div>
       </div>
 
-      {/* Simulate button */}
+      {/* Sync button (primary) */}
+      <button
+        type="button"
+        onClick={handleSync}
+        disabled={syncing || !settings.enabled}
+        className="w-full h-11 bg-coral-500 text-white font-semibold rounded-xl hover:bg-coral-600 transition-colors mb-2 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {syncing ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Syncing...
+          </>
+        ) : (
+          <>
+            <RefreshCw className="w-4 h-4" />
+            Sync Transactions
+          </>
+        )}
+      </button>
+
+      {/* Simulate button (secondary/demo) */}
       <button
         type="button"
         onClick={handleSimulate}
         disabled={simulating || !settings.enabled}
-        className="w-full h-11 bg-amber-50 text-amber-600 font-semibold rounded-xl hover:bg-amber-100 transition-colors mb-4 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full text-sm text-gray-400 hover:text-gray-600 transition-colors mb-4 flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {simulating ? (
           <>
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 className="w-3 h-3 animate-spin" />
             Simulating...
           </>
         ) : (
           <>
-            <Zap className="w-4 h-4" />
-            Simulate Transactions
+            <Zap className="w-3 h-3" />
+            Simulate demo transactions
           </>
         )}
       </button>
@@ -268,7 +308,7 @@ export default function RoundUpPage() {
 
         {transactions.length === 0 ? (
           <div className="p-8 text-center">
-            <p className="text-sm text-gray-500">No round-up transactions yet. Click Simulate to generate demo transactions.</p>
+            <p className="text-sm text-gray-500">No round-up transactions yet. Click Sync to fetch from your bank, or Simulate for demo data.</p>
           </div>
         ) : (
           <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
