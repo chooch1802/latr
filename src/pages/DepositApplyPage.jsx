@@ -1,4 +1,4 @@
-import { useState, useEffect, forwardRef } from 'react'
+import { useState, useEffect, useMemo, forwardRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { ArrowLeft, Check, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -10,12 +10,21 @@ import { depositRecipientSchema } from '../lib/validations'
 import { calculateAllPlans, calculatePlan, SETUP_FEE } from '../lib/depositCalc'
 import { runAssessment as runServerAssessment } from '../lib/basiqApi'
 import PlanCard from '../components/deposit/PlanCard'
+import BusinessVerificationStep from '../components/deposit/BusinessVerificationStep'
 
-const steps = [
-  { label: 'Application', number: 1 },
-  { label: 'Details', number: 2 },
-  { label: 'Plan', number: 3 },
-  { label: 'Assessment', number: 4 },
+const PERSONAL_STEPS = [
+  { label: 'Application', key: 'application' },
+  { label: 'Details', key: 'details' },
+  { label: 'Plan', key: 'plan' },
+  { label: 'Assessment', key: 'assessment' },
+]
+
+const BUSINESS_STEPS = [
+  { label: 'Application', key: 'application' },
+  { label: 'Business', key: 'business' },
+  { label: 'Details', key: 'details' },
+  { label: 'Plan', key: 'plan' },
+  { label: 'Assessment', key: 'assessment' },
 ]
 
 export default function DepositApplyPage() {
@@ -24,21 +33,38 @@ export default function DepositApplyPage() {
   const toast = useToast()
   const [currentStep, setCurrentStep] = useState(1)
 
+  // Applicant type toggle
+  const [applicantType, setApplicantType] = useState('personal')
+
+  const steps = useMemo(
+    () => (applicantType === 'business' ? BUSINESS_STEPS : PERSONAL_STEPS),
+    [applicantType]
+  )
+
+  // Map step index to key for readability
+  const currentStepKey = steps[currentStep - 1]?.key
+
   // Step 1: select an approved application
   const [applications, setApplications] = useState([])
   const [loadingApps, setLoadingApps] = useState(true)
   const [selectedAppId, setSelectedAppId] = useState(null)
 
-  // Step 2: amount + recipient
+  // Business verification
+  const [depositAppId, setDepositAppId] = useState(null)
+  const [businessVerification, setBusinessVerification] = useState(null)
+
+  // Details: amount + recipient
   const [depositAmount, setDepositAmount] = useState('')
 
-  // Step 3: plan selection
+  // Plan selection
   const [selectedWeeks, setSelectedWeeks] = useState(null)
 
-  // Step 4: credit assessment
+  // Credit assessment
   const [assessing, setAssessing] = useState(false)
   const [assessment, setAssessment] = useState(null)
   const [submitting, setSubmitting] = useState(false)
+
+  const maxDeposit = applicantType === 'business' ? 200000 : 50000
 
   const recipientForm = useForm({
     resolver: zodResolver(depositRecipientSchema),
@@ -69,8 +95,13 @@ export default function DepositApplyPage() {
 
   const selectedApp = applications.find((a) => a.id === selectedAppId)
   const numAmount = Number(depositAmount) || 0
-  const plans = numAmount >= 1000 && numAmount <= 50000 ? calculateAllPlans(numAmount) : []
+  const plans = numAmount >= 1000 && numAmount <= maxDeposit ? calculateAllPlans(numAmount) : []
   const selectedPlan = selectedWeeks ? calculatePlan(numAmount, selectedWeeks) : null
+
+  function goToStep(key) {
+    const idx = steps.findIndex((s) => s.key === key)
+    if (idx !== -1) setCurrentStep(idx + 1)
+  }
 
   function handleSelectApplication(appId) {
     setSelectedAppId(appId)
@@ -78,18 +109,25 @@ export default function DepositApplyPage() {
     if (app?.deposit_amount) {
       setDepositAmount(String(app.deposit_amount))
     }
-    setCurrentStep(2)
+    goToStep(applicantType === 'business' ? 'business' : 'details')
   }
 
-  async function handleRecipientNext(data) {
-    // Validate amount range
-    if (numAmount < 1000 || numAmount > 50000) return
-    setCurrentStep(3)
+  function handleApplicantTypeChange(type) {
+    setApplicantType(type)
+    // Reset to step 1 when changing type
+    setCurrentStep(1)
+    setBusinessVerification(null)
+    setDepositAppId(null)
+  }
+
+  async function handleRecipientNext() {
+    if (numAmount < 1000 || numAmount > maxDeposit) return
+    goToStep('plan')
   }
 
   function handlePlanNext() {
     if (!selectedWeeks) return
-    setCurrentStep(4)
+    goToStep('assessment')
     runAssessment()
   }
 
@@ -110,37 +148,95 @@ export default function DepositApplyPage() {
     setSubmitting(true)
     try {
       const recipientData = recipientForm.getValues()
-      const { data, error } = await supabase
-        .from('deposit_applications')
-        .insert({
-          user_id: user.id,
-          application_id: selectedAppId,
-          deposit_amount: numAmount,
-          plan_weeks: selectedWeeks,
-          weekly_payment: selectedPlan.weeklyPayment,
-          total_repayment: selectedPlan.totalRepayment,
-          setup_fee: SETUP_FEE,
-          interest_rate: selectedPlan.interestRate,
-          status: 'approved',
-          credit_score: assessment.score,
-          credit_limit: assessment.creditLimit,
-          recipient_type: recipientData.recipientType,
-          recipient_name: recipientData.recipientName,
-          recipient_bsb: recipientData.recipientBsb,
-          recipient_account: recipientData.recipientAccount,
-          recipient_email: recipientData.recipientEmail || null,
-          agent_name: recipientData.agentName || null,
-          equifax_score: assessment.equifaxScore || null,
-        })
-        .select()
-        .single()
 
-      if (error) throw error
-      navigate(`/deposit-aid/confirm/${data.id}`)
+      // If we already created a deposit_application for business verification, update it
+      if (depositAppId) {
+        const { error } = await supabase
+          .from('deposit_applications')
+          .update({
+            application_id: selectedAppId,
+            deposit_amount: numAmount,
+            plan_weeks: selectedWeeks,
+            weekly_payment: selectedPlan.weeklyPayment,
+            total_repayment: selectedPlan.totalRepayment,
+            setup_fee: SETUP_FEE,
+            interest_rate: selectedPlan.interestRate,
+            status: 'approved',
+            credit_score: assessment.score,
+            credit_limit: assessment.creditLimit,
+            recipient_type: recipientData.recipientType,
+            recipient_name: recipientData.recipientName,
+            recipient_bsb: recipientData.recipientBsb,
+            recipient_account: recipientData.recipientAccount,
+            recipient_email: recipientData.recipientEmail || null,
+            agent_name: recipientData.agentName || null,
+            equifax_score: assessment.equifaxScore || null,
+          })
+          .eq('id', depositAppId)
+
+        if (error) throw error
+        navigate(`/deposit-aid/confirm/${depositAppId}`)
+      } else {
+        const { data, error } = await supabase
+          .from('deposit_applications')
+          .insert({
+            user_id: user.id,
+            application_id: selectedAppId,
+            applicant_type: applicantType,
+            deposit_amount: numAmount,
+            plan_weeks: selectedWeeks,
+            weekly_payment: selectedPlan.weeklyPayment,
+            total_repayment: selectedPlan.totalRepayment,
+            setup_fee: SETUP_FEE,
+            interest_rate: selectedPlan.interestRate,
+            status: 'approved',
+            credit_score: assessment.score,
+            credit_limit: assessment.creditLimit,
+            recipient_type: recipientData.recipientType,
+            recipient_name: recipientData.recipientName,
+            recipient_bsb: recipientData.recipientBsb,
+            recipient_account: recipientData.recipientAccount,
+            recipient_email: recipientData.recipientEmail || null,
+            agent_name: recipientData.agentName || null,
+            equifax_score: assessment.equifaxScore || null,
+          })
+          .select()
+          .single()
+
+        if (error) throw error
+        navigate(`/deposit-aid/confirm/${data.id}`)
+      }
     } catch (err) {
       toast.error('Failed to create deposit application. Please try again.')
       setSubmitting(false)
     }
+  }
+
+  // For business flow: create deposit_application early so verify-business can reference it
+  async function ensureDepositApp() {
+    if (depositAppId) return depositAppId
+    const { data, error } = await supabase
+      .from('deposit_applications')
+      .insert({
+        user_id: user.id,
+        application_id: selectedAppId,
+        applicant_type: 'business',
+        deposit_amount: numAmount >= 1000 ? numAmount : 1000,
+        plan_weeks: 104,
+        weekly_payment: 1,
+        total_repayment: 1,
+        status: 'pending',
+      })
+      .select()
+      .single()
+    if (error) throw error
+    setDepositAppId(data.id)
+    return data.id
+  }
+
+  async function handleBusinessVerified(result) {
+    setBusinessVerification(result)
+    goToStep('details')
   }
 
   return (
@@ -158,36 +254,60 @@ export default function DepositApplyPage() {
       {/* Progress stepper */}
       <div className="flex items-center justify-between mb-8">
         {steps.map((step, i) => (
-          <div key={step.number} className="flex items-center flex-1 last:flex-initial">
+          <div key={step.key} className="flex items-center flex-1 last:flex-initial">
             <div className="flex flex-col items-center">
               <div
                 className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
-                  currentStep > step.number
+                  currentStep > i + 1
                     ? 'bg-emerald-500 text-white'
-                    : currentStep === step.number
+                    : currentStep === i + 1
                       ? 'bg-coral-500 text-white shadow-coral'
                       : 'bg-gray-200 text-gray-500'
                 }`}
               >
-                {currentStep > step.number ? <Check className="w-4 h-4" /> : step.number}
+                {currentStep > i + 1 ? <Check className="w-4 h-4" /> : i + 1}
               </div>
-              <span className={`text-xs mt-1 font-medium ${currentStep >= step.number ? 'text-navy' : 'text-gray-400'}`}>
+              <span className={`text-xs mt-1 font-medium ${currentStep >= i + 1 ? 'text-navy' : 'text-gray-400'}`}>
                 {step.label}
               </span>
             </div>
             {i < steps.length - 1 && (
-              <div className={`flex-1 h-0.5 mx-2 mt-[-18px] ${currentStep > step.number ? 'bg-emerald-500' : 'bg-gray-200'}`} />
+              <div className={`flex-1 h-0.5 mx-2 mt-[-18px] ${currentStep > i + 1 ? 'bg-emerald-500' : 'bg-gray-200'}`} />
             )}
           </div>
         ))}
       </div>
 
       <div className="bg-white rounded-2xl border border-gray-200 p-6">
-        {/* Step 1: Select approved application */}
-        {currentStep === 1 && (
+        {/* Step: Select approved application */}
+        {currentStepKey === 'application' && (
           <div>
             <h2 className="text-lg font-semibold text-navy mb-1">Select Application</h2>
             <p className="text-sm text-gray-500 mb-4">Choose the approved rental application you need deposit help for.</p>
+
+            {/* Applicant type toggle */}
+            <div className="mb-5">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Applicant type</label>
+              <div className="flex gap-3">
+                {[
+                  { value: 'personal', label: 'Personal' },
+                  { value: 'business', label: 'Business' },
+                ].map((type) => (
+                  <button
+                    key={type.value}
+                    type="button"
+                    onClick={() => handleApplicantTypeChange(type.value)}
+                    className={`flex-1 h-11 rounded-xl border-2 text-sm font-medium cursor-pointer transition-all ${
+                      applicantType === type.value
+                        ? 'border-coral-500 bg-coral-50 text-coral-600'
+                        : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                    }`}
+                  >
+                    {type.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             {loadingApps ? (
               <div className="space-y-3">
@@ -232,8 +352,18 @@ export default function DepositApplyPage() {
           </div>
         )}
 
-        {/* Step 2: Amount + recipient details */}
-        {currentStep === 2 && (
+        {/* Step: Business Verification (business only) */}
+        {currentStepKey === 'business' && (
+          <BusinessVerificationStep
+            depositApplicationId={depositAppId}
+            onEnsureDepositApp={ensureDepositApp}
+            onComplete={handleBusinessVerified}
+            onBack={() => goToStep('application')}
+          />
+        )}
+
+        {/* Step: Amount + recipient details */}
+        {currentStepKey === 'details' && (
           <form onSubmit={recipientForm.handleSubmit(handleRecipientNext)}>
             <h2 className="text-lg font-semibold text-navy mb-1">Deposit Details</h2>
             <p className="text-sm text-gray-500 mb-4">Enter the deposit amount and the landlord or agency LATR will pay directly.</p>
@@ -249,15 +379,15 @@ export default function DepositApplyPage() {
                   id="amount"
                   type="number"
                   min="1000"
-                  max="50000"
+                  max={maxDeposit}
                   step="100"
                   value={depositAmount}
                   onChange={(e) => setDepositAmount(e.target.value)}
                   className="w-full h-11 pl-8 pr-4 rounded-xl border border-gray-300 text-navy font-semibold focus:outline-none focus:ring-2 focus:ring-coral-500 focus:border-transparent"
                 />
               </div>
-              {numAmount > 0 && (numAmount < 1000 || numAmount > 50000) && (
-                <p className="text-xs text-red-500 mt-1">Must be between $1,000 and $50,000</p>
+              {numAmount > 0 && (numAmount < 1000 || numAmount > maxDeposit) && (
+                <p className="text-xs text-red-500 mt-1">Must be between $1,000 and ${maxDeposit.toLocaleString('en-AU')}</p>
               )}
             </div>
 
@@ -328,14 +458,14 @@ export default function DepositApplyPage() {
             <div className="flex gap-3 mt-6">
               <button
                 type="button"
-                onClick={() => setCurrentStep(1)}
+                onClick={() => goToStep(applicantType === 'business' ? 'business' : 'application')}
                 className="h-11 px-6 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 Back
               </button>
               <button
                 type="submit"
-                disabled={numAmount < 1000 || numAmount > 50000}
+                disabled={numAmount < 1000 || numAmount > maxDeposit}
                 className="flex-1 h-11 bg-coral-500 text-white font-semibold rounded-xl hover:bg-coral-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 Continue
@@ -344,8 +474,8 @@ export default function DepositApplyPage() {
           </form>
         )}
 
-        {/* Step 3: Choose plan */}
-        {currentStep === 3 && (
+        {/* Step: Choose plan */}
+        {currentStepKey === 'plan' && (
           <div>
             <h2 className="text-lg font-semibold text-navy mb-1">Choose Your Plan</h2>
             <p className="text-sm text-gray-500 mb-4">
@@ -366,7 +496,7 @@ export default function DepositApplyPage() {
             <div className="flex gap-3">
               <button
                 type="button"
-                onClick={() => setCurrentStep(2)}
+                onClick={() => goToStep('details')}
                 className="h-11 px-6 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 Back
@@ -383,8 +513,8 @@ export default function DepositApplyPage() {
           </div>
         )}
 
-        {/* Step 4: Cash flow assessment */}
-        {currentStep === 4 && (
+        {/* Step: Cash flow assessment */}
+        {currentStepKey === 'assessment' && (
           <div>
             <h2 className="text-lg font-semibold text-navy mb-1">Cash Flow Analysis</h2>
             <p className="text-sm text-gray-500 mb-4">Based on your income and spending patterns.</p>
@@ -473,7 +603,7 @@ export default function DepositApplyPage() {
                 <div className="flex gap-3">
                   <button
                     type="button"
-                    onClick={() => setCurrentStep(3)}
+                    onClick={() => goToStep('plan')}
                     className="h-11 px-6 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     Back

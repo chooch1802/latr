@@ -124,6 +124,25 @@ export const referencesSchema = z.object({
   }),
 })
 
+export const businessVerificationSchema = z.object({
+  abn: z
+    .string()
+    .min(1, 'ABN is required')
+    .regex(/^\d{11}$/, 'ABN must be exactly 11 digits'),
+  acn: z
+    .string()
+    .regex(/^\d{9}$/, 'ACN must be exactly 9 digits')
+    .optional()
+    .or(z.literal('')),
+  businessName: z
+    .string()
+    .min(1, 'Business name is required')
+    .max(200, 'Business name must be 200 characters or less'),
+  applicantRole: z.enum(['director', 'authorized_representative'], {
+    errorMap: () => ({ message: 'Please select your role' }),
+  }),
+})
+
 export const depositRecipientSchema = z.object({
   recipientType: z.enum(['landlord', 'agency'], {
     errorMap: () => ({ message: 'Please select recipient type' }),

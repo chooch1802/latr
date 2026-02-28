@@ -1,8 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { ArrowLeft, CheckCircle2, XCircle, FileText, Loader2 } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, XCircle, FileText, Loader2, AlertTriangle, Building2 } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useToast } from '../../contexts/ToastContext'
+
+const BV_LAYER_LABELS = {
+  abn: { label: 'ABN Lookup', verifiedKey: 'abn_verified', checkedKey: 'abn_checked_at' },
+  asic: { label: 'ASIC Directors', verifiedKey: 'asic_verified', checkedKey: 'asic_checked_at' },
+  equifax: { label: 'Equifax Commercial', verifiedKey: 'equifax_verified', checkedKey: 'equifax_checked_at' },
+  cw: { label: 'CreditorWatch', verifiedKey: 'cw_verified', checkedKey: 'cw_checked_at' },
+}
 
 export default function AdminApplicationDetailPage() {
   const { id } = useParams()
@@ -10,6 +17,7 @@ export default function AdminApplicationDetailPage() {
   const toast = useToast()
   const [app, setApp] = useState(null)
   const [docs, setDocs] = useState([])
+  const [businessVerification, setBusinessVerification] = useState(null)
   const [loading, setLoading] = useState(true)
   const [reviewing, setReviewing] = useState(false)
   const [rejectReason, setRejectReason] = useState('')
@@ -34,6 +42,27 @@ export default function AdminApplicationDetailPage() {
       }
       setApp(appRes.data)
       setDocs(docsRes.data || [])
+
+      // Check for business verification via deposit_applications
+      const { data: depApps } = await supabase
+        .from('deposit_applications')
+        .select('id, applicant_type')
+        .eq('application_id', id)
+        .eq('applicant_type', 'business')
+        .limit(1)
+
+      if (depApps && depApps.length > 0) {
+        const { data: bv } = await supabase
+          .from('business_verifications')
+          .select('*')
+          .eq('deposit_application_id', depApps[0].id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle()
+
+        if (bv) setBusinessVerification(bv)
+      }
+
       setLoading(false)
     }
     load()
@@ -130,6 +159,89 @@ export default function AdminApplicationDetailPage() {
         </div>
       )}
 
+      {/* Business Verification Card */}
+      {businessVerification && (
+        <div className="bg-white rounded-xl border border-gray-200 p-5 mb-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Building2 className="w-4 h-4 text-indigo-500" />
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Business Verification</h2>
+          </div>
+
+          {/* Business identity */}
+          <div className="grid grid-cols-2 gap-3 text-sm mb-4">
+            <Row label="ABN" value={businessVerification.abn} />
+            <Row label="ACN" value={businessVerification.acn} />
+            <Row label="Business Name" value={businessVerification.business_name} />
+            <Row label="Role" value={businessVerification.applicant_role} />
+          </div>
+
+          {/* Overall status */}
+          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-4">
+            <div>
+              <p className="text-sm font-medium text-navy">Overall Result</p>
+              <p className="text-xs text-gray-500">Score: {businessVerification.overall_score ?? '—'}/100</p>
+            </div>
+            <span className={`text-xs font-semibold px-3 py-1 rounded-full capitalize ${
+              businessVerification.overall_status === 'passed' ? 'bg-emerald-100 text-emerald-700' :
+              businessVerification.overall_status === 'partial' ? 'bg-amber-100 text-amber-700' :
+              businessVerification.overall_status === 'failed' ? 'bg-red-100 text-red-700' :
+              'bg-gray-100 text-gray-600'
+            }`}>
+              {businessVerification.overall_status}
+            </span>
+          </div>
+
+          {/* Layer results */}
+          <div className="space-y-2 mb-4">
+            {Object.entries(BV_LAYER_LABELS).map(([key, meta]) => {
+              const verified = businessVerification[meta.verifiedKey]
+              const checked = businessVerification[meta.checkedKey]
+              return (
+                <div key={key} className="flex items-center justify-between p-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    {verified === true ? (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                    ) : verified === false && checked ? (
+                      <XCircle className="w-4 h-4 text-red-500" />
+                    ) : (
+                      <AlertTriangle className="w-4 h-4 text-amber-500" />
+                    )}
+                    <span className="text-gray-700">{meta.label}</span>
+                  </div>
+                  <span className={`text-xs font-medium ${verified ? 'text-emerald-600' : checked ? 'text-red-600' : 'text-gray-400'}`}>
+                    {verified ? 'Passed' : checked ? 'Failed' : 'Not run'}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Layer details */}
+          <div className="grid grid-cols-2 gap-3 text-sm border-t pt-3">
+            <Row label="ABN Status" value={businessVerification.abn_status} />
+            <Row label="ABN Entity" value={businessVerification.abn_entity_name} />
+            <Row label="ASIC Company" value={businessVerification.asic_company_status} />
+            <Row label="ASIC Director Match" value={businessVerification.asic_matched_director_name} />
+            <Row label="Equifax Score" value={businessVerification.equifax_commercial_score} />
+            <Row label="Equifax Defaults" value={businessVerification.equifax_payment_defaults} />
+            <Row label="CW Risk Score" value={businessVerification.cw_risk_score} />
+            <Row label="CW Risk Rating" value={businessVerification.cw_risk_rating} />
+          </div>
+
+          {/* Failure reasons */}
+          {businessVerification.failure_reasons?.length > 0 && (
+            <div className="mt-3 p-3 bg-red-50 rounded-lg">
+              <p className="text-xs font-semibold text-red-700 mb-1">Failure Reasons</p>
+              <ul className="text-xs text-red-600 space-y-0.5">
+                {businessVerification.failure_reasons.map((r, i) => (
+                  <li key={i}>&bull; {r}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Review actions */}
       {isPending && (
         <div className="bg-white rounded-xl border border-gray-200 p-5">
@@ -188,10 +300,11 @@ export default function AdminApplicationDetailPage() {
 }
 
 function Row({ label, value }) {
+  const display = value === null || value === undefined ? '—' : String(value)
   return (
     <div>
       <span className="text-gray-400">{label}</span>
-      <p className="font-medium text-navy capitalize">{value || '—'}</p>
+      <p className="font-medium text-navy capitalize">{display}</p>
     </div>
   )
 }
