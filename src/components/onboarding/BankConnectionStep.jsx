@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../contexts/AuthContext'
 import { createBankConnection, fetchBankData } from '../../lib/basiqApi'
 
-export default function BankConnectionStep({ onComplete }) {
+export default function BankConnectionStep({ onComplete, skipOnboardingUpdate = false }) {
   const { user } = useAuth()
   const [connecting, setConnecting] = useState(false)
   const [connected, setConnected] = useState(false)
@@ -52,14 +52,16 @@ export default function BankConnectionStep({ onComplete }) {
   async function handleContinue() {
     try {
       setSaving(true)
-      const { error: updateError } = await supabase
-        .from('users')
-        .update({
-          onboarding_step: 3,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', user.id)
-      if (updateError) throw updateError
+      if (!skipOnboardingUpdate) {
+        const { error: updateError } = await supabase
+          .from('users')
+          .update({
+            onboarding_step: 3,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', user.id)
+        if (updateError) throw updateError
+      }
       await onComplete()
     } catch (err) {
       setError(err.message)

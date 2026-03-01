@@ -27,7 +27,7 @@ export default function AdminDepositDetailPage() {
     async function load() {
       const { data, error } = await supabase
         .from('deposit_applications')
-        .select('*, users:user_id (first_name, last_name, email, phone, kyc_status)')
+        .select('*, users:user_id (first_name, last_name, email, phone, kyc_status, basiq_user_id)')
         .eq('id', id)
         .single()
 
@@ -70,7 +70,7 @@ export default function AdminDepositDetailPage() {
       // Reload
       const { data } = await supabase
         .from('deposit_applications')
-        .select('*, users:user_id (first_name, last_name, email, phone, kyc_status)')
+        .select('*, users:user_id (first_name, last_name, email, phone, kyc_status, basiq_user_id)')
         .eq('id', id)
         .single()
       setDeposit(data)
@@ -129,6 +129,16 @@ export default function AdminDepositDetailPage() {
                 'bg-gray-100 text-gray-600'
               }`}>
                 {user.kyc_status || 'Not started'}
+              </span>
+            </p>
+          </div>
+          <div>
+            <span className="text-gray-400">Bank Connection</span>
+            <p className="mt-0.5">
+              <span className={`inline-flex text-xs font-semibold px-2.5 py-0.5 rounded-full ${
+                user.basiq_user_id ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'
+              }`}>
+                {user.basiq_user_id ? 'Connected' : 'Not connected'}
               </span>
             </p>
           </div>

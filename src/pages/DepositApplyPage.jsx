@@ -12,6 +12,7 @@ import { runAssessment as runServerAssessment } from '../lib/basiqApi'
 import PlanCard from '../components/deposit/PlanCard'
 import BusinessVerificationStep from '../components/deposit/BusinessVerificationStep'
 import KYCVerificationStep from '../components/onboarding/KYCVerificationStep'
+import BankConnectionStep from '../components/onboarding/BankConnectionStep'
 import DocumentUpload from '../components/applications/DocumentUpload'
 
 export default function DepositApplyPage() {
@@ -24,6 +25,7 @@ export default function DepositApplyPage() {
   const [applicantType, setApplicantType] = useState('personal')
 
   const needsKYC = profile?.kyc_status !== 'verified'
+  const needsBank = !profile?.basiq_user_id
 
   const steps = useMemo(() => {
     const base = [{ label: 'Application', key: 'application' }]
@@ -31,9 +33,10 @@ export default function DepositApplyPage() {
     if (applicantType === 'business') base.push({ label: 'Business', key: 'business' })
     base.push({ label: 'Details', key: 'details' })
     base.push({ label: 'Plan', key: 'plan' })
+    if (needsBank) base.push({ label: 'Connect Bank', key: 'bank' })
     base.push({ label: 'Assessment', key: 'assessment' })
     return base
-  }, [applicantType, needsKYC])
+  }, [applicantType, needsKYC, needsBank])
 
   // Derive 1-based index from key for stepper UI
   const currentStep = Math.max(1, steps.findIndex((s) => s.key === currentStepKey) + 1)
@@ -143,8 +146,12 @@ export default function DepositApplyPage() {
 
   function handlePlanNext() {
     if (!selectedWeeks) return
-    goToStep('assessment')
-    runAssessment()
+    if (needsBank) {
+      goToStep('bank')
+    } else {
+      goToStep('assessment')
+      runAssessment()
+    }
   }
 
   async function runAssessment() {
@@ -584,6 +591,18 @@ export default function DepositApplyPage() {
           </div>
         )}
 
+        {/* Step: Connect Bank (if not already connected) */}
+        {currentStepKey === 'bank' && (
+          <BankConnectionStep
+            skipOnboardingUpdate
+            onComplete={async () => {
+              await refreshProfile()
+              goToStep('assessment')
+              runAssessment()
+            }}
+          />
+        )}
+
         {/* Step: Cash flow assessment */}
         {currentStepKey === 'assessment' && (
           <div>
@@ -674,7 +693,7 @@ export default function DepositApplyPage() {
                 <div className="flex gap-3">
                   <button
                     type="button"
-                    onClick={() => goToStep('plan')}
+                    onClick={() => goToStep(needsBank ? 'bank' : 'plan')}
                     className="h-11 px-6 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     Back
