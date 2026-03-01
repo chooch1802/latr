@@ -29,7 +29,7 @@ export default function ContactPage() {
           </div>
           <div>
             <h3 className="!mt-0 !mb-1">Email</h3>
-            <p className="text-gray-600 text-sm">support@latrpayments.com</p>
+            <p className="text-gray-600 text-sm">support@getlatr.com</p>
             <p className="text-gray-400 text-xs mt-1">We typically respond within 24 hours.</p>
           </div>
         </div>

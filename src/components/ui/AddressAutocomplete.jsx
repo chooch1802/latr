@@ -1,19 +1,20 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Loader } from '@googlemaps/js-api-loader'
+import { setOptions, importLibrary } from '@googlemaps/js-api-loader'
 import { X } from 'lucide-react'
 
 const API_KEY = import.meta.env.VITE_GOOGLE_PLACES_API_KEY
 
+let optionsSet = false
 let loaderPromise = null
 
 function getGoogleMaps() {
   if (!API_KEY) return Promise.resolve(null)
   if (!loaderPromise) {
-    const loader = new Loader({
-      apiKey: API_KEY,
-      libraries: ['places'],
-    })
-    loaderPromise = loader.importLibrary('places')
+    if (!optionsSet) {
+      setOptions({ key: API_KEY })
+      optionsSet = true
+    }
+    loaderPromise = importLibrary('places')
   }
   return loaderPromise
 }

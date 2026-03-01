@@ -17,7 +17,6 @@ function PageLoader() {
 const LandingPage = lazy(() => import('./pages/LandingPage'))
 const LoginPage = lazy(() => import('./pages/LoginPage'))
 const SignupPage = lazy(() => import('./pages/SignupPage'))
-const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'))
 const AuthCallbackPage = lazy(() => import('./pages/AuthCallbackPage'))
 const VerifyPage = lazy(() => import('./pages/VerifyPage'))
 const TermsPage = lazy(() => import('./pages/TermsPage'))
@@ -58,6 +57,7 @@ const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage')
 const AdminApplicationsPage = lazy(() => import('./pages/admin/AdminApplicationsPage'))
 const AdminApplicationDetailPage = lazy(() => import('./pages/admin/AdminApplicationDetailPage'))
 const AdminDepositsPage = lazy(() => import('./pages/admin/AdminDepositsPage'))
+const AdminDepositDetailPage = lazy(() => import('./pages/admin/AdminDepositDetailPage'))
 const AdminUsersPage = lazy(() => import('./pages/admin/AdminUsersPage'))
 
 function App() {
@@ -68,7 +68,6 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/terms" element={<TermsPage />} />
@@ -116,6 +115,7 @@ function App() {
             <Route path="/admin/applications" element={<AdminApplicationsPage />} />
             <Route path="/admin/applications/:id" element={<AdminApplicationDetailPage />} />
             <Route path="/admin/deposits" element={<AdminDepositsPage />} />
+            <Route path="/admin/deposits/:id" element={<AdminDepositDetailPage />} />
             <Route path="/admin/users" element={<AdminUsersPage />} />
           </Route>
         </Route>

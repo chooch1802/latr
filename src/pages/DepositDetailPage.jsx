@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import {
   ArrowLeft, Landmark, DollarSign, Calendar, BarChart3,
-  CheckCircle2, Clock, User, Building2, TrendingUp
+  CheckCircle2, Clock, User, Building2, TrendingUp, FileText, ExternalLink
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
@@ -184,6 +184,11 @@ export default function DepositDetailPage() {
           )}
         </Section>
 
+        {/* Lease document (standalone path) */}
+        {deposit.lease_document_url && !deposit.application_id && (
+          <LeaseDocumentSection url={deposit.lease_document_url} />
+        )}
+
         {/* Repayment schedule */}
         {repayments.length > 0 && (
           <div className="bg-white rounded-xl border border-gray-200 p-4">
@@ -219,6 +224,43 @@ export default function DepositDetailPage() {
             </div>
           </div>
         )}
+      </div>
+    </div>
+  )
+}
+
+function LeaseDocumentSection({ url }) {
+  const [signedUrl, setSignedUrl] = useState(null)
+  const filename = url.split('/').pop()
+
+  async function handleView() {
+    if (signedUrl) {
+      window.open(signedUrl, '_blank')
+      return
+    }
+    const { data } = await supabase.storage.from('deposit-documents').createSignedUrl(url, 300)
+    if (data?.signedUrl) {
+      setSignedUrl(data.signedUrl)
+      window.open(data.signedUrl, '_blank')
+    }
+  }
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-4">
+      <div className="flex items-center gap-2 mb-3">
+        <FileText className="w-4 h-4 text-coral-500" />
+        <h2 className="text-sm font-semibold text-gray-700">Lease Document</h2>
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="text-sm text-gray-600 truncate mr-3">{filename}</span>
+        <button
+          type="button"
+          onClick={handleView}
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-coral-500 hover:text-coral-600 transition-colors shrink-0 cursor-pointer"
+        >
+          <ExternalLink className="w-3.5 h-3.5" />
+          View
+        </button>
       </div>
     </div>
   )

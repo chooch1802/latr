@@ -108,7 +108,7 @@ export default function TermsPage() {
       <h2>13. Contact</h2>
       <p>
         If you have questions about these Terms, please contact us at{' '}
-        <a href="/contact">our contact page</a> or email support@latrpayments.com.
+        <a href="/contact">our contact page</a> or email support@getlatr.com.
       </p>
     </StaticPageLayout>
   )

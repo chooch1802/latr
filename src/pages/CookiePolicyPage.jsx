@@ -59,7 +59,7 @@ export default function CookiePolicyPage() {
       <h2>6. Contact</h2>
       <p>
         Questions about our use of cookies? Contact us at{' '}
-        <a href="mailto:privacy@latrpayments.com">privacy@latrpayments.com</a>.
+        <a href="mailto:privacy@getlatr.com">privacy@getlatr.com</a>.
       </p>
     </StaticPageLayout>
   )

@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ExternalLink } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 
 export default function AdminDepositsPage() {
+  const navigate = useNavigate()
   const [deposits, setDeposits] = useState([])
   const [loading, setLoading] = useState(true)
   const [typeFilter, setTypeFilter] = useState('all')
@@ -10,7 +13,7 @@ export default function AdminDepositsPage() {
     async function load() {
       const { data } = await supabase
         .from('deposit_applications')
-        .select('id, deposit_amount, plan_weeks, weekly_payment, status, transfer_status, created_at, recipient_name, applicant_type, users:user_id (first_name, last_name, email)')
+        .select('id, deposit_amount, plan_weeks, weekly_payment, status, transfer_status, created_at, recipient_name, applicant_type, application_id, lease_document_url, users:user_id (first_name, last_name, email)')
         .order('created_at', { ascending: false })
         .limit(100)
       setDeposits(data || [])
@@ -53,6 +56,7 @@ export default function AdminDepositsPage() {
             <tr>
               <th className="text-left px-4 py-3 font-medium text-gray-500">Applicant</th>
               <th className="text-left px-4 py-3 font-medium text-gray-500">Type</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-500">Source</th>
               <th className="text-left px-4 py-3 font-medium text-gray-500">Amount</th>
               <th className="text-left px-4 py-3 font-medium text-gray-500">Plan</th>
               <th className="text-left px-4 py-3 font-medium text-gray-500">Weekly</th>
@@ -64,7 +68,7 @@ export default function AdminDepositsPage() {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {filtered.map((d) => (
-              <tr key={d.id} className="hover:bg-gray-50">
+              <tr key={d.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => navigate(`/admin/deposits/${d.id}`)}>
                 <td className="px-4 py-3 text-navy font-medium">
                   {d.users?.first_name} {d.users?.last_name}
                 </td>
@@ -77,10 +81,34 @@ export default function AdminDepositsPage() {
                     {d.applicant_type || 'personal'}
                   </span>
                 </td>
+                <td className="px-4 py-3">
+                  <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                    d.application_id
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'bg-purple-100 text-purple-700'
+                  }`}>
+                    {d.application_id ? 'Application' : 'Lease Upload'}
+                  </span>
+                </td>
                 <td className="px-4 py-3">${Number(d.deposit_amount).toLocaleString('en-AU')}</td>
                 <td className="px-4 py-3">{d.plan_weeks}w</td>
                 <td className="px-4 py-3">${Number(d.weekly_payment).toFixed(2)}</td>
-                <td className="px-4 py-3 text-gray-600">{d.recipient_name || '—'}</td>
+                <td className="px-4 py-3 text-gray-600">
+                  <span>{d.recipient_name || '—'}</span>
+                  {d.lease_document_url && (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const { data } = await supabase.storage.from('deposit-documents').createSignedUrl(d.lease_document_url, 300)
+                        if (data?.signedUrl) window.open(data.signedUrl, '_blank')
+                      }}
+                      className="ml-2 inline-flex items-center gap-1 text-xs text-purple-600 hover:text-purple-700 font-medium cursor-pointer"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      Lease
+                    </button>
+                  )}
+                </td>
                 <td className="px-4 py-3">
                   <span className={`text-xs font-semibold px-2 py-1 rounded-full capitalize ${
                     d.status === 'active' ? 'bg-emerald-100 text-emerald-700' :
@@ -107,7 +135,7 @@ export default function AdminDepositsPage() {
               </tr>
             ))}
             {filtered.length === 0 && (
-              <tr><td colSpan={9} className="px-4 py-8 text-center text-gray-400">No deposit applications found</td></tr>
+              <tr><td colSpan={10} className="px-4 py-8 text-center text-gray-400">No deposit applications found</td></tr>
             )}
           </tbody>
         </table>

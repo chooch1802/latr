@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://latrpayments.com/sitemap.xml
+Sitemap: https://getlatr.com/sitemap.xml

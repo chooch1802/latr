@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, forwardRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { ArrowLeft, Check, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, Check, ArrowRight, Loader2, CheckCircle2, Upload } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { supabase } from '../lib/supabase'
@@ -11,43 +11,42 @@ import { calculateAllPlans, calculatePlan, SETUP_FEE } from '../lib/depositCalc'
 import { runAssessment as runServerAssessment } from '../lib/basiqApi'
 import PlanCard from '../components/deposit/PlanCard'
 import BusinessVerificationStep from '../components/deposit/BusinessVerificationStep'
-
-const PERSONAL_STEPS = [
-  { label: 'Application', key: 'application' },
-  { label: 'Details', key: 'details' },
-  { label: 'Plan', key: 'plan' },
-  { label: 'Assessment', key: 'assessment' },
-]
-
-const BUSINESS_STEPS = [
-  { label: 'Application', key: 'application' },
-  { label: 'Business', key: 'business' },
-  { label: 'Details', key: 'details' },
-  { label: 'Plan', key: 'plan' },
-  { label: 'Assessment', key: 'assessment' },
-]
+import KYCVerificationStep from '../components/onboarding/KYCVerificationStep'
+import DocumentUpload from '../components/applications/DocumentUpload'
 
 export default function DepositApplyPage() {
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, profile, refreshProfile } = useAuth()
   const toast = useToast()
-  const [currentStep, setCurrentStep] = useState(1)
+  const [currentStepKey, setCurrentStepKey] = useState('application')
 
   // Applicant type toggle
   const [applicantType, setApplicantType] = useState('personal')
 
-  const steps = useMemo(
-    () => (applicantType === 'business' ? BUSINESS_STEPS : PERSONAL_STEPS),
-    [applicantType]
-  )
+  const needsKYC = profile?.kyc_status !== 'verified'
 
-  // Map step index to key for readability
-  const currentStepKey = steps[currentStep - 1]?.key
+  const steps = useMemo(() => {
+    const base = [{ label: 'Application', key: 'application' }]
+    if (needsKYC) base.push({ label: 'Verify ID', key: 'identity' })
+    if (applicantType === 'business') base.push({ label: 'Business', key: 'business' })
+    base.push({ label: 'Details', key: 'details' })
+    base.push({ label: 'Plan', key: 'plan' })
+    base.push({ label: 'Assessment', key: 'assessment' })
+    return base
+  }, [applicantType, needsKYC])
+
+  // Derive 1-based index from key for stepper UI
+  const currentStep = Math.max(1, steps.findIndex((s) => s.key === currentStepKey) + 1)
 
   // Step 1: select an approved application
   const [applications, setApplications] = useState([])
   const [loadingApps, setLoadingApps] = useState(true)
   const [selectedAppId, setSelectedAppId] = useState(null)
+
+  // Lease upload (standalone path)
+  const [leaseFile, setLeaseFile] = useState(null)
+  const [leaseDocPath, setLeaseDocPath] = useState(null)
+  const [uploadingLease, setUploadingLease] = useState(false)
 
   // Business verification
   const [depositAppId, setDepositAppId] = useState(null)
@@ -65,6 +64,7 @@ export default function DepositApplyPage() {
   const [submitting, setSubmitting] = useState(false)
 
   const maxDeposit = applicantType === 'business' ? 200000 : 50000
+  const isStandalonePath = !loadingApps && applications.length === 0
 
   const recipientForm = useForm({
     resolver: zodResolver(depositRecipientSchema),
@@ -99,8 +99,7 @@ export default function DepositApplyPage() {
   const selectedPlan = selectedWeeks ? calculatePlan(numAmount, selectedWeeks) : null
 
   function goToStep(key) {
-    const idx = steps.findIndex((s) => s.key === key)
-    if (idx !== -1) setCurrentStep(idx + 1)
+    setCurrentStepKey(key)
   }
 
   function handleSelectApplication(appId) {
@@ -109,13 +108,30 @@ export default function DepositApplyPage() {
     if (app?.deposit_amount) {
       setDepositAmount(String(app.deposit_amount))
     }
-    goToStep(applicantType === 'business' ? 'business' : 'details')
+    goToStep(needsKYC ? 'identity' : applicantType === 'business' ? 'business' : 'details')
+  }
+
+  async function handleLeaseUpload() {
+    if (!leaseFile) return
+    setUploadingLease(true)
+    try {
+      const ext = leaseFile.name.split('.').pop()
+      const path = `${user.id}/${crypto.randomUUID()}.${ext}`
+      const { error } = await supabase.storage.from('deposit-documents').upload(path, leaseFile)
+      if (error) throw error
+      setLeaseDocPath(path)
+      goToStep(needsKYC ? 'identity' : applicantType === 'business' ? 'business' : 'details')
+    } catch {
+      toast.error('Failed to upload lease. Please try again.')
+    } finally {
+      setUploadingLease(false)
+    }
   }
 
   function handleApplicantTypeChange(type) {
     setApplicantType(type)
     // Reset to step 1 when changing type
-    setCurrentStep(1)
+    setCurrentStepKey('application')
     setBusinessVerification(null)
     setDepositAppId(null)
   }
@@ -149,19 +165,24 @@ export default function DepositApplyPage() {
     try {
       const recipientData = recipientForm.getValues()
 
+      // Standalone lease uploads require admin review; linked-application deposits are auto-approved
+      const isStandaloneDeposit = leaseDocPath && !selectedAppId
+      const depositStatus = isStandaloneDeposit ? 'pending_review' : 'approved'
+
       // If we already created a deposit_application for business verification, update it
       if (depositAppId) {
         const { error } = await supabase
           .from('deposit_applications')
           .update({
-            application_id: selectedAppId,
+            application_id: selectedAppId || null,
+            lease_document_url: leaseDocPath || null,
             deposit_amount: numAmount,
             plan_weeks: selectedWeeks,
             weekly_payment: selectedPlan.weeklyPayment,
             total_repayment: selectedPlan.totalRepayment,
             setup_fee: SETUP_FEE,
             interest_rate: selectedPlan.interestRate,
-            status: 'approved',
+            status: depositStatus,
             credit_score: assessment.score,
             credit_limit: assessment.creditLimit,
             recipient_type: recipientData.recipientType,
@@ -175,13 +196,20 @@ export default function DepositApplyPage() {
           .eq('id', depositAppId)
 
         if (error) throw error
-        navigate(`/deposit-aid/confirm/${depositAppId}`)
+
+        if (isStandaloneDeposit) {
+          toast.success('Application submitted for review. We\'ll notify you once approved.')
+          navigate('/deposit-aid')
+        } else {
+          navigate(`/deposit-aid/confirm/${depositAppId}`)
+        }
       } else {
         const { data, error } = await supabase
           .from('deposit_applications')
           .insert({
             user_id: user.id,
-            application_id: selectedAppId,
+            application_id: selectedAppId || null,
+            lease_document_url: leaseDocPath || null,
             applicant_type: applicantType,
             deposit_amount: numAmount,
             plan_weeks: selectedWeeks,
@@ -189,7 +217,7 @@ export default function DepositApplyPage() {
             total_repayment: selectedPlan.totalRepayment,
             setup_fee: SETUP_FEE,
             interest_rate: selectedPlan.interestRate,
-            status: 'approved',
+            status: depositStatus,
             credit_score: assessment.score,
             credit_limit: assessment.creditLimit,
             recipient_type: recipientData.recipientType,
@@ -204,7 +232,13 @@ export default function DepositApplyPage() {
           .single()
 
         if (error) throw error
-        navigate(`/deposit-aid/confirm/${data.id}`)
+
+        if (isStandaloneDeposit) {
+          toast.success('Application submitted for review. We\'ll notify you once approved.')
+          navigate('/deposit-aid')
+        } else {
+          navigate(`/deposit-aid/confirm/${data.id}`)
+        }
       }
     } catch (err) {
       toast.error('Failed to create deposit application. Please try again.')
@@ -219,7 +253,8 @@ export default function DepositApplyPage() {
       .from('deposit_applications')
       .insert({
         user_id: user.id,
-        application_id: selectedAppId,
+        application_id: selectedAppId || null,
+        lease_document_url: leaseDocPath || null,
         applicant_type: 'business',
         deposit_amount: numAmount >= 1000 ? numAmount : 1000,
         plan_weeks: 104,
@@ -315,15 +350,40 @@ export default function DepositApplyPage() {
                   <div key={i} className="h-20 bg-gray-100 rounded-xl animate-pulse" />
                 ))}
               </div>
-            ) : applications.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-500 mb-3">No approved applications yet.</p>
-                <Link
-                  to="/apply"
-                  className="text-sm font-semibold text-coral-500 hover:text-coral-600"
+            ) : isStandalonePath ? (
+              <div>
+                <h2 className="text-lg font-semibold text-navy mb-1">Upload Your Signed Lease</h2>
+                <p className="text-sm text-gray-500 mb-4">
+                  Upload a copy of your signed lease agreement. Our team will review it to verify your rental details.
+                </p>
+
+                <DocumentUpload
+                  label="Signed lease (PDF)"
+                  files={leaseFile ? [leaseFile] : []}
+                  onChange={(files) => setLeaseFile(files[0] || null)}
+                  multiple={false}
+                  accept=".pdf"
+                  allowedTypes={['application/pdf']}
+                />
+
+                <button
+                  type="button"
+                  onClick={handleLeaseUpload}
+                  disabled={!leaseFile || uploadingLease}
+                  className="w-full mt-4 h-11 bg-coral-500 text-white font-semibold rounded-xl hover:bg-coral-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
                 >
-                  View my applications &rarr;
-                </Link>
+                  {uploadingLease ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-4 h-4" />
+                      Continue
+                    </>
+                  )}
+                </button>
               </div>
             ) : (
               <div className="space-y-3">
@@ -352,13 +412,24 @@ export default function DepositApplyPage() {
           </div>
         )}
 
+        {/* Step: Identity Verification (if not KYC-verified) */}
+        {currentStepKey === 'identity' && (
+          <KYCVerificationStep
+            skipOnboardingUpdate
+            onComplete={() => {
+              refreshProfile()
+              goToStep(applicantType === 'business' ? 'business' : 'details')
+            }}
+          />
+        )}
+
         {/* Step: Business Verification (business only) */}
         {currentStepKey === 'business' && (
           <BusinessVerificationStep
             depositApplicationId={depositAppId}
             onEnsureDepositApp={ensureDepositApp}
             onComplete={handleBusinessVerified}
-            onBack={() => goToStep('application')}
+            onBack={() => goToStep(needsKYC ? 'identity' : 'application')}
           />
         )}
 
@@ -458,7 +529,7 @@ export default function DepositApplyPage() {
             <div className="flex gap-3 mt-6">
               <button
                 type="button"
-                onClick={() => goToStep(applicantType === 'business' ? 'business' : 'application')}
+                onClick={() => goToStep(applicantType === 'business' ? 'business' : needsKYC ? 'identity' : 'application')}
                 className="h-11 px-6 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 Back

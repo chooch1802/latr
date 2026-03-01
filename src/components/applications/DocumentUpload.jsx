@@ -2,12 +2,18 @@ import { useCallback } from 'react'
 import { Upload, FileText, X, AlertCircle } from 'lucide-react'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'application/pdf']
+const DEFAULT_TYPES = ['image/jpeg', 'image/png', 'application/pdf']
 
-export default function DocumentUpload({ label, files, onChange, multiple = false, accept = 'image/*,.pdf' }) {
+const TYPE_LABELS = {
+  'application/pdf': 'PDF',
+  'image/jpeg': 'JPG',
+  'image/png': 'PNG',
+}
+
+export default function DocumentUpload({ label, files, onChange, multiple = false, accept = 'image/*,.pdf', allowedTypes = DEFAULT_TYPES }) {
   const handleFiles = useCallback((newFiles) => {
     const valid = Array.from(newFiles).filter((f) => {
-      if (!ALLOWED_TYPES.includes(f.type)) return false
+      if (!allowedTypes.includes(f.type)) return false
       if (f.size > MAX_FILE_SIZE) return false
       return true
     })
@@ -16,7 +22,7 @@ export default function DocumentUpload({ label, files, onChange, multiple = fals
     } else {
       onChange(valid.slice(0, 1))
     }
-  }, [files, onChange, multiple])
+  }, [files, onChange, multiple, allowedTypes])
 
   const handleDrop = useCallback((e) => {
     e.preventDefault()
@@ -67,7 +73,7 @@ export default function DocumentUpload({ label, files, onChange, multiple = fals
           <p className="text-sm text-gray-500">
             Drag & drop or <span className="text-coral-500 font-medium">browse</span>
           </p>
-          <p className="text-xs text-gray-400 mt-1">PDF, JPG or PNG, max 5MB</p>
+          <p className="text-xs text-gray-400 mt-1">{allowedTypes.map((t) => TYPE_LABELS[t] || t).join(', ')}, max 5MB</p>
           <input
             id={`upload-${label}`}
             type="file"

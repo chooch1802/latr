@@ -21,7 +21,6 @@ export default function SignupPage() {
   const [googleLoading, setGoogleLoading] = useState(false)
   const [phase, setPhase] = useState('form') // 'form' | 'otp'
   const [phone, setPhone] = useState('')
-  const [metadata, setMetadata] = useState(null)
 
   const {
     register,
@@ -41,7 +40,6 @@ export default function SignupPage() {
       const e164 = formatPhoneE164(data.phone)
       await signInWithPhone(e164)
       setPhone(e164)
-      setMetadata({ first_name: data.firstName, last_name: data.lastName })
       setPhase('otp')
     } catch (err) {
       setError(err.message)

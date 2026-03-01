@@ -10,7 +10,7 @@ import AddressAutocomplete from '../ui/AddressAutocomplete'
 
 const STATES = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT']
 
-export default function KYCVerificationStep({ onComplete }) {
+export default function KYCVerificationStep({ onComplete, skipOnboardingUpdate = false }) {
   const { user } = useAuth()
   const [idFile, setIdFile] = useState(null)
   const [selfieFile, setSelfieFile] = useState(null)
@@ -88,15 +88,16 @@ export default function KYCVerificationStep({ onComplete }) {
       // Poll for KYC result from webhook
       const kycResult = await pollKYCStatus(user.id, { maxAttempts: 60, intervalMs: 3000 })
 
-      const kycStatus = kycResult === 'verified' ? 'verified' : 'pending'
-      const { error: updateError } = await supabase
-        .from('users')
-        .update({
-          onboarding_step: 2,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', user.id)
-      if (updateError) throw updateError
+      if (!skipOnboardingUpdate) {
+        const { error: updateError } = await supabase
+          .from('users')
+          .update({
+            onboarding_step: 2,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', user.id)
+        if (updateError) throw updateError
+      }
 
       if (kycResult === 'verified') {
         setVerified(true)

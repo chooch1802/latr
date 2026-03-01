@@ -203,6 +203,13 @@ function DepositCard({ deposit, paidWeeks = 0 }) {
         </p>
       )}
 
+      {deposit.status === 'pending_review' && (
+        <p className="text-sm text-purple-600 font-medium flex items-center gap-1">
+          <Clock className="w-4 h-4" />
+          Lease under review
+        </p>
+      )}
+
       <p className="text-xs text-gray-400 mt-2">
         Created {new Date(deposit.created_at).toLocaleDateString('en-AU')}
       </p>

@@ -4,6 +4,7 @@ const statusConfig = {
   approved: { label: 'Approved', bg: 'bg-emerald-100', text: 'text-emerald-700' },
   active: { label: 'Active', bg: 'bg-blue-100', text: 'text-blue-700' },
   completed: { label: 'Completed', bg: 'bg-emerald-100', text: 'text-emerald-700' },
+  pending_review: { label: 'Pending Review', bg: 'bg-purple-100', text: 'text-purple-700' },
   declined: { label: 'Declined', bg: 'bg-red-100', text: 'text-red-700' },
   cancelled: { label: 'Cancelled', bg: 'bg-gray-100', text: 'text-gray-600' },
 }

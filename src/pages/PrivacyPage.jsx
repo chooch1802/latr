@@ -100,7 +100,7 @@ export default function PrivacyPage() {
       <h2>10. Contact Us</h2>
       <p>
         For privacy-related enquiries, contact our Privacy Officer at{' '}
-        <a href="mailto:privacy@latrpayments.com">privacy@latrpayments.com</a> or
+        <a href="mailto:privacy@getlatr.com">privacy@getlatr.com</a> or
         visit our <a href="/contact">contact page</a>.
       </p>
     </StaticPageLayout>
