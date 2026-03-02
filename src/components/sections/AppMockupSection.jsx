@@ -105,19 +105,29 @@ export default function AppMockupSection() {
       <div className="max-w-[1280px] mx-auto px-6 md:px-20 relative z-10">
         <ProgressStepper activeStep={2} />
 
-        <div className="flex flex-col items-center">
-          <PhoneMockup variant="floating" size="lg">
-            <PropertyDetailScreen />
-          </PhoneMockup>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
+          {/* Phone Mockup */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="flex justify-center md:justify-end"
+          >
+            <PhoneMockup variant="floating" size="lg">
+              <PropertyDetailScreen />
+            </PhoneMockup>
+          </motion.div>
 
-          <motion.div {...fadeInUp} className="text-center mt-12 md:mt-16">
+          {/* Text Content */}
+          <motion.div {...fadeInUp} className="text-center md:text-left">
             <h2
               id="app-mockup-heading"
               className="text-3xl sm:text-4xl md:text-[40px] font-bold text-white leading-tight mb-4"
             >
-              Find and apply in a few taps
+              Find and apply<br />in a few taps
             </h2>
-            <p className="text-lg md:text-xl text-white/80 font-normal max-w-[500px] mx-auto">
+            <p className="text-lg md:text-xl text-white/80 font-normal max-w-[500px]">
               Easily find properties and submit applications.
             </p>
           </motion.div>

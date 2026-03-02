@@ -104,65 +104,64 @@ export default function MoveInSection() {
       <div className="max-w-[1280px] mx-auto px-6 md:px-20 relative z-10">
         <ProgressStepper activeStep={5} />
 
-        <div className="flex flex-col items-center text-center">
-          {/* Celebration icon */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, type: 'spring', bounce: 0.4 }}
-            className="w-20 h-20 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center mb-8 border border-white/20"
-          >
-            <PartyPopper className="w-10 h-10 text-white" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
+          {/* Text Content */}
+          <motion.div {...fadeInUp} className="text-center md:text-left order-2 md:order-1">
+            {/* Celebration icon */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, type: 'spring', bounce: 0.4 }}
+              className="w-16 h-16 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center mb-6 border border-white/20 mx-auto md:mx-0"
+            >
+              <PartyPopper className="w-8 h-8 text-white" />
+            </motion.div>
+
+            <h2
+              id="movein-heading"
+              className="text-3xl sm:text-4xl md:text-[40px] font-bold text-white leading-tight mb-4"
+            >
+              Move in &<br />manage everything
+            </h2>
+
+            <p className="text-lg md:text-xl text-white/80 font-normal max-w-[450px] mb-8">
+              Your Hub keeps all your rental finances in one place.
+            </p>
+
+            {/* Feature Grid */}
+            <div className="grid grid-cols-2 gap-3 max-w-[360px] mx-auto md:mx-0">
+              {features.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3 + index * 0.1, duration: 0.4 }}
+                  whileHover={{ y: -4, scale: 1.03 }}
+                  className="glass rounded-2xl p-4 flex flex-col items-center gap-2 cursor-default"
+                >
+                  <div className={`w-10 h-10 ${feature.color} rounded-xl flex items-center justify-center`}>
+                    <feature.icon className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-white text-xs font-medium text-center leading-snug">{feature.label}</span>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
 
-          <motion.h2
-            {...fadeInUp}
-            id="movein-heading"
-            className="text-3xl sm:text-4xl md:text-[48px] font-bold text-white leading-tight mb-4"
-          >
-            Move in &<br />manage everything
-          </motion.h2>
-
-          <motion.p
-            {...fadeInUp}
-            className="text-lg md:text-xl text-white/80 font-normal max-w-[500px] mb-12"
-          >
-            Your Hub keeps all your rental finances in one place.
-          </motion.p>
-
-          {/* Feature Grid */}
+          {/* Phone Mockup */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: [0.215, 0.61, 0.355, 1] }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 w-full max-w-[700px] mb-16"
+            className="order-1 md:order-2 flex justify-center"
           >
-            {features.map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3 + index * 0.1, duration: 0.4 }}
-                whileHover={{ y: -6, scale: 1.03 }}
-                className="glass rounded-2xl p-5 flex flex-col items-center gap-3 cursor-default"
-              >
-                <div className={`w-12 h-12 ${feature.color} rounded-xl flex items-center justify-center`}>
-                  <feature.icon className="w-6 h-6 text-white" />
-                </div>
-                <span className="text-white text-sm font-medium text-center leading-snug">{feature.label}</span>
-              </motion.div>
-            ))}
+            <PhoneMockup variant="floating" size="lg">
+              <DashboardScreen />
+            </PhoneMockup>
           </motion.div>
-
-          {/* Dashboard Phone Mockup */}
-          <PhoneMockup variant="floating" size="md">
-            <DashboardScreen />
-          </PhoneMockup>
-
-
         </div>
       </div>
     </section>

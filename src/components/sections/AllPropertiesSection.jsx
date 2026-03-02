@@ -70,21 +70,31 @@ export default function AllPropertiesSection() {
       <div className="max-w-[1280px] mx-auto px-6 md:px-20 relative z-10 pt-8">
         <ProgressStepper activeStep={1} />
 
-        <div className="flex flex-col items-center">
-          <PhoneMockup variant="floating" size="lg">
-            <PropertyTypeScreen />
-          </PhoneMockup>
-
-          <motion.div {...fadeInUp} className="text-center mt-12 md:mt-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
+          {/* Text Content */}
+          <motion.div {...fadeInUp} className="text-center md:text-left order-2 md:order-1">
             <h2
               id="properties-heading"
               className="text-3xl sm:text-4xl md:text-[40px] font-bold text-white leading-tight mb-4"
             >
-              Choose your property type
+              Choose your<br />property type
             </h2>
-            <p className="text-lg md:text-xl text-white/80 font-normal max-w-[500px] mx-auto">
+            <p className="text-lg md:text-xl text-white/80 font-normal max-w-[450px]">
               Tell us what you're looking for and we'll find the perfect match.
             </p>
+          </motion.div>
+
+          {/* Phone Mockup */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.215, 0.61, 0.355, 1] }}
+            className="order-1 md:order-2 flex justify-center"
+          >
+            <PhoneMockup variant="floating" size="lg">
+              <PropertyTypeScreen />
+            </PhoneMockup>
           </motion.div>
         </div>
       </div>
