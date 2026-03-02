@@ -359,13 +359,17 @@ export default function DepositApplyPage() {
               </div>
             ) : isStandalonePath ? (
               <div>
-                <h2 className="text-lg font-semibold text-navy mb-1">Upload Your Signed Lease</h2>
+                <h2 className="text-lg font-semibold text-navy mb-1">
+                  {applicantType === 'business' ? 'Upload Your Signed Heads of Agreement' : 'Upload Your Signed Lease'}
+                </h2>
                 <p className="text-sm text-gray-500 mb-4">
-                  Upload a copy of your signed lease agreement. Our team will review it to verify your rental details.
+                  {applicantType === 'business'
+                    ? 'Upload a copy of your signed Heads of Agreement. Our team will review it to verify your commercial rental details.'
+                    : 'Upload a copy of your signed lease agreement. Our team will review it to verify your rental details.'}
                 </p>
 
                 <DocumentUpload
-                  label="Signed lease (PDF)"
+                  label={applicantType === 'business' ? 'Signed Heads of Agreement (PDF)' : 'Signed lease (PDF)'}
                   files={leaseFile ? [leaseFile] : []}
                   onChange={(files) => setLeaseFile(files[0] || null)}
                   multiple={false}
