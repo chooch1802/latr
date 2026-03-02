@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Home, Users, Zap, CreditCard, PartyPopper, Plus, Activity, User, Bell, ArrowRight, Calendar, CheckCircle } from 'lucide-react'
+import { Home, Users, Zap, CreditCard, Plus, Activity, User, Bell, ArrowRight, Calendar, CheckCircle } from 'lucide-react'
 import { fadeInUp } from '../../utils/animations'
 import PhoneMockup from '../ui/PhoneMockup'
 import ProgressStepper from '../ui/ProgressStepper'
@@ -107,17 +107,6 @@ export default function MoveInSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
           {/* Text Content */}
           <motion.div {...fadeInUp} className="text-center md:text-left order-2 md:order-1">
-            {/* Celebration icon */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.5 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, type: 'spring', bounce: 0.4 }}
-              className="w-16 h-16 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center mb-6 border border-white/20 mx-auto md:mx-0"
-            >
-              <PartyPopper className="w-8 h-8 text-white" />
-            </motion.div>
-
             <h2
               id="movein-heading"
               className="text-3xl sm:text-4xl md:text-[40px] font-bold text-white leading-tight mb-4"
