@@ -52,6 +52,17 @@ const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 const NotificationsPage = lazy(() => import('./pages/NotificationsPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
+// Rewards pages
+const RewardsPage = lazy(() => import('./pages/RewardsPage'))
+const RewardsHistoryPage = lazy(() => import('./pages/RewardsHistoryPage'))
+const ReferralPage = lazy(() => import('./pages/ReferralPage'))
+const RentDayPage = lazy(() => import('./pages/RentDayPage'))
+const RedeemPage = lazy(() => import('./pages/RedeemPage'))
+const RedeemDetailPage = lazy(() => import('./pages/RedeemDetailPage'))
+const RedemptionsPage = lazy(() => import('./pages/RedemptionsPage'))
+const NeighbourhoodPage = lazy(() => import('./pages/NeighbourhoodPage'))
+const PartnerDetailPage = lazy(() => import('./pages/PartnerDetailPage'))
+
 // Admin pages
 const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage'))
 const AdminApplicationsPage = lazy(() => import('./pages/admin/AdminApplicationsPage'))
@@ -59,6 +70,11 @@ const AdminApplicationDetailPage = lazy(() => import('./pages/admin/AdminApplica
 const AdminDepositsPage = lazy(() => import('./pages/admin/AdminDepositsPage'))
 const AdminDepositDetailPage = lazy(() => import('./pages/admin/AdminDepositDetailPage'))
 const AdminUsersPage = lazy(() => import('./pages/admin/AdminUsersPage'))
+const AdminRewardsPage = lazy(() => import('./pages/admin/AdminRewardsPage'))
+const AdminPointsPage = lazy(() => import('./pages/admin/AdminPointsPage'))
+const AdminRentDayPage = lazy(() => import('./pages/admin/AdminRentDayPage'))
+const AdminPartnersPage = lazy(() => import('./pages/admin/AdminPartnersPage'))
+const AdminRedemptionsPage = lazy(() => import('./pages/admin/AdminRedemptionsPage'))
 
 function App() {
   return (
@@ -103,6 +119,15 @@ function App() {
             <Route path="/household/bills" element={<BillsPage />} />
             <Route path="/household/bills/add" element={<AddBillPage />} />
             <Route path="/household/bills/:id" element={<BillDetailPage />} />
+            <Route path="/rewards" element={<RewardsPage />} />
+            <Route path="/rewards/history" element={<RewardsHistoryPage />} />
+            <Route path="/rewards/refer" element={<ReferralPage />} />
+            <Route path="/rewards/rent-day" element={<RentDayPage />} />
+            <Route path="/rewards/redeem" element={<RedeemPage />} />
+            <Route path="/rewards/redeem/:id" element={<RedeemDetailPage />} />
+            <Route path="/rewards/redemptions" element={<RedemptionsPage />} />
+            <Route path="/rewards/neighbourhood" element={<NeighbourhoodPage />} />
+            <Route path="/rewards/neighbourhood/:id" element={<PartnerDetailPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
           </Route>
@@ -117,6 +142,11 @@ function App() {
             <Route path="/admin/deposits" element={<AdminDepositsPage />} />
             <Route path="/admin/deposits/:id" element={<AdminDepositDetailPage />} />
             <Route path="/admin/users" element={<AdminUsersPage />} />
+            <Route path="/admin/rewards" element={<AdminRewardsPage />} />
+            <Route path="/admin/rewards/points" element={<AdminPointsPage />} />
+            <Route path="/admin/rewards/rent-day" element={<AdminRentDayPage />} />
+            <Route path="/admin/rewards/partners" element={<AdminPartnersPage />} />
+            <Route path="/admin/rewards/redemptions" element={<AdminRedemptionsPage />} />
           </Route>
         </Route>
 

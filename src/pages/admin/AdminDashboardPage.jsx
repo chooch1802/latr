@@ -1,28 +1,33 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { FileText, Landmark, Users, DollarSign, ArrowRight } from 'lucide-react'
+import { FileText, Landmark, Users, DollarSign, ArrowRight, Gift } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import StatsGrid from '../../components/admin/StatsGrid'
 
 export default function AdminDashboardPage() {
-  const [stats, setStats] = useState({ users: 0, applications: 0, deposits: 0, activeDeposits: 0 })
+  const [stats, setStats] = useState({ users: 0, applications: 0, deposits: 0, activeDeposits: 0, totalPointsIssued: 0, rewardsUsers: 0 })
   const [recentApps, setRecentApps] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function load() {
-      const [usersRes, appsRes, depositsRes, activeRes, recentRes] = await Promise.all([
+      const [usersRes, appsRes, depositsRes, activeRes, recentRes, rewardsUsersRes, pointsRes] = await Promise.all([
         supabase.from('users').select('id', { count: 'exact', head: true }),
         supabase.from('applications').select('id', { count: 'exact', head: true }),
         supabase.from('deposit_applications').select('id', { count: 'exact', head: true }),
         supabase.from('deposit_applications').select('id', { count: 'exact', head: true }).eq('status', 'active'),
         supabase.from('applications').select('id, property_address_line_1, property_suburb, status, created_at').order('created_at', { ascending: false }).limit(5),
+        supabase.from('reward_balances').select('id', { count: 'exact', head: true }),
+        supabase.from('reward_balances').select('lifetime_points'),
       ])
+      const totalPointsIssued = (pointsRes.data || []).reduce((sum, r) => sum + (r.lifetime_points || 0), 0)
       setStats({
         users: usersRes.count || 0,
         applications: appsRes.count || 0,
         deposits: depositsRes.count || 0,
         activeDeposits: activeRes.count || 0,
+        totalPointsIssued,
+        rewardsUsers: rewardsUsersRes.count || 0,
       })
       setRecentApps(recentRes.data || [])
       setLoading(false)
@@ -50,6 +55,8 @@ export default function AdminDashboardPage() {
         { label: 'Applications', value: stats.applications, icon: FileText, color: 'bg-coral-500' },
         { label: 'Total Deposits', value: stats.deposits, icon: Landmark, color: 'bg-purple-500' },
         { label: 'Active Deposits', value: stats.activeDeposits, icon: DollarSign, color: 'bg-emerald-500' },
+        { label: 'Rewards Users', value: stats.rewardsUsers, icon: Gift, color: 'bg-amber-500' },
+        { label: 'Points Issued', value: stats.totalPointsIssued.toLocaleString('en-AU'), icon: Gift, color: 'bg-coral-500' },
       ]} />
 
       <div className="bg-white rounded-xl border border-gray-200 p-5">

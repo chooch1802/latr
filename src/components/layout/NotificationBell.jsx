@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Bell, Receipt, CreditCard, FileText, Users, Landmark, UserPlus } from 'lucide-react'
+import { Bell, Receipt, CreditCard, FileText, Users, Landmark, UserPlus, Gift, Award } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../contexts/AuthContext'
 
@@ -11,6 +11,10 @@ const typeIcons = {
   household_invite: UserPlus,
   deposit_update: Landmark,
   member_joined: Users,
+  reward_tier_upgrade: Award,
+  reward_referral: Gift,
+  reward_points: Gift,
+  rent_day: Gift,
 }
 
 function timeAgo(dateStr) {

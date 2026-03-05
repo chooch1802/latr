@@ -1,8 +1,10 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Home, FileText, Landmark, TrendingUp, Users, LogOut, Settings } from 'lucide-react'
+import { LayoutDashboard, Home, FileText, Landmark, TrendingUp, Users, LogOut, Settings, Gift } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import NotificationBell from './NotificationBell'
+import PointsBadge from '../rewards/PointsBadge'
 import PageTransition from './PageTransition'
+import RentDayBanner from '../rewards/RentDayBanner'
 import SupportChatbot from '../chat/SupportChatbot'
 
 const navItems = [
@@ -11,6 +13,7 @@ const navItems = [
   { label: 'Applications', href: '/apply', icon: FileText },
   { label: 'Deposit Aid', href: '/deposit-aid', icon: Landmark },
   { label: 'Round Up', href: '/round-up', icon: TrendingUp },
+  { label: 'Rewards', href: '/rewards', icon: Gift },
   { label: 'Hub', href: '/household', icon: Users },
   { label: 'Settings', href: '/settings', icon: Settings },
 ]
@@ -70,6 +73,7 @@ export default function AppShell() {
 
       {/* Main content area */}
       <div className="flex-1 flex flex-col min-w-0">
+        <RentDayBanner />
         {/* Top bar */}
         <header className="h-16 flex items-center justify-between px-6 bg-white border-b border-gray-200">
           {/* Mobile logo */}
@@ -77,6 +81,7 @@ export default function AppShell() {
           <div className="hidden md:block" />
 
           <div className="flex items-center gap-3">
+            <PointsBadge />
             <NotificationBell />
             <span className="text-sm text-gray-600 hidden sm:block">{displayName}</span>
             <NavLink to="/settings" className="md:hidden">

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Home, FileText, Landmark, Users, Plus, Send, CheckCircle2, DollarSign, TrendingUp } from 'lucide-react'
+import { Home, FileText, Landmark, Users, Plus, Send, CheckCircle2, DollarSign, TrendingUp, Gift, Calendar } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
+import { getCurrentRentDayEvent } from '../lib/rewardsApi'
 
 const quickActions = [
   {
@@ -62,6 +63,7 @@ export default function DashboardPage() {
   const [totalBalance, setTotalBalance] = useState(0)
   const [activity, setActivity] = useState([])
   const [loading, setLoading] = useState(true)
+  const [rentDayEvent, setRentDayEvent] = useState(null)
 
   const firstName = profile?.first_name || user?.user_metadata?.first_name || 'there'
 
@@ -118,6 +120,14 @@ export default function DashboardPage() {
 
         items.sort((a, b) => new Date(b.date) - new Date(a.date))
         setActivity(items.slice(0, 5))
+
+        // Check for active Rent Day event
+        try {
+          const ev = await getCurrentRentDayEvent()
+          if (ev && (ev.status === 'active' || ev.status === 'scheduled')) setRentDayEvent(ev)
+        } catch {
+          // Non-critical
+        }
       } catch {
         // Silently fail — dashboard still shows
       } finally {
@@ -158,6 +168,25 @@ export default function DashboardPage() {
           </Link>
         </div>
       </div>
+
+      {/* Rent Day card */}
+      {rentDayEvent && (
+        <Link
+          to="/rewards/rent-day"
+          className="block bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 mb-6 hover:shadow-sm transition-all"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
+              <Calendar className="w-5 h-5 text-amber-600" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-navy">{rentDayEvent.title}</p>
+              <p className="text-xs text-gray-500">{rentDayEvent.bonus_multiplier}x points · Free rent raffle</p>
+            </div>
+            <Gift className="w-4 h-4 text-amber-500 shrink-0" />
+          </div>
+        </Link>
+      )}
 
       {/* Recent activity */}
       <div className="mb-6">

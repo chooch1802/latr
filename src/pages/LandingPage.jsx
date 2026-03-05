@@ -11,6 +11,7 @@ import ApprovalsSection from '../components/sections/ApprovalsSection'
 import MoveInSection from '../components/sections/MoveInSection'
 import CalculatorSection from '../components/sections/CalculatorSection'
 import RoundUpSection from '../components/sections/RoundUpSection'
+import RewardsSection from '../components/sections/RewardsSection'
 import SocialProofSection from '../components/sections/SocialProofSection'
 import TestimonialsSection from '../components/sections/TestimonialsSection'
 
@@ -117,7 +118,7 @@ export default function LandingPage() {
 
         <RoundUpSection />
 
-        {/* Wave: RoundUpSection → SocialProofSection (navy → white) */}
+        {/* Wave: RoundUpSection → RewardsSection (navy → white) */}
         <div
           className="relative -mt-px overflow-hidden"
           style={{ background: '#060D1B' }}
@@ -132,6 +133,8 @@ export default function LandingPage() {
             <path d="M0,165 C280,140 560,185 840,150 C1060,125 1300,170 1440,145 L1440,200 L0,200 Z" fill="#FFFFFF" fillOpacity="1" />
           </svg>
         </div>
+
+        <RewardsSection />
 
         <SocialProofSection />
         <TestimonialsSection />

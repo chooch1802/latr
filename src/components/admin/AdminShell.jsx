@@ -1,11 +1,12 @@
 import { NavLink, Outlet } from 'react-router-dom'
-import { LayoutDashboard, FileText, Landmark, Users } from 'lucide-react'
+import { LayoutDashboard, FileText, Landmark, Users, Gift } from 'lucide-react'
 
 const navItems = [
   { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/admin/applications', icon: FileText, label: 'Applications' },
   { to: '/admin/deposits', icon: Landmark, label: 'Deposits' },
   { to: '/admin/users', icon: Users, label: 'Users' },
+  { to: '/admin/rewards', icon: Gift, label: 'Rewards' },
 ]
 
 export default function AdminShell() {
