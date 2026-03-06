@@ -25,8 +25,8 @@ export default function LandingPage() {
 
         {/* Multi-layer organic wave transition */}
         <div
-          className="relative -mt-px overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, #FF8A65 0%, #FFB4A3 50%, #FF8A65 100%)' }}
+          className="relative -mt-1 overflow-hidden"
+          style={{ background: 'linear-gradient(to bottom right, #FF5A3D, #FF8A65, #FFB4A3)' }}
         >
           {/* Soft center glow for depth */}
           <div
