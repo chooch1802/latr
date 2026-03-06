@@ -157,6 +157,41 @@ export async function getUserRedemptions() {
   return data || []
 }
 
+// ── Tier Subscriptions ──
+
+export async function createTierSubscription(tierSlug) {
+  const res = await supabase.functions.invoke('stripe-create-tier-subscription', {
+    body: { tierSlug },
+  })
+  if (res.error) throw new Error(res.error.message || 'Failed to create subscription')
+  return res.data
+}
+
+export async function getTierSubscription() {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const { data, error } = await supabase
+    .from('tier_subscriptions')
+    .select('*')
+    .eq('user_id', user.id)
+    .in('status', ['active', 'cancelled', 'past_due'])
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (error) throw error
+  return data
+}
+
+export async function cancelTierSubscription() {
+  const res = await supabase.functions.invoke('stripe-cancel-tier-subscription', {
+    body: {},
+  })
+  if (res.error) throw new Error(res.error.message || 'Failed to cancel subscription')
+  return res.data
+}
+
 // ── Neighbourhood ──
 
 export async function getNeighbourhoodPartners({ category, suburb, featured } = {}) {

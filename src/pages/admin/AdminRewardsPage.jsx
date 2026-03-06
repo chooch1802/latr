@@ -22,7 +22,7 @@ export default function AdminRewardsPage() {
       const totalPts = (lifetimeRes.data || []).reduce((sum, r) => sum + (r.lifetime_points || 0), 0)
 
       // Tier distribution
-      const dist = { bronze: 0, silver: 0, gold: 0, platinum: 0 }
+      const dist = { silver: 0, gold: 0, platinum: 0 }
       for (const row of tierRes.data || []) {
         dist[row.current_tier] = (dist[row.current_tier] || 0) + 1
       }
@@ -64,7 +64,7 @@ export default function AdminRewardsPage() {
       {/* Tier distribution */}
       <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
         <h2 className="font-semibold text-navy mb-4">Tier Distribution</h2>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           {tierDist.map(({ tier, count }) => (
             <div key={tier} className="text-center p-3 rounded-lg bg-gray-50">
               <p className="text-2xl font-bold text-navy">{count}</p>

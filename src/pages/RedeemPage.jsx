@@ -5,7 +5,7 @@ import { getRedemptionCatalog, getRewardBalance } from '../lib/rewardsApi'
 import RedemptionCard from '../components/rewards/RedemptionCard'
 import RedemptionCategoryNav from '../components/rewards/RedemptionCategoryNav'
 
-const tierOrder = ['bronze', 'silver', 'gold', 'platinum']
+const tierOrder = ['silver', 'gold', 'platinum']
 
 export default function RedeemPage() {
   const [catalog, setCatalog] = useState([])
@@ -32,7 +32,7 @@ export default function RedeemPage() {
     load()
   }, [category])
 
-  const userTierIdx = tierOrder.indexOf(balance?.current_tier || 'bronze')
+  const userTierIdx = tierOrder.indexOf(balance?.current_tier || 'silver')
   const availableItems = catalog.filter((item) => {
     const itemTierIdx = tierOrder.indexOf(item.min_tier)
     return itemTierIdx <= userTierIdx

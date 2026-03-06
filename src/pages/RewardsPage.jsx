@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Gift, ArrowRight, History, Users, ShoppingBag, MapPin } from 'lucide-react'
+import { Gift, ArrowRight, History, Users, ShoppingBag, MapPin, Crown } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
-import { getRewardBalance, getRewardTiers, getRewardTransactions } from '../lib/rewardsApi'
+import { getRewardBalance, getRewardTiers, getRewardTransactions, getTierSubscription } from '../lib/rewardsApi'
 import TierBadge from '../components/rewards/TierBadge'
 import TierProgressBar from '../components/rewards/TierProgressBar'
 import RewardTransactionRow from '../components/rewards/RewardTransactionRow'
@@ -13,19 +13,22 @@ export default function RewardsPage() {
   const [balance, setBalance] = useState(null)
   const [tiers, setTiers] = useState([])
   const [recentTxns, setRecentTxns] = useState([])
+  const [subscription, setSubscription] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function load() {
       try {
-        const [bal, tierData, txnData] = await Promise.all([
+        const [bal, tierData, txnData, sub] = await Promise.all([
           getRewardBalance(),
           getRewardTiers(),
           getRewardTransactions({ limit: 5 }),
+          getTierSubscription(),
         ])
         setBalance(bal)
         setTiers(tierData)
         setRecentTxns(txnData.transactions)
+        setSubscription(sub)
       } catch {
         // Will show empty state
       } finally {
@@ -46,7 +49,7 @@ export default function RewardsPage() {
     )
   }
 
-  const currentTier = balance?.current_tier || 'bronze'
+  const currentTier = balance?.current_tier || 'silver'
   const tierConfig = tiers.find((t) => t.slug === currentTier)
 
   return (
@@ -84,16 +87,26 @@ export default function RewardsPage() {
         </div>
       </div>
 
-      {/* Tier progress */}
+      {/* Tier subscription card */}
       <div className="mb-4">
         <TierProgressBar
           currentTier={currentTier}
-          qualifyingPoints={balance?.tier_qualifying_points || 0}
+          subscription={subscription}
         />
       </div>
 
       {/* CTA cards */}
       <div className="grid grid-cols-2 gap-3 mb-6">
+        <Link
+          to="/rewards/upgrade"
+          className="group block rounded-xl border border-gray-200 bg-white p-4 hover:shadow-sm hover:border-gray-300 transition-all"
+        >
+          <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center mb-2">
+            <Crown className="w-5 h-5 text-purple-500" />
+          </div>
+          <h3 className="text-sm font-semibold text-navy group-hover:text-coral-500 transition-colors">Manage Plan</h3>
+          <p className="text-xs text-gray-500">View tiers &amp; upgrade</p>
+        </Link>
         <Link
           to="/rewards/refer"
           className="group block rounded-xl border border-gray-200 bg-white p-4 hover:shadow-sm hover:border-gray-300 transition-all"

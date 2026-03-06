@@ -12,8 +12,8 @@ const features = [
   },
   {
     icon: Award,
-    title: 'Unlock Tier Perks',
-    description: 'Rise through Bronze, Silver, Gold and Platinum tiers for increasing rewards.',
+    title: 'Choose Your Tier',
+    description: 'Silver is free for everyone. Upgrade to Gold or Platinum for up to 5x points per dollar.',
     accent: 'from-amber-500/20 to-amber-500/5',
   },
   {
@@ -31,10 +31,9 @@ const features = [
 ]
 
 const tiers = [
-  { name: 'Bronze', points: '0', multiplier: '1x', color: '#CD7F32' },
-  { name: 'Silver', points: '5,000', multiplier: '2x', color: '#C0C0C0' },
-  { name: 'Gold', points: '15,000', multiplier: '3x', color: '#FFD700' },
-  { name: 'Platinum', points: '35,000', multiplier: '5x', color: '#E5E4E2' },
+  { name: 'Silver', price: 'Free', multiplier: '1x', color: '#C0C0C0' },
+  { name: 'Gold', price: '$120/yr', multiplier: '2x', color: '#FFD700' },
+  { name: 'Platinum', price: '$700/yr', multiplier: '5x', color: '#E5E4E2' },
 ]
 
 export default function RewardsSection() {
@@ -93,9 +92,9 @@ export default function RewardsSection() {
         {/* Tier progression */}
         <motion.div {...fadeInUp} className="mb-16">
           <h3 className="text-center text-2xl sm:text-3xl font-bold text-navy mb-8">
-            Four tiers. Better rewards as you go.
+            Three tiers. Pick the plan that fits you.
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-[800px] mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-[800px] mx-auto">
             {tiers.map((tier) => (
               <div
                 key={tier.name}
@@ -108,7 +107,7 @@ export default function RewardsSection() {
                   <Star className="w-5 h-5" style={{ color: tier.color }} />
                 </div>
                 <p className="font-bold text-navy text-lg mb-0.5">{tier.name}</p>
-                <p className="text-sm text-gray-500 mb-2">{tier.points} pts</p>
+                <p className="text-sm text-gray-500 mb-2">{tier.price}</p>
                 <p className="text-coral-500 font-bold text-xl">{tier.multiplier}</p>
                 <p className="text-xs text-gray-400">per dollar</p>
               </div>

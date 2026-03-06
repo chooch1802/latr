@@ -30,7 +30,7 @@ export default function RedemptionCard({ item }) {
         <span className="text-sm font-bold text-coral-500">
           {item.points_cost.toLocaleString('en-AU')} pts
         </span>
-        {item.min_tier !== 'bronze' && (
+        {item.min_tier !== 'silver' && (
           <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 capitalize">
             {item.min_tier}+
           </span>

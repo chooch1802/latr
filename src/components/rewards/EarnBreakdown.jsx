@@ -2,7 +2,7 @@ import { CreditCard, TrendingUp, Users, ShieldCheck, Receipt, Calendar, Award, S
 import PointsEarnCard from './PointsEarnCard'
 
 const earnMethods = [
-  { icon: CreditCard, title: 'On-time Repayments', description: 'Earn points per dollar on every repayment.', points: '1-5x/dollar', color: 'bg-emerald-50 text-emerald-500' },
+  { icon: CreditCard, title: 'On-time Repayments', description: 'Earn 1-5x points per dollar based on your plan.', points: '1-5x/dollar', color: 'bg-emerald-50 text-emerald-500' },
   { icon: TrendingUp, title: 'Round Ups', description: 'Bonus points on spare change contributions.', points: '1pt/dollar', color: 'bg-amber-50 text-amber-500' },
   { icon: Users, title: 'Refer a Friend', description: 'Earn when your referral completes onboarding.', points: '250-1,000', color: 'bg-blue-50 text-blue-500' },
   { icon: ShieldCheck, title: 'Complete KYC', description: 'One-time bonus for identity verification.', points: '500', color: 'bg-purple-50 text-purple-500' },

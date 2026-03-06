@@ -1,12 +1,11 @@
 const tierColors = {
-  bronze: 'bg-amber-100 text-amber-700 border-amber-200',
   silver: 'bg-gray-100 text-gray-700 border-gray-200',
   gold: 'bg-yellow-100 text-yellow-700 border-yellow-200',
   platinum: 'bg-purple-100 text-purple-700 border-purple-200',
 }
 
-export default function TierBadge({ tier = 'bronze', size = 'sm' }) {
-  const colors = tierColors[tier] || tierColors.bronze
+export default function TierBadge({ tier = 'silver', size = 'sm' }) {
+  const colors = tierColors[tier] || tierColors.silver
   const sizeClasses = size === 'lg'
     ? 'text-sm px-3 py-1'
     : 'text-xs px-2 py-0.5'
