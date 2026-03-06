@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Gift, Award, ShoppingBag, MapPin, Star } from 'lucide-react'
+import { ArrowRight, Gift, Award, ShoppingBag, MapPin, Check } from 'lucide-react'
 import { fadeInUp, staggerContainer, staggerItem } from '../../utils/animations'
 
 const features = [
@@ -31,9 +31,24 @@ const features = [
 ]
 
 const tiers = [
-  { name: 'Silver', price: 'Free', multiplier: '1x', color: '#C0C0C0' },
-  { name: 'Gold', price: '$120/yr', multiplier: '2x', color: '#FFD700' },
-  { name: 'Platinum', price: '$700/yr', multiplier: '5x', color: '#E5E4E2' },
+  {
+    name: 'Silver',
+    price: 'Free',
+    multiplier: '1x',
+    benefits: ['Gift card & rent credit redemptions', 'Monthly Rent Day participation', 'Neighbourhood partner rewards'],
+  },
+  {
+    name: 'Gold',
+    price: '$120/yr',
+    multiplier: '2x',
+    benefits: ['Priority Rent Day offers & 2x multiplier', 'Fitness class credits', 'Qantas & Velocity transfers'],
+  },
+  {
+    name: 'Platinum',
+    price: '$700/yr',
+    multiplier: '5x',
+    benefits: ['Premium travel transfer rates', 'Concierge support', 'Free monthly rent raffle entry', 'Exclusive partner offers'],
+  },
 ]
 
 export default function RewardsSection() {
@@ -94,22 +109,33 @@ export default function RewardsSection() {
           <h3 className="text-center text-2xl sm:text-3xl font-bold text-navy mb-8">
             Three tiers. Pick the plan that fits you.
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-[800px] mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-[900px] mx-auto">
             {tiers.map((tier) => (
               <div
                 key={tier.name}
-                className="relative bg-white rounded-2xl border border-gray-200 p-5 text-center hover:shadow-md transition-all"
+                className="relative bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-md transition-all flex flex-col"
               >
-                <div
-                  className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center"
-                  style={{ backgroundColor: tier.color + '30' }}
-                >
-                  <Star className="w-5 h-5" style={{ color: tier.color }} />
+                <div className="text-center mb-4">
+                  <p className="font-bold text-navy text-lg">{tier.name}</p>
+                  <p className="text-sm text-gray-500">{tier.price}</p>
                 </div>
-                <p className="font-bold text-navy text-lg mb-0.5">{tier.name}</p>
-                <p className="text-sm text-gray-500 mb-2">{tier.price}</p>
-                <p className="text-coral-500 font-bold text-xl">{tier.multiplier}</p>
-                <p className="text-xs text-gray-400">per dollar</p>
+
+                <div className="bg-navy rounded-xl px-4 py-3 flex items-center justify-between mb-4">
+                  <span className="text-sm text-gray-300">Repayments</span>
+                  <span className="flex items-baseline gap-1.5">
+                    <span className="text-xl font-bold text-white">{tier.multiplier}</span>
+                    <span className="text-xs text-gray-400">pts/dollar</span>
+                  </span>
+                </div>
+
+                <ul className="space-y-2 flex-1">
+                  {tier.benefits.map((benefit, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
+                      <Check className="w-3.5 h-3.5 text-coral-500 mt-0.5 shrink-0" />
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
