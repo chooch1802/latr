@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Gift, Check, CreditCard, TrendingUp, Users, MapPin, Sparkles } from 'lucide-react'
+import { ArrowRight, Gift, Check, CreditCard, TrendingUp, Users, MapPin } from 'lucide-react'
 import { fadeInUp, staggerContainer, staggerItem } from '../../utils/animations'
 
 function AnimatedCounter({ target }) {
@@ -102,11 +102,6 @@ export default function RewardsSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center mb-20 md:mb-28">
           {/* Left: Copy */}
           <div>
-            <motion.div {...fadeInUp} className="inline-flex items-center gap-2 h-8 px-4 rounded-full bg-coral-500/10 border border-coral-500/20 mb-6">
-              <Sparkles className="w-3.5 h-3.5 text-coral-400" />
-              <span className="text-sm font-semibold text-coral-400">LATR Rewards</span>
-            </motion.div>
-
             <motion.h2
               {...fadeInUp}
               id="rewards-heading"
