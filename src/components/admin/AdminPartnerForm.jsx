@@ -17,6 +17,8 @@ export default function AdminPartnerForm({ partner, onSubmit, onCancel }) {
     website: partner?.website || '',
     bonus_points: partner?.bonus_points || 0,
     bonus_description: partner?.bonus_description || '',
+    fidel_brand_id: partner?.fidel_brand_id || '',
+    fidel_location_id: partner?.fidel_location_id || '',
     rating: partner?.rating || 4.0,
     price_level: partner?.price_level || 2,
     is_featured: partner?.is_featured || false,
@@ -87,6 +89,17 @@ export default function AdminPartnerForm({ partner, onSubmit, onCancel }) {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Bonus Description</label>
           <input type="text" value={form.bonus_description} onChange={(e) => handleChange('bonus_description', e.target.value)} className="w-full h-10 px-3 rounded-lg border border-gray-200 text-sm" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Fidel Brand ID <span className="text-gray-400 font-normal">(optional)</span></label>
+          <input type="text" value={form.fidel_brand_id} onChange={(e) => handleChange('fidel_brand_id', e.target.value)} className="w-full h-10 px-3 rounded-lg border border-gray-200 text-sm font-mono" placeholder="brand_..." />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Fidel Location ID <span className="text-gray-400 font-normal">(optional)</span></label>
+          <input type="text" value={form.fidel_location_id} onChange={(e) => handleChange('fidel_location_id', e.target.value)} className="w-full h-10 px-3 rounded-lg border border-gray-200 text-sm font-mono" placeholder="loc_..." />
         </div>
       </div>
 

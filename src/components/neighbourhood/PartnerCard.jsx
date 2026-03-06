@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Star, MapPin } from 'lucide-react'
+import { Star, MapPin, CreditCard } from 'lucide-react'
 import PartnerBonusBadge from './PartnerBonusBadge'
 
 export default function PartnerCard({ partner }) {
@@ -23,6 +23,12 @@ export default function PartnerCard({ partner }) {
         {partner.is_featured && (
           <div className="absolute top-2 left-2 bg-coral-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">
             Featured
+          </div>
+        )}
+        {partner.fidel_brand_id && (
+          <div className="absolute bottom-2 left-2 bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+            <CreditCard className="w-2.5 h-2.5" />
+            Auto
           </div>
         )}
       </div>

@@ -14,6 +14,8 @@ const categoryIcons = {
   signup_bonus: { icon: Star, bg: 'bg-pink-50', color: 'text-pink-500' },
   tier_bonus: { icon: Award, bg: 'bg-yellow-50', color: 'text-yellow-500' },
   promotion: { icon: Gift, bg: 'bg-coral-50', color: 'text-coral-500' },
+  card_linked_offer: { icon: CreditCard, bg: 'bg-blue-50', color: 'text-blue-500' },
+  card_linked_reversal: { icon: CreditCard, bg: 'bg-red-50', color: 'text-red-500' },
   admin_adjustment: { icon: Gift, bg: 'bg-gray-50', color: 'text-gray-500' },
   // Redemptions
   redemption_rent_credit: { icon: ArrowRight, bg: 'bg-red-50', color: 'text-red-500' },

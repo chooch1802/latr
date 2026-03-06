@@ -81,6 +81,7 @@ export default function AdminPartnersPage() {
               <th className="text-left px-4 py-3 font-semibold text-gray-600">Category</th>
               <th className="text-left px-4 py-3 font-semibold text-gray-600">Suburb</th>
               <th className="text-center px-4 py-3 font-semibold text-gray-600">Bonus</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-600">Card-Linked</th>
               <th className="text-center px-4 py-3 font-semibold text-gray-600">Featured</th>
               <th className="text-right px-4 py-3 font-semibold text-gray-600">Actions</th>
             </tr>
@@ -97,6 +98,7 @@ export default function AdminPartnersPage() {
                 <td className="px-4 py-3 text-gray-500 capitalize">{p.category}</td>
                 <td className="px-4 py-3 text-gray-500">{p.suburb || '—'}</td>
                 <td className="px-4 py-3 text-center text-coral-500 font-medium">{p.bonus_points || 0}</td>
+                <td className="px-4 py-3 text-center text-xs font-mono text-gray-400">{p.fidel_brand_id ? p.fidel_brand_id.slice(0, 12) + '...' : '—'}</td>
                 <td className="px-4 py-3 text-center">{p.is_featured ? '★' : '—'}</td>
                 <td className="px-4 py-3 text-right">
                   <button onClick={() => { setEditing(p); setShowForm(false) }} className="text-gray-400 hover:text-navy p-1 cursor-pointer"><Edit2 className="w-4 h-4" /></button>

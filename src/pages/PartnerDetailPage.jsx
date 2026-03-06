@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, Star, MapPin, Phone, Globe, Clock, Gift } from 'lucide-react'
+import { ArrowLeft, Star, MapPin, Phone, Globe, Clock, Gift, CreditCard } from 'lucide-react'
 import { getPartnerById } from '../lib/rewardsApi'
 
 export default function PartnerDetailPage() {
@@ -94,6 +94,19 @@ export default function PartnerDetailPage() {
           <div>
             <p className="text-sm font-semibold text-navy">+{partner.bonus_points} bonus points</p>
             <p className="text-xs text-gray-600">{partner.bonus_description || 'Earn bonus points when you visit'}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Card-linked indicator */}
+      {partner.fidel_brand_id && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
+            <CreditCard className="w-5 h-5 text-blue-600" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-navy">Card-Linked Partner</p>
+            <p className="text-xs text-gray-600">Earn {partner.bonus_points || 0} pts automatically when you pay with a linked card</p>
           </div>
         </div>
       )}

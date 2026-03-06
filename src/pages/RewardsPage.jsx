@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Gift, ArrowRight, History, Users, ShoppingBag, MapPin, Crown } from 'lucide-react'
+import { Gift, ArrowRight, History, Users, ShoppingBag, MapPin, Crown, CreditCard } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { getRewardBalance, getRewardTiers, getRewardTransactions, getTierSubscription } from '../lib/rewardsApi'
 import TierBadge from '../components/rewards/TierBadge'
 import TierProgressBar from '../components/rewards/TierProgressBar'
 import RewardTransactionRow from '../components/rewards/RewardTransactionRow'
 import EarnBreakdown from '../components/rewards/EarnBreakdown'
+import CardLinkSection from '../components/rewards/CardLinkSection'
 
 export default function RewardsPage() {
   const { profile } = useAuth()
@@ -95,6 +96,11 @@ export default function RewardsPage() {
         />
       </div>
 
+      {/* Linked cards */}
+      <div className="mb-4">
+        <CardLinkSection />
+      </div>
+
       {/* CTA cards */}
       <div className="grid grid-cols-2 gap-3 mb-6">
         <Link
@@ -126,6 +132,16 @@ export default function RewardsPage() {
           </div>
           <h3 className="text-sm font-semibold text-navy group-hover:text-coral-500 transition-colors">Neighbourhood</h3>
           <p className="text-xs text-gray-500">Earn at local partners</p>
+        </Link>
+        <Link
+          to="/rewards/card-activity"
+          className="group block rounded-xl border border-gray-200 bg-white p-4 hover:shadow-sm hover:border-gray-300 transition-all"
+        >
+          <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center mb-2">
+            <CreditCard className="w-5 h-5 text-blue-500" />
+          </div>
+          <h3 className="text-sm font-semibold text-navy group-hover:text-coral-500 transition-colors">Card Activity</h3>
+          <p className="text-xs text-gray-500">Card-linked transactions</p>
         </Link>
       </div>
 

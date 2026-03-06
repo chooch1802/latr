@@ -63,6 +63,7 @@ const RedemptionsPage = lazy(() => import('./pages/RedemptionsPage'))
 const NeighbourhoodPage = lazy(() => import('./pages/NeighbourhoodPage'))
 const PartnerDetailPage = lazy(() => import('./pages/PartnerDetailPage'))
 const TierUpgradePage = lazy(() => import('./pages/TierUpgradePage'))
+const CardActivityPage = lazy(() => import('./pages/CardActivityPage'))
 
 // Admin pages
 const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage'))
@@ -128,6 +129,7 @@ function App() {
             <Route path="/rewards/redeem/:id" element={<RedeemDetailPage />} />
             <Route path="/rewards/redemptions" element={<RedemptionsPage />} />
             <Route path="/rewards/upgrade" element={<TierUpgradePage />} />
+            <Route path="/rewards/card-activity" element={<CardActivityPage />} />
             <Route path="/rewards/neighbourhood" element={<NeighbourhoodPage />} />
             <Route path="/rewards/neighbourhood/:id" element={<PartnerDetailPage />} />
             <Route path="/settings" element={<SettingsPage />} />
