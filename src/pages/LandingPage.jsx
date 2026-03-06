@@ -103,22 +103,29 @@ export default function LandingPage() {
         <MoveInSection />
         <CalculatorSection />
 
-        {/* Wave: CalculatorSection → RoundUpSection (white → navy) */}
+        {/* Wave: CalculatorSection → RewardsSection (white → deep purple) */}
         <div className="relative -mt-px overflow-hidden bg-white">
           <div
             className="absolute inset-0"
-            style={{ background: 'radial-gradient(ellipse 60% 80% at 50% 100%, rgba(6,13,27,0.06) 0%, transparent 60%)' }}
+            style={{ background: 'radial-gradient(ellipse 60% 80% at 50% 100%, rgba(11,5,23,0.06) 0%, transparent 60%)' }}
           />
           <svg viewBox="0 0 1440 200" preserveAspectRatio="none" className="relative w-full h-20 sm:h-28 md:h-36 lg:h-44 block">
-            <path d="M0,80 C360,140 720,20 1080,100 C1260,140 1380,60 1440,90 L1440,200 L0,200 Z" fill="#060D1B" fillOpacity="0.07" />
-            <path d="M0,110 C280,60 560,150 840,80 C1080,20 1300,100 1440,60 L1440,200 L0,200 Z" fill="#060D1B" fillOpacity="0.25" />
-            <path d="M0,150 C240,170 480,125 780,155 C1020,175 1200,135 1440,145 L1440,200 L0,200 Z" fill="#060D1B" fillOpacity="1" />
+            <path d="M0,80 C360,140 720,20 1080,100 C1260,140 1380,60 1440,90 L1440,200 L0,200 Z" fill="#0B0517" fillOpacity="0.07" />
+            <path d="M0,110 C280,60 560,150 840,80 C1080,20 1300,100 1440,60 L1440,200 L0,200 Z" fill="#0B0517" fillOpacity="0.25" />
+            <path d="M0,150 C240,170 480,125 780,155 C1020,175 1200,135 1440,145 L1440,200 L0,200 Z" fill="#0B0517" fillOpacity="1" />
           </svg>
+        </div>
+
+        <RewardsSection />
+
+        {/* Gradient transition: Rewards → RoundUp */}
+        <div className="relative h-16 md:h-24" style={{ background: 'linear-gradient(180deg, #0B0517 0%, #060D1B 100%)' }}>
+          <div className="absolute left-1/2 -translate-x-1/2 top-1/2 w-40 h-px bg-gradient-to-r from-transparent via-coral-500/20 to-transparent" />
         </div>
 
         <RoundUpSection />
 
-        {/* Wave: RoundUpSection → RewardsSection (navy → white) */}
+        {/* Wave: RoundUpSection → SocialProofSection (navy → white) */}
         <div
           className="relative -mt-px overflow-hidden"
           style={{ background: '#060D1B' }}
@@ -133,8 +140,6 @@ export default function LandingPage() {
             <path d="M0,165 C280,140 560,185 840,150 C1060,125 1300,170 1440,145 L1440,200 L0,200 Z" fill="#FFFFFF" fillOpacity="1" />
           </svg>
         </div>
-
-        <RewardsSection />
 
         <SocialProofSection />
         <TestimonialsSection />
