@@ -65,7 +65,7 @@ const tiers = [
   },
   {
     name: 'Platinum',
-    price: '$700/yr',
+    price: '$495/yr',
     multiplier: '5x',
     benefits: ['Premium travel transfer rates', 'Concierge support', 'Free monthly rent raffle entry', 'Exclusive partner offers'],
     border: 'border-coral-500/30',
