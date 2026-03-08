@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { ArrowLeft, CheckCircle2, XCircle, FileText, Loader2, AlertTriangle, Building2, ExternalLink } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, XCircle, FileText, Loader2, AlertTriangle, Building2, ExternalLink, Bot } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { useToast } from '../../contexts/ToastContext'
+import { getDecisionLog } from '../../lib/decisionApi'
 import DepositStatusBadge from '../../components/deposit/DepositStatusBadge'
 
 const BV_LAYER_LABELS = {
@@ -18,6 +19,7 @@ export default function AdminDepositDetailPage() {
   const toast = useToast()
   const [deposit, setDeposit] = useState(null)
   const [businessVerification, setBusinessVerification] = useState(null)
+  const [decisionLog, setDecisionLog] = useState([])
   const [loading, setLoading] = useState(true)
   const [reviewing, setReviewing] = useState(false)
   const [rejectReason, setRejectReason] = useState('')
@@ -48,6 +50,14 @@ export default function AdminDepositDetailPage() {
           .maybeSingle()
 
         if (bv) setBusinessVerification(bv)
+      }
+
+      // Fetch decision log
+      try {
+        const log = await getDecisionLog(id)
+        setDecisionLog(log)
+      } catch {
+        // Non-critical — admin can still review without it
       }
 
       setLoading(false)
@@ -198,6 +208,76 @@ export default function AdminDepositDetailPage() {
             <Row label="LATR Score" value={deposit.credit_score} />
             <Row label="Credit Limit" value={deposit.credit_limit != null ? `$${Number(deposit.credit_limit).toLocaleString('en-AU')}` : null} />
           </div>
+        </div>
+      )}
+
+      {/* Auto-Decision */}
+      {deposit.auto_decision && (
+        <div className="bg-white rounded-xl border border-gray-200 p-5 mb-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Bot className="w-4 h-4 text-purple-500" />
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Auto-Decision</h2>
+          </div>
+
+          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-4">
+            <div>
+              <p className="text-sm font-medium text-navy">Result</p>
+              <p className="text-xs text-gray-500">
+                {deposit.auto_decision_at
+                  ? new Date(deposit.auto_decision_at).toLocaleString('en-AU')
+                  : '—'}
+              </p>
+            </div>
+            <span className={`text-xs font-semibold px-3 py-1 rounded-full capitalize ${
+              deposit.auto_decision === 'approved' ? 'bg-emerald-100 text-emerald-700' :
+              deposit.auto_decision === 'rejected' ? 'bg-red-100 text-red-700' :
+              'bg-amber-100 text-amber-700'
+            }`}>
+              {deposit.auto_decision === 'manual_review' ? 'Manual Review' : deposit.auto_decision}
+            </span>
+          </div>
+
+          {/* Signal breakdown */}
+          {deposit.decision_signals && Object.keys(deposit.decision_signals).length > 0 && (
+            <div className="grid grid-cols-2 gap-3 text-sm mb-4">
+              <Row label="KYC Status" value={deposit.decision_signals.kyc_status} />
+              <Row label="Basiq Score" value={deposit.decision_signals.basiq_score != null ? `${deposit.decision_signals.basiq_score}/100` : null} />
+              <Row label="Deposit Amount" value={`$${Number(deposit.decision_signals.deposit_amount).toLocaleString('en-AU')}`} />
+              <Row label="Applicant Type" value={deposit.decision_signals.applicant_type} />
+              {deposit.decision_signals.business_verification && (
+                <>
+                  <Row label="ABN Check" value={deposit.decision_signals.business_verification.abn} />
+                  <Row label="ASIC Check" value={deposit.decision_signals.business_verification.asic} />
+                  <Row label="Equifax Check" value={deposit.decision_signals.business_verification.equifax} />
+                  <Row label="CW Check" value={deposit.decision_signals.business_verification.creditorwatch} />
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Reasons from decision log */}
+          {decisionLog.length > 0 && decisionLog[0].reasons?.length > 0 && (
+            <div className={`p-3 rounded-lg ${
+              deposit.auto_decision === 'approved' ? 'bg-emerald-50' :
+              deposit.auto_decision === 'rejected' ? 'bg-red-50' :
+              'bg-amber-50'
+            }`}>
+              <p className={`text-xs font-semibold mb-1 ${
+                deposit.auto_decision === 'approved' ? 'text-emerald-700' :
+                deposit.auto_decision === 'rejected' ? 'text-red-700' :
+                'text-amber-700'
+              }`}>Reasons</p>
+              <ul className={`text-xs space-y-0.5 ${
+                deposit.auto_decision === 'approved' ? 'text-emerald-600' :
+                deposit.auto_decision === 'rejected' ? 'text-red-600' :
+                'text-amber-600'
+              }`}>
+                {decisionLog[0].reasons.map((r, i) => (
+                  <li key={i}>&bull; {r}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
 

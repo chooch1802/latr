@@ -9,6 +9,7 @@ import { useToast } from '../contexts/ToastContext'
 import { depositRecipientSchema } from '../lib/validations'
 import { calculateAllPlans, calculatePlan, SETUP_FEE } from '../lib/depositCalc'
 import { runAssessment as runServerAssessment } from '../lib/basiqApi'
+import { runAutoDecision } from '../lib/decisionApi'
 import PlanCard from '../components/deposit/PlanCard'
 import BusinessVerificationStep from '../components/deposit/BusinessVerificationStep'
 import KYCVerificationStep from '../components/onboarding/KYCVerificationStep'
@@ -171,10 +172,7 @@ export default function DepositApplyPage() {
     setSubmitting(true)
     try {
       const recipientData = recipientForm.getValues()
-
-      // Standalone lease uploads require admin review; linked-application deposits are auto-approved
-      const isStandaloneDeposit = leaseDocPath && !selectedAppId
-      const depositStatus = isStandaloneDeposit ? 'pending_review' : 'approved'
+      let appId = depositAppId
 
       // If we already created a deposit_application for business verification, update it
       if (depositAppId) {
@@ -189,7 +187,7 @@ export default function DepositApplyPage() {
             total_repayment: selectedPlan.totalRepayment,
             setup_fee: SETUP_FEE,
             interest_rate: selectedPlan.interestRate,
-            status: depositStatus,
+            status: 'pending',
             credit_score: assessment.score,
             credit_limit: assessment.creditLimit,
             recipient_type: recipientData.recipientType,
@@ -203,13 +201,6 @@ export default function DepositApplyPage() {
           .eq('id', depositAppId)
 
         if (error) throw error
-
-        if (isStandaloneDeposit) {
-          toast.success('Application submitted for review. We\'ll notify you once approved.')
-          navigate('/deposit-aid')
-        } else {
-          navigate(`/deposit-aid/confirm/${depositAppId}`)
-        }
       } else {
         const { data, error } = await supabase
           .from('deposit_applications')
@@ -224,7 +215,7 @@ export default function DepositApplyPage() {
             total_repayment: selectedPlan.totalRepayment,
             setup_fee: SETUP_FEE,
             interest_rate: selectedPlan.interestRate,
-            status: depositStatus,
+            status: 'pending',
             credit_score: assessment.score,
             credit_limit: assessment.creditLimit,
             recipient_type: recipientData.recipientType,
@@ -239,13 +230,20 @@ export default function DepositApplyPage() {
           .single()
 
         if (error) throw error
+        appId = data.id
+      }
 
-        if (isStandaloneDeposit) {
-          toast.success('Application submitted for review. We\'ll notify you once approved.')
-          navigate('/deposit-aid')
-        } else {
-          navigate(`/deposit-aid/confirm/${data.id}`)
-        }
+      // Run auto-decision engine
+      const { decision, reasons } = await runAutoDecision(appId)
+
+      if (decision === 'approved') {
+        navigate(`/deposit-aid/confirm/${appId}`)
+      } else if (decision === 'rejected') {
+        toast.error(`Application not approved: ${reasons[0] || 'Does not meet criteria'}`)
+        navigate('/deposit-aid')
+      } else {
+        toast.success('Application submitted for review. We\'ll notify you once approved.')
+        navigate('/deposit-aid')
       }
     } catch (err) {
       toast.error('Failed to create deposit application. Please try again.')

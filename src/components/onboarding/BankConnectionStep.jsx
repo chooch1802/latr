@@ -41,6 +41,12 @@ export default function BankConnectionStep({ onComplete, skipOnboardingUpdate = 
       setAccounts(accts)
       setTransactions(txns || [])
 
+      // Persist basiq_user_id to users table
+      await supabase
+        .from('users')
+        .update({ basiq_user_id: basiqUserId })
+        .eq('id', user.id)
+
       setConnected(true)
       setConnecting(false)
     } catch (err) {
